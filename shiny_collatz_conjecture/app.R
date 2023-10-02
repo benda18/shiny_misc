@@ -11,6 +11,8 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
+source("C:/Users/bende/Documents/R/play/shiny_misc/shiny_collatz_conjecture/module.R")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -20,10 +22,15 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
+          column(12,h2(HTML(r'(<b><i>Collatz Conjecture:</b></i><br>)'))),
+          column(12,h4(HTML(r'(y=3n+1 (if y is odd) | y=n/2 (if y is even)<br> )'))),
           inputPanel(
             fluidRow(
-              column(12,h4(HTML(r'(<b><i>Input Starting Values:</b></i>)'))),
+            column(12,h4(HTML(r'(<b><i>Input Starting Values:</b></i>)'))),
             ),
+            # fluidRow(
+            #   "foo"
+            # ),
             wellPanel(
               numericInput(inputId = "input_n", 
                       label   = "n (#1)", 
@@ -45,29 +52,80 @@ ui <- fluidPage(
                                         "Free Y-Scales" = "free_y"), 
                          selected = "fixed")
             
-          )
+          ), 
+          # column(12,h4(HTML(r'(<b><i>Build your own Conjecture:</b></i>)'))),
+          # wellPanel(
+          #   "foo"
+          # )
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
+          wellPanel(
           fluidRow(
             h3(HTML(r'(<b>[[Plot Title]]</b><br>)'))
           ),
            plotOutput("collatz_plot"),
           fluidRow(
-            column(6,
+            column(12,
                    h3(HTML(r'(<br><b>[[Table Title]]</b><br>)')),
                    tableOutput('table01')
-            ),
-            column(6,
-                   h3(HTML(r'(<br><b>[[Table Title]]</b><br>)')),
-                   tableOutput('table02')
             )
+            # column(6,
+            #        h3(HTML(r'(<br><b>[[Table Title]]</b><br>)')),
+            #        tableOutput('table02')
+            # )
           ),
            
         )
     )
-    
+    ), # /wellPanel
+    wellPanel(
+      shiny::titlePanel("Test Your Own Conjecture"),
+      fluidRow(column(12, h4(HTML(r'(Collatz Conjecture of y = 3n+1 can be rewritten as follows:<br>y = A*n+B | y = n/C)')))),
+      
+      fluidRow(column(2,
+                      wellPanel(
+                      fluidRow(column(12, h4(HTML(r'(Use the inputs below to test out other variables for A, B, & C to see how they perform and if you can find one where the input values always return to 1)')))),
+        numericInput(inputId = "input_A", 
+                     label   = "A", 
+                     value   = 3),
+        numericInput(inputId = "input_B", 
+                     label   = "B", 
+                     value   = 1),
+        numericInput(inputId = "input_C", 
+                     label   = "C", 
+                     value   = 2) 
+      )), 
+      column(4, 
+             wellPanel(
+               h4(HTML(r'(<b>Your Current Conjecture Formula:</b>)')),
+               shiny::textOutput(outputId = "built_conjecture")
+               ),
+             wellPanel(
+               h4(HTML(r'(<b>Input New 'n' Values:</b>)')),
+               numericInput(inputId = "input_n3", 
+                            label   = "n (#3)", 
+                            value   = 4),
+               numericInput(inputId = "input_n4", 
+                            label   = "n (#4)", 
+                            value   = 14)
+             ), 
+             wellPanel(
+               h4(HTML(r'(<b>Summary Table</b>)')),
+               tableOutput("table03")
+             )
+             ),
+      column(6, 
+             #h4(HTML(r'(<b>Your Current Conjecture Formula:</b>)')),
+             wellPanel(plotOutput("build_a_plot"))))
+      #shiny::textOutput(outputId = "built_conjecture")
+      # fluidRow(
+      #   #column(5, 
+      #          renderText({input$input_A})
+      #   #)
+      # )
+    )
 )
 
 
@@ -76,7 +134,7 @@ server <- function(input, output) {
   collatz_seq <- function(x, type.a.divby = 2, 
                           type.b.multiply = 3, 
                           type.b.plus = 1, 
-                          max.loops = 10000){
+                          max.loops = 1000){
     out <- as.numeric(x)
     n.stop <- 0
     while(n.stop < max.loops){
@@ -103,6 +161,53 @@ server <- function(input, output) {
     return(out)
   }
   
+  # build-a-conjecture vars
+  output$var_A <- renderText({input$input_A})
+  output$var_B <- renderText({input$input_B})
+  output$var_C <- renderText({input$input_C})
+  output$built_conjecture <- renderText({
+    paste("y = ", 
+          input$input_A, 
+          " x + ", 
+          input$input_B, 
+          " (if odd); y = ",
+          " x / ", 
+          input$input_C, 
+          " (if evem)")
+  })
+  
+  output$build_a_plot <- renderPlot({
+    
+    df.bas3 <- data.frame(y = buildaseq(n=input$input_n3, 
+                                        A=input$input_A,
+                                        B=input$input_B,
+                                        D=input$input_C, 
+                                        #max.loops = 250, 
+                                        print.formula = F), 
+                          x = NA, 
+                          grp = input$input_n3)
+    df.bas3$x <- 1:nrow(df.bas3)
+    
+    df.bas4 <- data.frame(y = buildaseq(n=input$input_n4, 
+                                        A=input$input_A,
+                                        B=input$input_B,
+                                        D=input$input_C, 
+                                        #max.loops = 250, 
+                                        print.formula = F), 
+                          x = NA, 
+                          grp = input$input_n4)
+    df.bas4$x <- 1:nrow(df.bas4)
+    
+    df.bas34 <- rbind(df.bas3,df.bas4)
+    
+    ggplot() + 
+      geom_line(data = df.bas34, 
+                aes(x = x, y = y, color = factor(grp)))+
+      scale_y_continuous(labels = scales::comma)+
+      theme(plot.background = element_rect(color = "black"), 
+            text = element_text(size = 15))
+  })
+  
   output$radio_facet <- renderPrint({ input$radio_facet })
  
   output$table01 <- renderTable({
@@ -117,19 +222,46 @@ server <- function(input, output) {
                                 c_seq = 1:length(v.out2))) %>%
       group_by(n_in) %>%
       summarise(stopping_time = scales::comma(as.integer(n())), 
-                max_n_out = scales::comma(as.integer(max(n_out))))
+                max_n_out = scales::comma(as.integer(max(n_out))),
+                end_at_1 = as.integer(last(n_out))==1) 
     
   })
   
-  output$table02 <- renderTable({
-    v.out2 <- collatz_seq(x = input$input_n2)
+  # output$table02 <- renderTable({
+  #   v.out2 <- collatz_seq(x = input$input_n2)
+  #   
+  #   df.out2 <- data.frame(n_in = input$input_n2, 
+  #                         n_out = v.out2, 
+  #                         c_seq = 1:length(v.out2))
+  #   
+  # })
+  
+  output$table03 <- renderTable({
+    v.out3 <- buildaseq(n=input$input_n3, 
+                        A=input$input_A,
+                        B=input$input_B,
+                        D=input$input_C, 
+                        #max.loops = 250, 
+                        print.formula = F)
+    v.out4 <- buildaseq(n=input$input_n4, 
+                        A=input$input_A,
+                        B=input$input_B,
+                        D=input$input_C, 
+                        #max.loops = 250, 
+                        print.formula = F)
     
-    df.out2 <- data.frame(n_in = input$input_n2, 
-                          n_out = v.out2, 
-                          c_seq = 1:length(v.out2))
+    df.out3 <- rbind(data.frame(n_in = input$input_n3, 
+                                n_out = v.out3, 
+                                c_seq = 1:length(v.out3)), 
+                     data.frame(n_in = input$input_n4, 
+                                n_out = v.out4, 
+                                c_seq = 1:length(v.out4))) %>%
+      group_by(n_in) %>%
+      summarise(stopping_time = scales::comma(as.integer(n())), 
+                max_n_out = scales::comma(as.integer(max(n_out))),
+                end_at_1 = as.integer(last(n_out))==1) 
     
   })
-  
   
   output$collatz_plot <- renderPlot({
     # function
