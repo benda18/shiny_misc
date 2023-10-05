@@ -3,6 +3,10 @@
 library(dplyr)
 library(readr)
 
+
+# https://www.spc.noaa.gov/wcm/#data
+rm(list=ls());cat('\f')
+
 tornado.ddict <- data.frame(col_num = 1:29, 
                             col_name = c("om", "yr", "mo", "dy", "date", "time", 
                                          "tz", "st", "stf", "stn", "f|sz|mag", 
