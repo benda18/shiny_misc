@@ -1,5 +1,9 @@
 library(dplyr)
 library(readr)
+library(ggmap)
+library(ggplot2)
+library(lubridate)
+
 
 rm(list=ls())
 
@@ -37,6 +41,30 @@ actualT <- read_csv("1950-2022_actual_tornadoes.csv")
 
 
 # tidy csv----
+lower48 <- actualT[!actualT$st %in% c("HI", "AK"),] %>%
+  .[.$yr >= 2008,] %>%
+  .[.$elat != 0,] %>%
+  .[.$elon != 0,]
 
+bbox.states <- c("KS")
+st.map <- ggmap::get_stamenmap(bbox = c(left   = min(c(lower48$elon[lower48$st %in% bbox.states], 
+                                                       lower48$slon[lower48$st %in% bbox.states])), 
+                                        bottom = min(c(lower48$elat[lower48$st %in% bbox.states], 
+                                                       lower48$slat[lower48$st %in% bbox.states])), 
+                                        right  = max(c(lower48$elon[lower48$st %in% bbox.states], 
+                                                       lower48$slon[lower48$st %in% bbox.states])), 
+                                        top    = max(c(lower48$elat[lower48$st %in% bbox.states], 
+                                                       lower48$slat[lower48$st %in% bbox.states]))), 
+                     zoom = 6, 
+                     maptype = "terrain")
 
+ggplot() + 
+  geom_segment(data = lower48[!lower48$elon == 0 &
+                             !lower48$elat == 0 & 
+                               lower48$st %in% bbox.states,], 
+             aes(x = slon, xend = elon, 
+                 y = slat, yend = elat, 
+                 linewidth = wid))+
+  coord_quickmap()
 
+allT[allT$slon == 0,]
