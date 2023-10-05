@@ -1,0 +1,691 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Jeanne Jones</origin>
+        <origin>Nathan Wood</origin>
+        <origin>Peter Ng</origin>
+        <origin>Kevin Henry</origin>
+        <origin>Jamie Jones</origin>
+        <origin>Jeff Peters</origin>
+        <pubdate>2023</pubdate>
+        <title>Community Exposure in North Carolina to Coastal Flooding Hazards Enhanced by Climate Change, reference year 2020</title>
+        <geoform>Comma-Separated Value text files</geoform>
+        <pubinfo>
+          <pubplace>Moffett Field, CA</pubplace>
+          <publish>U.S. Geological Survey</publish>
+        </pubinfo>
+        <onlink>-------------</onlink>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>Socioeconomic impact estimates of community exposure to coastal flooding hazards are presented for communities along the coast of North Carolina, USA.  The provided data were generated using the Hazard Exposure Reporting and Analytics (HERA) web application (www.usgs.gov/apps/hera/). HERA uses geospatial analysis of socioeconomic indicators (population, economic, land cover, and infrastructure) in combination with flood hazard zones developed by the USGS Pacific Coastal and Marine Science Center to quantify populations and assets at risk under present and future scenarios of sea level rise and storm conditions. The type of information includes U.S. Census data on the number and types of residents, InfoGroup data on numbers and types of employees, county parcel values, NLCD land cover estimates, and infrastructure data on roads, rail, and critical facilities from a variety of sources.</abstract>
+      <purpose>These data provide a quantitative assessment of community exposure to potential flooding hazards along the coast of North Carolina, USA for a range of sea level rise (0, 25, 50, 100, 150, 200, 300 cm) and storm conditions including 1-year, 20-year and 100-year return interval storms and daily (no storm) conditions. The HERA dynamic web application and the data herein make research on community exposure to coastal-flooding hazards influenced by sea level rise accessible to planners, decision makers, and the public in a manner that is both easy to use and easily accessible.</purpose>
+      <supplinf>Information on file naming conventions, field definitions, and formulas are provided in the Community Vulnerability Data Dictionary, Version 4.0 (Feb 02, 2023), https://www.usgs.gov/apps/hera. To access this document, click on the Coastal Flooding Launch button, select any Place and any Asset to open the Dashboard, select View Data Table, click on 'Data Dictionary' link</supplinf>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <sngdate>
+          <caldate>2020</caldate>
+        </sngdate>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>In work</progress>
+      <update>As needed</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-84.3218</westbc>
+        <eastbc>-75.4001</eastbc>
+        <northbc>36.5881</northbc>
+        <southbc>33.7529</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>NASA Global Change Master Directory</themekt>
+        <themekey>community exposure</themekey>
+        <themekey>coastal storm flooding</themekey>
+        <themekey>sea level rise</themekey>
+      </theme>
+      <place>
+        <placekt>Geographic Names Information System (GNIS)</placekt>
+        <placekey>Beaufort County</placekey>
+        <placekey>Bertie County</placekey>
+        <placekey>Bladen County</placekey>
+        <placekey>Brunswick County</placekey>
+        <placekey>Camden County</placekey>
+        <placekey>Carteret County</placekey>
+        <placekey>Chowan County</placekey>
+        <placekey>Columbus County</placekey>
+        <placekey>Craven County</placekey>
+        <placekey>Currituck County</placekey>
+        <placekey>Dare County</placekey>
+        <placekey>Duplin County</placekey>
+        <placekey>Edgecombe County</placekey>
+        <placekey>Gates County</placekey>
+        <placekey>Greene County</placekey>
+        <placekey>Halifax County</placekey>
+        <placekey>Hertford County</placekey>
+        <placekey>Hyde County</placekey>
+        <placekey>Jones County</placekey>
+        <placekey>Lenoir County</placekey>
+        <placekey>Martin County</placekey>
+        <placekey>New Hanover County</placekey>
+        <placekey>Northampton County</placekey>
+        <placekey>Onslow County</placekey>
+        <placekey>Pamlico County</placekey>
+        <placekey>Pasquotank County</placekey>
+        <placekey>Pender County</placekey>
+        <placekey>Perquimans County</placekey>
+        <placekey>Pitt County</placekey>
+        <placekey>Sampson County</placekey>
+        <placekey>Tyrrell County</placekey>
+        <placekey>Washington County</placekey>
+      </place>
+    </keywords>
+    <accconst>none</accconst>
+    <useconst>none</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper>Jamie Jones</cntper>
+          <cntorg>U.S. Geological Survey</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>physical</addrtype>
+          <address>350 North Akron Road</address>
+          <city>Moffett Field</city>
+          <state>CA</state>
+          <postal>94035</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>650-439-2425</cntvoice>
+        <cntemail>jamiejones@usgs.gov</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <datacred>Patrick Barnard, USGS Pacific Coastal and Marine Science Center</datacred>
+    <crossref>
+      <citeinfo>
+        <origin>Jeanne M. Jones</origin>
+        <origin>Kevin Henry</origin>
+        <origin>Nathan Wood</origin>
+        <origin>Peter Ng</origin>
+        <origin>Matthew Jamieson</origin>
+        <pubdate>201712</pubdate>
+        <title>HERA: A dynamic web application for visualizing community exposure to flood hazards based on storm and sea level rise scenarios</title>
+        <geoform>publication</geoform>
+        <serinfo>
+          <sername>Computers and Geosciences</sername>
+          <issue>vol. 109</issue>
+        </serinfo>
+        <pubinfo>
+          <pubplace>n/a</pubplace>
+          <publish>Elsevier BV</publish>
+        </pubinfo>
+        <othercit>ppg. 124-133</othercit>
+        <onlink>https://doi.org/10.1016/j.cageo.2017.08.012</onlink>
+      </citeinfo>
+    </crossref>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>Data inputs are mostly publicly available data sets (descriptions and links available below) and the attribute accuracy is considered the domain of the data steward and accepted as accurate for these purposes.</attraccr>
+    </attracc>
+    <logic>The flood hazard layers consist of 28 overall combinations for 4 storm scenarios of Daily, Annual, 20-year, 100-year (0, 1, 20, 100) combined with sea level rise at 0, 25, 50, 100, 150, 200, and 300 cm. To assess computational accuracy, test scenarios were chosen and manually checked against numbers calculated by an automated data processing procedure using python code.  Results were checked at 3 levels: raw data values as extracted during processing, exposure attributes and percentages as calculated according to prescribed formulas, and exposure numbers appearing on the web application graphics. The 4 main exposure variables are resident population, economics, land cover, and infrastructure, and each main category has multiple sub-categories.  Each exposure variable and its sub-categories were calculated by hand and the results were compared against the software-generated tables of the raw data and calculated values.  The same values were also compared against the values reported in the web application graphics.  During the automated processing, the data went through a cleaning step to smooth out any decreases that occur within a storm scenario as sea level rise increases (due to the complexities of future climate modeling).  The manual testing did not perform the data cleaning step but instead flagged it for review of the cleaning process.  The QA/QC test for a variable was considered to pass if the hand-calculated and auto-calculated values agreed with less than 1% difference.  All tests passed this required criteria.</logic>
+    <complete>Data set is considered complete for the information presented, as described in the abstract. Users are advised to read the rest of the metadata record carefully for additional details.</complete>
+    <posacc>
+      <horizpa>
+        <horizpar>No formal positional accuracy tests were conducted</horizpar>
+      </horizpa>
+      <vertacc>
+        <vertaccr>No formal positional accuracy tests were conducted</vertaccr>
+      </vertacc>
+    </posacc>
+    <lineage>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Census Bureau</origin>
+            <pubdate>2020</pubdate>
+            <title>U.S. Census TIGER/Line</title>
+            <geoform>Polygons</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Census Bureau</publish>
+            </pubinfo>
+            <onlink>https://data.census.gov/cedsci/?intcmp=aff_cedsci_banner</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Vector shapefiles</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200101</begdate>
+              <enddate>20220502</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>U.S. Census TIGER</srccitea>
+        <srccontr>Boundary outlines</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Census Bureau</origin>
+            <pubdate>2020</pubdate>
+            <title>U.S. Census Demographic and Housing Estimates</title>
+            <geoform>polygons</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Census</publish>
+            </pubinfo>
+            <onlink>https://data.census.gov/cedsci/?intcmp=aff_cedsci_banner</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefiles</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200101</begdate>
+              <enddate>20220502</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>Census demographics</srccitea>
+        <srccontr>Demographic data source</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Data Axle (previously Infogroup)</origin>
+            <pubdate>2020</pubdate>
+            <title>Infogroup 2020 Employer Database</title>
+            <geoform>excel files</geoform>
+            <pubinfo>
+              <pubplace>Papillion, NE</pubplace>
+              <publish>Infogroup</publish>
+            </pubinfo>
+            <onlink>https://www.data-axle.com/</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>tabular data</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200527</begdate>
+              <enddate>20200601</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>Infogroup</srccitea>
+        <srccontr>Employee counts and business sectors</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>HIFLD Secure Data Portal</origin>
+            <pubdate>2021</pubdate>
+            <title>Parcel boundaries and values by state and county</title>
+            <geoform>polygons</geoform>
+            <pubinfo>
+              <pubplace>Washington, DC</pubplace>
+              <publish>U.S. Department of Homeland Security</publish>
+            </pubinfo>
+            <othercit>The HIFLD Secure Data Portal is not publicly accessible on the web</othercit>
+            <onlink>none</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200701</begdate>
+              <enddate>20210630</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>parcel boundaries</srccitea>
+        <srccontr>parcel outlines</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Multi-Resolution Land Characteristics Consortium</origin>
+            <pubdate>2019</pubdate>
+            <title>National Land Cover Database</title>
+            <geoform>30-meter grid cells with categorical data</geoform>
+            <pubinfo>
+              <pubplace>Sioux Falls, SD</pubplace>
+              <publish>U.S. Geological Survey</publish>
+            </pubinfo>
+            <onlink>https://www.mrlc.gov/data?f%5B0%5D=category%3Aland%20cover</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>raster dataset</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20190101</begdate>
+              <enddate>20191231</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>land cover</srccitea>
+        <srccontr>base data for land cover type estimates</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Oak Ridge National Laboratory and National Geospatial-Intelligence Agency Homeland Security Infrastructure Program Team</origin>
+            <pubdate>2021</pubdate>
+            <title>Police stations</title>
+            <geoform>point data</geoform>
+            <pubinfo>
+              <pubplace>Washington D.C.</pubplace>
+              <publish>U.S. Department of Homeland Security</publish>
+            </pubinfo>
+            <onlink>https://hifld-geoplatform.opendata.arcgis.com/datasets/local-law-enforcement-locations</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector data</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20210101</begdate>
+              <enddate>20210716</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>police stations</srccitea>
+        <srccontr>locations of police stations</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>National Map viewer web page</origin>
+            <pubdate>2022</pubdate>
+            <title>fire stations</title>
+            <geoform>point data</geoform>
+            <pubinfo>
+              <pubplace>Washington D.C.</pubplace>
+              <publish>U.S. Geological Survey</publish>
+            </pubinfo>
+            <onlink>https://apps.nationalmap.gov/downloader/#/</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector data</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20220101</begdate>
+              <enddate>20220502</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>fire stations</srccitea>
+        <srccontr>locations of fire stations</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>North Carolina Department of Public Instruction</origin>
+            <pubdate>2018</pubdate>
+            <title>Public Schools</title>
+            <geoform>point data</geoform>
+            <pubinfo>
+              <pubplace>Raleigh, NC</pubplace>
+              <publish>North Carolina Department of Public Instruction, NC OneMap web page</publish>
+            </pubinfo>
+            <onlink>https://www.nconemap.gov/datasets/public-schools/explore?location=35.181979%2C-79.904250%2C7.97.</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector data</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20180831</begdate>
+              <enddate>20211013</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>Schools</srccitea>
+        <srccontr>public school locations</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>North Carolina Division of Non-Public Education</origin>
+            <pubdate>2017</pubdate>
+            <title>Private Schools</title>
+            <geoform>point data</geoform>
+            <pubinfo>
+              <pubplace>Raleigh, NC</pubplace>
+              <publish>North Carolina Department of Administration, NC OneMap web page</publish>
+            </pubinfo>
+            <onlink>https://www.nconemap.gov/datasets/non-public-schools/explore?location=35.144458%2C-79.871150%2C8.00.</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector data</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20170831</begdate>
+              <enddate>20211013</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>Schools-private</srccitea>
+        <srccontr>private school locations</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>North Carolina Division of Public Health</origin>
+            <pubdate>2020</pubdate>
+            <title>Health care facilities</title>
+            <geoform>point data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Raleigh, NC</pubplace>
+              <publish>North Carolina Department of Health and Human Services, NC OneMap web page</publish>
+            </pubinfo>
+            <onlink>https://www.nconemap.gov/datasets/hospitals/explore?location=35.170093%2C-79.822344%2C8.02</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200101</begdate>
+              <enddate>20211013</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>health care facilities</srccitea>
+        <srccontr>health care facility types and location</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>HERE</origin>
+            <pubdate>2021</pubdate>
+            <title>Roads by state</title>
+            <geoform>line data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Department of Homeland Security, Homeland Infrastructure Foundation-Level Data Secure and Licensed program</publish>
+            </pubinfo>
+            <othercit>The HIFLD Secure Data Portal is not publicly accessible on the web</othercit>
+            <onlink>none</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20210101</begdate>
+              <enddate>20220429</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>roads</srccitea>
+        <srccontr>roads locations and length</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Federal Rail Administration</origin>
+            <pubdate>2021</pubdate>
+            <title>Railroads</title>
+            <geoform>line data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Department of Homeland Security, Homeland Infrastructure Foundation-Level Data Open program web page</publish>
+            </pubinfo>
+            <onlink>https://hifld-geoplatform.opendata.arcgis.com/datasets/railroads-2</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20210101</begdate>
+              <enddate>20230120</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>railroads</srccitea>
+        <srccontr>rail locations and length</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Environmental Protection Agency Office of Water</origin>
+            <pubdate>2016</pubdate>
+            <title>Drinking water treatment plants</title>
+            <geoform>point data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Department of Homeland Security, Homeland Infrastructure Foundation-Level Data Secure and Licensed program web page</publish>
+            </pubinfo>
+            <othercit>The HIFLD Secure Data Portal is not publicly accessible on the web</othercit>
+            <onlink>none</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20160101</begdate>
+              <enddate>20210716</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>drinking water treatment plants</srccitea>
+        <srccontr>locations of drinking water treatment plants</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Environmental Protection Agency</origin>
+            <pubdate>2022</pubdate>
+            <title>Wastewater treatment plants</title>
+            <geoform>point data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Environmental Protection Agency Facility Registry Service (FRS)</publish>
+            </pubinfo>
+            <onlink>https://www.epa.gov/frs/geospatial-data-download-service</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20220101</begdate>
+              <enddate>20220211</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>wastewater treatment plants</srccitea>
+        <srccontr>locations of wastewater treatment plants</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Oak Ridge National Laboratory</origin>
+            <pubdate>2020</pubdate>
+            <title>Solid waste landfill facilities</title>
+            <geoform>point data with attributes</geoform>
+            <pubinfo>
+              <pubplace>Washington, D.C.</pubplace>
+              <publish>U.S. Department of Homeland Security, Homeland Infrastructure Foundation-Level Data Open program web page</publish>
+            </pubinfo>
+            <onlink>https://hifld-geoplatform.opendata.arcgis.com/datasets/solid-waste-landfill-facilities</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20200101</begdate>
+              <enddate>20210716</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>solid waste landfill facilities</srccitea>
+        <srccontr>locations of solid waste landfill facilities</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Geological Survey, Pacific Coastal and Marine Science Center</origin>
+            <pubdate>2023</pubdate>
+            <title>Coastal flooding extents</title>
+            <geoform>polygons</geoform>
+            <pubinfo>
+              <pubplace>Santa Cruz, CA</pubplace>
+              <publish>U.S. Geological Survey</publish>
+            </pubinfo>
+            <onlink>https://cmgds.marine.usgs.gov/data-releases/datarelease/10.5066-P9W91314/</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>vector shapefile</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20220101</begdate>
+              <enddate>20230128</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>flood layers</srccitea>
+        <srccontr>hazard boundaries</srccontr>
+      </srcinfo>
+      <procstep>
+        <procdesc>Calculate indicator statistics by entire community for each county and create the comma-separated-value files of the indicator totals.  Examples of total statistics are total number of residents and employees by community. See the HERA data dictionary, Geographic Unit, Community section for a description of community designation.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>For each of the 28 combinations of SLR and storm scenarios the amount of each socioeconomic indicator contained within the flood extent polygons was calculated following the methodology presented in Jones et al., 2017 and briefly outlined in the steps below.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>All geospatial data were imported into an ArcGIS geodatabase and reprojected into a common datum and projection.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Each flood hazard polygon was clipped by the county boundaries that were within the hazard extent.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Each socioeconomic indicator data set was clipped by the county boundaries that were within the hazard extent.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Each socioeconomic indicator data set was clipped again to the extent of the flood hazard polygons for each county.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>The attribute data for each socioeconomic indicator was extracted from the clipped data set. The methodology in Jones et al., 2017 describes the process for extracting attribute values from polygons that are partially within the hazard extent.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>The attribute data are aggregated for each indicator by community. Portions of communities that are not within the flood model boundary are not taken into account.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Total and percentage statistics are calculated for each attribute according to the formulas in the data dictionary.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Comma-separated-value files of the statistics are generated by community and county.</procdesc>
+        <procdate>20200401</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <spdoinfo>
+    <direct>Point</direct>
+  </spdoinfo>
+  <eainfo>
+    <overview>
+      <eaover>A data dictionary defining the file naming conventions, data fields, and calculations used to generate these data is available at the website listed here.</eaover>
+      <eadetcit>U.S. Geological Survey. Community Vulnerability Data Dictionary. Version 4.0 (Feb 02, 2023). https://www.usgs.gov/apps/hera, click on the Coastal Flooding Launch button, select any Place and any Asset to open the Dashboard, select View Data Table, click on 'Data Dictionary' link</eadetcit>
+    </overview>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntper>Jamie Jones</cntper>
+          <cntorg>U.S. Geological Survey</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>physical</addrtype>
+          <address>350 North Akron Road</address>
+          <city>Moffett Field</city>
+          <state>CA</state>
+          <postal>94035</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>650-439-2425</cntvoice>
+        <cntemail>jamiejones@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>This interactive mapping tool, including its data and other information ("tool and data") are provided for informational purposes. The tool and data are not for the purpose of providing advice or guidance on issues or activities related to its content including, but not limited to, navigation, investment, development or permitting. The tool and data are based on model simulations, which are subject to revision and do not take into account many variables that could have substantial effects on flood extent and depth. Real world results will differ from results of the tool and data. Commercial use of this tool and data are prohibited. The tool and data are provided "as is" without any representations or warranties as to their accuracy, completeness, performance, merchantability, or fitness for a particular purpose. The entire risk associated with the results and performance of the tool and data is assumed by the user. The U.S. Geological Survey, and all their partners shall not be responsible or liable to you for any loss or damage of any sort incurred in connection with your use of the tool and data.</distliab>
+    <stdorder>
+      <digform><digtinfo>
+          <formname>Web application</formname>
+          <formvern>None</formvern>
+          <formspec>comma-separated value (CSV) text files</formspec>
+          <formcont>None</formcont>
+        </digtinfo>
+        <digtopt><onlinopt><computer><networka><networkr>www.usgs.gov/apps/hera</networkr></networka></computer></onlinopt></digtopt></digform>
+      <fees>None</fees>
+    </stdorder>
+    <techpreq>None</techpreq>
+  </distinfo>
+  <metainfo>
+    <metd>20201102</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Jeanne M. Jones</cntper>
+          <cntorg>U.S. Geological Survey</cntorg>
+        </cntperp>
+        <cntpos>Geographer</cntpos>
+        <cntaddr>
+          <addrtype>physical</addrtype>
+          <address>350 North Akron Road</address>
+          <city>Moffett Field</city>
+          <state>CA</state>
+          <postal>94035</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>650-439-2635</cntvoice>
+        <cntemail>jmjones@usgs.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>
