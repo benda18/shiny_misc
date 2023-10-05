@@ -37,7 +37,7 @@ if(!actualT.dl){
 }
 
 #  import tornado data----
-from.yr <- 2007
+from.yr <- 1990
 
 allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
   .[.$yr >= from.yr,]
@@ -57,11 +57,11 @@ tigris_co_geo <- tigris::counties(cb = T) %>%
   sf::st_simplify() %>%
   .[!colnames(.) %in% c("ALAND", "AWATER", "LSAD", "AFFGEOID", "STATE_NAME")]
 
-save(tigris_st_geo, 
-     tigris_co_geo, 
-     allT, 
-     actualT,
-     file = "tornado.RData")
+# save(tigris_st_geo, 
+#      tigris_co_geo, 
+#      allT, 
+#      actualT,
+#      file = "tornado.RData")
 
 # save to shiny dir
 setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")

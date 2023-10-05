@@ -1,8 +1,9 @@
 library(shiny)
 library(dplyr)
-library(readr)
+#library(readr)
 library(lubridate)
-library(tigris)
+#library(tigris)
+library(ggplot2)
 
 
 
@@ -18,7 +19,17 @@ ui <- fluidPage(
   # Sidebar 
   sidebarLayout(
     sidebarPanel(
+      fluidRow(
+        column(12,
+               shiny::sliderInput(inputId = "sel_year", 
+                                   label   = "Filter Year(s)", 
+                                   value   = c(min(allT$yr),max(allT$yr)), 
+                                   min     = min(allT$yr), 
+                                   max     = max(allT$yr), 
+                                  sep = "")
+      )
       
+    )
     ),
     mainPanel(
       
@@ -29,6 +40,13 @@ ui <- fluidPage(
 # SERVER----
 server <- function(input, output) {
   # load data
+  
+  output$plot01 <- shiny::renderPlot({
+    load("tornado.RData")
+    
+    
+  })
+  
   
     
 }
