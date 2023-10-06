@@ -9,20 +9,16 @@ library(ggplot2)
 
 rm(list=ls());cat('\f');gc()
 load("tornado.RData")
-st_co_df <- st_co_df %>% as_tibble() %>%
+cw_co_fips <- cw_co_fips %>% as_tibble() %>%
   mutate(., 
          COUNTYFP = as.numeric(COUNTYFP))
 
 actualT <- left_join(actualT, cw_magnitude) %>% as_tibble()
 
-left_join(actualT, 
-          st_co_df, 
-          by = c("f1" = "COUNTYFP")) %>%
-  left_join(., 
-            st_co_df, 
-            by = c("f2" = "COUNTYFP"))
 
-# TODO - need to somehow join FIPS code for county to actualT and shapefile so we can map select filter
+
+# TODO - need to somehow join FIPS code for county to actualT and shapefile so
+# we can map select filter
 
 
 actualT_segs <- left_join(actualT, cw_magnitude) %>%
@@ -89,7 +85,7 @@ server <- function(input, output, session) {
     
     # if only one state is selected
     if(length(obs_sel.states) == 1){
-      show.counties <- st_co_df[st_co_df$STUSPS == obs_sel.states,]$COUNTY
+      show.counties <- cw_co_fips[cw_co_fips$STUSPS == obs_sel.states,]$COUNTY
     }else{
       show.counties <- 'N/A'
     }
