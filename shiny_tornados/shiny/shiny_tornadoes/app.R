@@ -26,6 +26,12 @@ actualT_pts <- actualT %>%
   .[.$slon == 0 | .$elon == 0,] %>%
   mutate(., uid_om.yr.st = paste(om,yr,st, sep = "-"))
 
+
+# vars----
+var.pointsize <- 0.1
+var.pointcolor <- "black"
+
+
 # UI----
 ui <- fluidPage(
   
@@ -98,7 +104,7 @@ server <- function(input, output, session) {
                       inputId = "sel_counties", 
                       label   = "Select Count(y/ies)", 
                       choices = show.counties.choices, 
-                      selected = show.counties.choices)
+                      selected = first(show.counties.choices,4)) #show.counties.choices)
     
   })
   
@@ -118,6 +124,7 @@ server <- function(input, output, session) {
             panel.grid = element_blank())+
       scale_x_continuous(name = "") +
       scale_y_continuous(name = "")
+                       
     
     if(length(input$sel_states) == 1){
       a.plot <- a.plot +
@@ -131,22 +138,58 @@ server <- function(input, output, session) {
                                            between(x = actualT_segs$yr, 
                                                    min(input$sel_year), 
                                                    max(input$sel_year)),],
-                     # geom_segment(data = actualT_segs[actualT_segs$st %in% input$sel_states & 
-                     #                                    between(x = actualT_segs$yr, 
-                     #                                            min(input$sel_year), 
-                     #                                            max(input$sel_year)),], 
-                     aes(x = slon, xend = elon, y = slat,  yend = elat))
+                     aes(x = slon, xend = elon, y = slat,  yend = elat)) +
+        geom_point(data = actualT_pts[actualT_pts$uid_om.yr.st %in% var_sel.uids & 
+                                        between(x = actualT_pts$yr,
+                                                min(input$sel_year),
+                                                max(input$sel_year))&
+                                        actualT_pts$slon != 0 & 
+                                        actualT_pts$slat != 0,],
+                   aes(x = slon, 
+                       y = slat), 
+                   size = var.pointsize, 
+                   color = var.pointcolor)+
+        geom_point(data = actualT_pts[actualT_pts$uid_om.yr.st %in% var_sel.uids & 
+                                        between(x = actualT_pts$yr, 
+                                                min(input$sel_year), 
+                                                max(input$sel_year))& 
+                                        actualT_pts$elon != 0 & 
+                                        actualT_pts$elat != 0,],
+                   aes(x = elon, 
+                       y = elat), 
+                   size = var.pointsize, 
+                   color = var.pointcolor)
     }else{
       a.plot <- a.plot + 
         geom_sf(data = tigris_st_geo[tigris_st_geo$STUSPS %in% input$sel_states,], 
                 color = "white", fill = "grey", linewidth = 1)+
-        geom_sf_text(data = tigris_st_geo[tigris_st_geo$STUSPS %in% input$sel_states,], 
+        geom_sf_label(data = tigris_st_geo[tigris_st_geo$STUSPS %in% input$sel_states,], 
                      aes(label = STUSPS), size = 4, color = "darkblue")+
         geom_segment(data = actualT_segs[actualT_segs$st %in% input$sel_states & 
                                            between(x = actualT_segs$yr, 
                                                    min(input$sel_year), 
                                                    max(input$sel_year)),], 
-                     aes(x = slon, xend = elon, y = slat,  yend = elat))
+                     aes(x = slon, xend = elon, y = slat,  yend = elat)) +
+        geom_point(data = actualT_pts[actualT_pts$st %in% input$sel_states & 
+                                        between(x = actualT_pts$yr, 
+                                                min(input$sel_year), 
+                                                max(input$sel_year))& 
+                                        actualT_pts$slon != 0 & 
+                                        actualT_pts$slat != 0,],
+                   aes(x = slon, 
+                       y = slat),
+                   size = var.pointsize, 
+                   color = var.pointcolor)+
+        geom_point(data = actualT_pts[actualT_pts$st %in% input$sel_states & 
+                                        between(x = actualT_pts$yr, 
+                                                min(input$sel_year), 
+                                                max(input$sel_year))& 
+                                        actualT_pts$elon != 0 & 
+                                        actualT_pts$elat != 0,],
+                   aes(x = elon, 
+                       y = elat), 
+                   size = var.pointsize, 
+                   color = var.pointcolor)
         
     }
     
