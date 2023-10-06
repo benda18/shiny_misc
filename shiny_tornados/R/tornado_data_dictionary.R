@@ -3,7 +3,7 @@
 library(dplyr)
 library(readr)
 
-
+# https://www.spc.noaa.gov/wcm/data/SPC_severe_database_description.pdf
 # https://www.spc.noaa.gov/wcm/#data
 rm(list=ls());cat('\f')
 

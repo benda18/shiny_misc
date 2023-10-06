@@ -57,20 +57,92 @@ tigris_co_geo <- tigris::counties(cb = T) %>%
   sf::st_simplify() %>%
   .[!colnames(.) %in% c("ALAND", "AWATER", "LSAD", "AFFGEOID", "STATE_NAME")]
 
-# save(tigris_st_geo, 
-#      tigris_co_geo, 
-#      allT, 
-#      actualT,
-#      file = "tornado.RData")
+tigris_reg_geo <- tigris::regions(year = 2021) %>%
+  sf::st_simplify() %>%
+  .[!colnames(.) %in% c("ALAND", "AWATER", "LSAD", "AFFGEOID", "STATE_NAME")]
+
+cw_magnitude <- data.frame(mag = c(-9,0:5), 
+                           def = c(-1, 0:5))
+
+list("ME", "VT", "RI", 
+     "CT", "NY", "MA", 
+     "PA", "NJ", "NH") %>%
+  .[order(unlist(.))]
+
+reg_st_list <- list("Northeast" = relist(flesh = sort(c("ME", "VT", "RI", 
+                                                        "CT", "NY", "MA", 
+                                                        "PA", "NJ", "NH")), 
+                                         skeleton = list("ME", "VT", "RI", 
+                                                         "CT", "NY", "MA", 
+                                                         "PA", "NJ", "NH")), 
+                    "West"      = relist(flesh = sort(c("WA", #"AK", "HI",
+                                                        "OR", "CA", "NV", 
+                                                        "ID", "MT", "WY", 
+                                                        "UT", "CO", "AZ", 
+                                                        "NM")),
+                                         list("WA", #"AK", "HI",
+                                              "OR", "CA", "NV", 
+                                              "ID", "MT", "WY", 
+                                              "UT", "CO", "AZ", 
+                                              "NM")), 
+                    "Midwest"   = relist(flesh = sort(c("OH", "MI", "IN", 
+                                                        "IL", "MO", "NE", 
+                                                        "IA", "WI", "MN",
+                                                        "ND", "SD", "KS")),
+                                         list("OH", "MI", "IN", 
+                                              "IL", "MO", "NE", 
+                                              "IA", "WI", "MN",
+                                              "ND", "SD", "KS")), 
+                    "South"     = relist(flesh = sort(c("TX", "OK", "AR", 
+                                                        "LA", "MS", "AL", 
+                                                        "GA", "FL", "MD",
+                                                        "TN", "SC", "NC", 
+                                                        "KY", "WV", "VA", 
+                                                        "DE", "DC")),
+                                         list("TX", "OK", "AR", 
+                                              "LA", "MS", "AL", 
+                                              "GA", "FL", "MD",
+                                              "TN", "SC", "NC", 
+                                              "KY", "WV", "VA", 
+                                              "DE", "DC")))
+
+
+
+st_co_df <- tigris_co_geo[,c("STUSPS", "NAME", "COUNTYFP")] %>%
+  sf::st_drop_geometry() 
+colnames(st_co_df)[2] <- "COUNTY"
+
+st_co_df <- st_co_df %>%
+  .[order(.$STUSPS, .$COUNTY),]
+rownames(st_co_df) <- 1:nrow(st_co_df)
 
 # save to shiny dir
 setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")
 save(tigris_st_geo, 
      tigris_co_geo, 
-     allT, 
+     #allT, 
      actualT,
+     cw_magnitude,
+     reg_st_list,
+     st_co_df,
      file = "tornado.RData")
 
+
+
+ggplot() + 
+  geom_sf(data = left_join(tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+                          c("PR", "VI", "HI", "AK", 
+                            "AS", "GU", "MP"),], 
+          cw_tigris_reg, by = "STUSPS"), 
+          aes(fill = NAME.y))
+
+ggplot() + 
+  geom_sf(data =tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+                                c("PR", "VI", "HI", "AK", 
+                                  "AS", "GU", "MP"),])+
+  geom_sf(data = tigris_reg_geo[4,],
+          alpha = 0.2,
+          color = NA, fill = "red")
 
 
 
