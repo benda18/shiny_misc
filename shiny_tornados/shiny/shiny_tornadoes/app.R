@@ -9,9 +9,9 @@ library(ggplot2)
 
 rm(list=ls());cat('\f');gc()
 load("tornado.RData")
-cw_co_fips <- cw_co_fips %>% as_tibble() %>%
-  mutate(., 
-         COUNTYFP = as.numeric(COUNTYFP))
+# cw_co_fips <- cw_co_fips %>% as_tibble() %>%
+#   mutate(., 
+#          COUNTYFP = as.numeric(COUNTYFP))
 
 actualT <- left_join(actualT, cw_magnitude) %>% as_tibble()
 
@@ -85,7 +85,9 @@ server <- function(input, output, session) {
     
     # if only one state is selected
     if(length(obs_sel.states) == 1){
-      show.counties <- cw_co_fips[cw_co_fips$STUSPS == obs_sel.states,]$COUNTY
+      # get the list of counties
+      #show.counties <- cw_co_fips[cw_co_fips$STUSPS == obs_sel.states,]$COUNTY
+      show.counties <- tor.st_co_yr[tor.st_co_yr$st == obs_sel.states,]$COUNTY
     }else{
       show.counties <- 'N/A'
     }

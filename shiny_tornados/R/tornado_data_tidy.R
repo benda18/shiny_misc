@@ -172,12 +172,15 @@ tor.st_co_yr <- rbind(tor.st_co_yr.F1,
   group_by_all() %>%
   summarise()
 
-
-
 rm(tor.st_co_yr.F1, 
    tor.st_co_yr.F2, 
    tor.st_co_yr.F3, 
    tor.st_co_yr.F4)
+
+tor.st_co_yr <- tor.st_co_yr %>%
+  mutate(., 
+         uid_om.yr.st = paste(om,yr,st, sep = "-"))
+
 
 # save to shiny dir
 setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")
@@ -188,6 +191,7 @@ save(tigris_st_geo,
      cw_magnitude,
      reg_st_list,
      #st_co_df,
+     #cw_co_fips,  # use the newer file you created that's better
      tor.st_co_yr,
      file = "tornado.RData")
 
