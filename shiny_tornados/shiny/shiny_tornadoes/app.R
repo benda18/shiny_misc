@@ -9,26 +9,22 @@ library(ggplot2)
 
 rm(list=ls());cat('\f');gc()
 load("tornado.RData")
-st_co_df <- st_co_df %>% as_tibble() %>%
-  mutate(., 
-         COUNTYFP = as.numeric(COUNTYFP))
+# cw_co_fips <- cw_co_fips %>% as_tibble() %>%
+#   mutate(., 
+#          COUNTYFP = as.numeric(COUNTYFP))
 
 actualT <- left_join(actualT, cw_magnitude) %>% as_tibble()
-
-left_join(actualT, 
-          st_co_df, 
-          by = c("f1" = "COUNTYFP")) %>%
-  left_join(., 
-            st_co_df, 
-            by = c("f2" = "COUNTYFP"))
-
-# TODO - need to somehow join FIPS code for county to actualT and shapefile so we can map select filter
-
-
-actualT_segs <- left_join(actualT, cw_magnitude) %>%
-  .[.$slon != 0 & .$elon != 0,]
-actualT_pts <- left_join(actualT, cw_magnitude)
 rm(cw_magnitude)
+
+# TODO - need to somehow join FIPS code for county to actualT and shapefile so
+# we can map select filter
+
+actualT_segs <- actualT %>%
+  .[.$slon != 0 & .$elon != 0,] %>%
+  mutate(., uid_om.yr.st = paste(om,yr,st, sep = "-")) 
+actualT_pts <- actualT %>%
+  .[.$slon == 0 | .$elon == 0,] %>%
+  mutate(., uid_om.yr.st = paste(om,yr,st, sep = "-"))
 
 # UI----
 ui <- fluidPage(
@@ -84,25 +80,35 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   observe({
+    
+    # STATES
     # observe what states are selected
     obs_sel.states <- input$sel_states
     
     # if only one state is selected
     if(length(obs_sel.states) == 1){
-      show.counties <- st_co_df[st_co_df$STUSPS == obs_sel.states,]$COUNTY
+      # get the list of counties
+      #show.counties <- cw_co_fips[cw_co_fips$STUSPS == obs_sel.states,]$COUNTY
+      show.counties.choices <- tor.st_co_yr[tor.st_co_yr$st == obs_sel.states,]$COUNTY
     }else{
-      show.counties <- 'N/A'
+      show.counties.choices <- 'N/A'
     }
     
     updateSelectInput(session = session, 
                       inputId = "sel_counties", 
                       label   = "Select Count(y/ies)", 
-                      choices = show.counties, 
-                      selected = show.counties)
+                      choices = show.counties.choices, 
+                      selected = show.counties.choices)
     
   })
   
   output$plot01 <- shiny::renderPlot({
+    
+    var_sel.uids   <- tor.st_co_yr[tor.st_co_yr$st %in% input$sel_states & 
+                                     tor.st_co_yr$COUNTY %in% input$sel_counties,]$uid_om.yr.st %>%
+      unique()
+    
+    
     a.plot <- ggplot() + 
       theme(axis.ticks = element_blank(), 
             axis.text = element_blank(), 
@@ -121,11 +127,14 @@ server <- function(input, output, session) {
         geom_sf_text(data = tigris_co_geo[tigris_co_geo$STUSPS %in% input$sel_states & 
                                             tigris_co_geo$NAME %in% input$sel_counties,], 
                      aes(label = NAME), size = 2, color = "white")+
-        geom_segment(data = actualT_segs[actualT_segs$st %in% input$sel_states & 
-                                           
+        geom_segment(data = actualT_segs[actualT_segs$uid_om.yr.st %in% var_sel.uids & 
                                            between(x = actualT_segs$yr, 
                                                    min(input$sel_year), 
-                                                   max(input$sel_year)),], 
+                                                   max(input$sel_year)),],
+                     # geom_segment(data = actualT_segs[actualT_segs$st %in% input$sel_states & 
+                     #                                    between(x = actualT_segs$yr, 
+                     #                                            min(input$sel_year), 
+                     #                                            max(input$sel_year)),], 
                      aes(x = slon, xend = elon, y = slat,  yend = elat))
     }else{
       a.plot <- a.plot + 

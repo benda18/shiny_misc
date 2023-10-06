@@ -108,13 +108,79 @@ reg_st_list <- list("Northeast" = relist(flesh = sort(c("ME", "VT", "RI",
 
 
 
-st_co_df <- tigris_co_geo[,c("STUSPS", "NAME", "COUNTYFP")] %>%
+cw_co_fips <- tigris_co_geo[,c("STUSPS", "NAME", "COUNTYFP")] %>%
   sf::st_drop_geometry() 
-colnames(st_co_df)[2] <- "COUNTY"
+colnames(cw_co_fips)[2] <- "COUNTY"
 
-st_co_df <- st_co_df %>%
-  .[order(.$STUSPS, .$COUNTY),]
-rownames(st_co_df) <- 1:nrow(st_co_df)
+cw_co_fips <- cw_co_fips %>%
+  .[order(.$STUSPS, .$COUNTY),] %>%
+  mutate(., 
+         COUNTYFP = as.numeric(COUNTYFP))
+rownames(cw_co_fips) <- 1:nrow(cw_co_fips)
+
+# make a df of om <---> f1/f2/f3/f4
+
+tor.st_co_yr.F1 <- actualT %>%
+  group_by(om,yr,st,f1) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f1" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F2 <- actualT %>%
+  group_by(om,yr,st,f2) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f2" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F3 <- actualT %>%
+  group_by(om,yr,st,f3) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f3" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F4 <- actualT %>%
+  group_by(om,yr,st,f4) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f4" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+colnames(tor.st_co_yr.F1)[4] <- "co_fips"
+colnames(tor.st_co_yr.F2)[4] <- "co_fips"
+colnames(tor.st_co_yr.F3)[4] <- "co_fips"
+colnames(tor.st_co_yr.F4)[4] <- "co_fips"
+
+tor.st_co_yr <- rbind(tor.st_co_yr.F1, 
+                      tor.st_co_yr.F2, 
+                      tor.st_co_yr.F3, 
+                      tor.st_co_yr.F4) %>%
+  group_by_all() %>%
+  summarise()
+
+rm(tor.st_co_yr.F1, 
+   tor.st_co_yr.F2, 
+   tor.st_co_yr.F3, 
+   tor.st_co_yr.F4)
+
+tor.st_co_yr <- tor.st_co_yr %>%
+  mutate(., 
+         uid_om.yr.st = paste(om,yr,st, sep = "-"))
+
 
 # save to shiny dir
 setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")
@@ -124,7 +190,9 @@ save(tigris_st_geo,
      actualT,
      cw_magnitude,
      reg_st_list,
-     st_co_df,
+     #st_co_df,
+     #cw_co_fips,  # use the newer file you created that's better
+     tor.st_co_yr,
      file = "tornado.RData")
 
 
