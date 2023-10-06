@@ -4,6 +4,7 @@ library(dplyr)
 library(lubridate)
 #library(tigris)
 library(ggplot2)
+library(scales)
 
 
 
@@ -16,7 +17,9 @@ load("tornado.RData")
 actualT <- left_join(actualT, cw_magnitude) %>% 
   as_tibble() %>%
   mutate(., 
-         aes_color = loss)
+         aes_color = loss, 
+         inj = oob_censor(x = inj, range = c(1,NA)), 
+         fat = oob_censor(x = fat, range = c(1,NA)))
 rm(cw_magnitude)
 
 # TODO - need to somehow join FIPS code for county to actualT and shapefile so
@@ -143,8 +146,8 @@ server <- function(input, output, session) {
                       inputId = "sel_counties", 
                       label   = "Select Count(y/ies)", 
                       choices = show.counties.choices, 
-                      selected = first(show.counties.choices,4)) #show.counties.choices)
-    
+                      selected = show.counties.choices) #first(show.counties.choices,4)) 
+ 
   })
   
   output$plot01 <- shiny::renderPlot({

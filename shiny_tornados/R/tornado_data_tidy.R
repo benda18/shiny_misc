@@ -15,6 +15,7 @@ all.subdirs <- list.dirs( recursive = F) %>%
 
 # data_url----
 
+
 #url_allT_1950.2022    <- "https://www.spc.noaa.gov/wcm/data/1950-2022_all_tornadoes.csv"
 url_actualT_1950.2022 <- "https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv"
 
@@ -37,7 +38,7 @@ if(!actualT.dl){
 }
 
 #  import tornado data----
-from.yr <- 1950
+from.yr <- 2008
 
 # allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
 #   .[.$yr >= from.yr,]
