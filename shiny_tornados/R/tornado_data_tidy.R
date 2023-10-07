@@ -15,21 +15,22 @@ all.subdirs <- list.dirs( recursive = F) %>%
 
 # data_url----
 
-url_allT_1950.2022    <- "https://www.spc.noaa.gov/wcm/data/1950-2022_all_tornadoes.csv"
+
+#url_allT_1950.2022    <- "https://www.spc.noaa.gov/wcm/data/1950-2022_all_tornadoes.csv"
 url_actualT_1950.2022 <- "https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv"
 
 # check if data is already downloaded----
 setwd(grep("/data$", all.subdirs, ignore.case = F, value = T))
-allT.dl <- "1950-2022_all_tornadoes.csv" %in% list.files()
+#allT.dl <- "1950-2022_all_tornadoes.csv" %in% list.files()
 actualT.dl <- "1950-2022_actual_tornadoes.csv" %in% list.files()
 
 # if data is not already downloaded, download it----
-if(!allT.dl){
-  print("not DL yet")
-  download.file(url = url_allT_1950.2022, 
-                destfile = "1950-2022_all_tornadoes.csv")
-  
-}
+# if(!allT.dl){
+#   print("not DL yet")
+#   download.file(url = url_allT_1950.2022, 
+#                 destfile = "1950-2022_all_tornadoes.csv")
+#   
+# }
 
 if(!actualT.dl){
   download.file(url = url_actualT_1950.2022, 
@@ -37,10 +38,10 @@ if(!actualT.dl){
 }
 
 #  import tornado data----
-from.yr <- 1990
+from.yr <- 2008
 
-allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
-  .[.$yr >= from.yr,]
+# allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
+#   .[.$yr >= from.yr,]
 actualT <- read_csv("1950-2022_actual_tornadoes.csv") %>%
   .[.$yr >= from.yr,]
 
@@ -197,22 +198,22 @@ save(tigris_st_geo,
 
 
 
-ggplot() + 
-  geom_sf(data = left_join(tigris_st_geo[!tigris_st_geo$STUSPS %in% 
-                          c("PR", "VI", "HI", "AK", 
-                            "AS", "GU", "MP"),], 
-          cw_tigris_reg, by = "STUSPS"), 
-          aes(fill = NAME.y))
-
-ggplot() + 
-  geom_sf(data =tigris_st_geo[!tigris_st_geo$STUSPS %in% 
-                                c("PR", "VI", "HI", "AK", 
-                                  "AS", "GU", "MP"),])+
-  geom_sf(data = tigris_reg_geo[4,],
-          alpha = 0.2,
-          color = NA, fill = "red")
-
-
+# ggplot() + 
+#   geom_sf(data = left_join(tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+#                           c("PR", "VI", "HI", "AK", 
+#                             "AS", "GU", "MP"),], 
+#           cw_tigris_reg, by = "STUSPS"), 
+#           aes(fill = NAME.y))
+# 
+# ggplot() + 
+#   geom_sf(data =tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+#                                 c("PR", "VI", "HI", "AK", 
+#                                   "AS", "GU", "MP"),])+
+#   geom_sf(data = tigris_reg_geo[4,],
+#           alpha = 0.2,
+#           color = NA, fill = "red")
+# 
+# 
 
 # shiny outline----
 
