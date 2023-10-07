@@ -17,9 +17,13 @@ load("tornado.RData")
 actualT <- left_join(actualT, cw_magnitude) %>% 
   as_tibble() %>%
   mutate(., 
-         aes_color = loss, 
          inj = oob_censor(x = inj, range = c(1,NA)), 
-         fat = oob_censor(x = fat, range = c(1,NA)))
+         fat = oob_censor(x = fat, range = c(1,NA)), 
+         loss = oob_censor(x = loss, range = c(1000,NA)), 
+         closs = oob_censor(x = closs, range = c(1000,NA)), 
+         def   = oob_censor(x = def, range = c(1,NA)),
+         #aes_linewidth = loss,
+         aes_color = loss)
 rm(cw_magnitude)
 
 # TODO - need to somehow join FIPS code for county to actualT and shapefile so
@@ -81,9 +85,9 @@ ui <- fluidPage(
       fluidRow(column(12, 
                shiny::sliderInput(inputId = "sel_magnitude", 
                                   label   = "Select Magnitude Range", 
-                                  value   = c(min(actualT$def),max(actualT$def)), 
-                                  min     = min(actualT$def), 
-                                  max     = max(actualT$def), 
+                                  value   = c(min(actualT$def,na.rm=T),max(actualT$def,na.rm=T)), 
+                                  min     = min(actualT$def,na.rm=T), 
+                                  max     = max(actualT$def,na.rm=T), 
                                   sep = "", 
                                   ticks = T))), 
       h3(HTML(r'(<b>AESTHETICS:</b>)')),
@@ -106,25 +110,7 @@ ui <- fluidPage(
 # SERVER----
 server <- function(input, output, session) {
   
-  # observe({
-  #   # create an observe session where you create and update the
-  #   # actualT$aes_color var to match whatever the radioButton value is
-  #   
-  #   # # observe radioButton "radio_color" states
-  #   # obs_radio.color_states <- input$radio_color
-  #   
-  #   # # for SEGMENTS
-  #   # actualT_segs$aes_color <- select(actualT_segs, 
-  #   #                                  input$radio_color) %>% 
-  #   #   unlist() %>% 
-  #   #   unname()
-  #   # 
-  #   # # for POINTS
-  #   # actualT_pts$aes_color <- select(actualT_pts, 
-  #   #                                 input$radio_color) %>% 
-  #   #   unlist() %>% 
-  #   #   unname()
-  # })
+  
   
   
   observe({
@@ -137,7 +123,8 @@ server <- function(input, output, session) {
     if(length(obs_sel.states) == 1){
       # get the list of counties
       #show.counties <- cw_co_fips[cw_co_fips$STUSPS == obs_sel.states,]$COUNTY
-      show.counties.choices <- tor.st_co_yr[tor.st_co_yr$st == obs_sel.states,]$COUNTY
+      #show.counties.choices <- tor.st_co_yr[tor.st_co_yr$st == obs_sel.states,]$COUNTY
+      show.counties.choices <- tigris_co_geo$NAME[tigris_co_geo$STUSPS == obs_sel.states]
     }else{
       show.counties.choices <- 'N/A'
     }
@@ -157,13 +144,15 @@ server <- function(input, output, session) {
       unique()
     
     # for SEGMENTS
-    actualT_segs$aes_color <- select(actualT_segs, 
+    #actualT_segs$aes_linewidth <- 
+      actualT_segs$aes_color <- select(actualT_segs, 
                                      input$radio_color) %>% 
       unlist() %>% 
       unname()
     
     # for POINTS
-    actualT_pts$aes_color <- select(actualT_pts, 
+    #actualT_pts$aes_linewidth <-
+      actualT_pts$aes_color <- select(actualT_pts, 
                                     input$radio_color) %>% 
       unlist() %>% 
       unname()
@@ -192,6 +181,7 @@ server <- function(input, output, session) {
                                                    min(input$sel_year), 
                                                    max(input$sel_year)),],
                      aes(x = slon, xend = elon, y = slat,  yend = elat, 
+                         #linewidth = aes_linewidth, 
                          color = aes_color)) +
         geom_point(data = actualT_pts[actualT_pts$uid_om.yr.st %in% var_sel.uids & 
                                         between(x = actualT_pts$yr,
@@ -201,6 +191,7 @@ server <- function(input, output, session) {
                                         actualT_pts$slat != 0,],
                    aes(x = slon, 
                        y = slat, 
+                       #size = aes_linewidth, 
                        color = aes_color), 
                    size = var.pointsize)+
         geom_point(data = actualT_pts[actualT_pts$uid_om.yr.st %in% var_sel.uids & 
@@ -211,8 +202,13 @@ server <- function(input, output, session) {
                                         actualT_pts$elat != 0,],
                    aes(x = elon, 
                        y = elat, 
+                       #size = aes_linewidth, 
                        color = aes_color), 
-                   size = var.pointsize)
+                   size = var.pointsize) +
+        coord_sf(xlim = attributes(tigris_co_geo[tigris_co_geo$STUSPS %in% input$sel_states & 
+                                        tigris_co_geo$NAME %in% input$sel_counties,])$bbox[c("xmin,xmax")], 
+                 ylim = NULL, 
+                 clip = "on")
     }else{
       a.plot <- a.plot + 
         geom_sf(data = tigris_st_geo[tigris_st_geo$STUSPS %in% input$sel_states,], 
@@ -224,6 +220,7 @@ server <- function(input, output, session) {
                                                    min(input$sel_year), 
                                                    max(input$sel_year)),], 
                      aes(x = slon, xend = elon, y = slat,  yend = elat, 
+                         #linewidth = aes_linewidth, 
                          color = aes_color)) +
         geom_point(data = actualT_pts[actualT_pts$st %in% input$sel_states & 
                                         between(x = actualT_pts$yr, 
@@ -233,6 +230,7 @@ server <- function(input, output, session) {
                                         actualT_pts$slat != 0,],
                    aes(x = slon, 
                        y = slat, 
+                       #size = aes_linewidth, 
                        color = aes_color),
                    size = var.pointsize)+
         geom_point(data = actualT_pts[actualT_pts$st %in% input$sel_states & 
@@ -243,6 +241,7 @@ server <- function(input, output, session) {
                                         actualT_pts$elat != 0,],
                    aes(x = elon, 
                        y = elat, 
+                       #size = aes_linewidth, 
                        color = aes_color), 
                    size = var.pointsize)
         
