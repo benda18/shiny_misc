@@ -1271,7 +1271,7 @@ SOURCER Eighteenth source of information
 Format: A40" }
 
 # cw_county_ship_register----
-cw_county_ship_register <- {data.frame(value = c(3,6,7,8,9,10,15,30), 
+cw_country_ship_register <- {data.frame(value = c(3,6,7,8,9,10,15,30), 
                                        val_def = c("Spain/Uruguay", 
                                                    "Portugal/Brazil", 
                                                    "Great Britain", 
@@ -1279,7 +1279,8 @@ cw_county_ship_register <- {data.frame(value = c(3,6,7,8,9,10,15,30),
                                                    "U.S.A.", 
                                                    "France",
                                                    "Denmark/Baltic", 
-                                                   "Other"))}
+                                                   "Other"), 
+                                       cw_cat = "cw_country_ship_register")}
 
 #cw_imp_yoyage.itinerary----
 cw_imp_yoyage.itinerary <- NULL
@@ -2461,7 +2462,7 @@ setwd(wd$cw)
 
 write_csv(cw_broad.regions, "cw_broad.regions.csv")
 write_csv(cw_captain.crew, "cw_captain.crew.csv")
-write_csv(cw_county_ship_register,"cw_county_ship_register.csv")
+write_csv(cw_country_ship_register,"cw_country_ship_register.csv")
 write_csv(cw_imp_slaves.numbers,"cw_imp_slaves.numbers.csv")
 write_csv(cw_imp_voyage.dates,"cw_imp_voyage.dates.csv")
 write_csv(cw_imp_yoyage.itinerary,"cw_imp_yoyage.itinerary.csv")
