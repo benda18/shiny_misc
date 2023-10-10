@@ -16,13 +16,13 @@ gc()
 # funs----
 
 # wd----
-wd <- list(home = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade", 
+wd <- {list(home = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade", 
            data = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade/data", 
            output = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade/output",
            R = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade/R", 
            shiny = NA, 
            cw = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_intraamerican_slave_trade/crosswalks")
-
+}
 setwd(wd$R)
 
 # vars----
@@ -338,6 +338,7 @@ if(!"cw_fate5.csv" %in% list.files()){
 
 # cw_voyage.itinerary----
 cw_voyage.itinerary <- NULL
+
 cw_voyage.itinerary$colnames <- {"PORTDEP Port of departure
 Format: F5
 EMBPORT First intended port of embarkation
@@ -402,9 +403,10 @@ MAJSELPT Principal port of slave disembarkation
 Format: F5" %>% 
   read_lines() %>%
   .[!grepl("^Format: ", .)] %>%
-  gsub(" .*$", "", .)}
-
-cw_voyage.itinerary$val_def <- {"PORTDEP Port of departure
+  gsub(" .*$", "", .)
+  }
+cw_voyage.itinerary$val_def <- {
+"PORTDEP Port of departure
 Format: F5
 EMBPORT First intended port of embarkation
 Format: F5
@@ -471,7 +473,6 @@ Format: F5" %>%
   gsub(pattern =  paste("^", cw_voyage.itinerary$colnames, sep = "|", collapse = "|"), 
        replacement = "", x = .) %>%
   trimws()}
-
 cw_voyage.itinerary <- as.data.frame.list(cw_voyage.itinerary)
 cw_voyage.itinerary$cw_cat <- "voyage.itinerary"
 
@@ -1283,7 +1284,7 @@ cw_county_ship_register <- {data.frame(value = c(3,6,7,8,9,10,15,30),
 #cw_imp_yoyage.itinerary----
 cw_imp_yoyage.itinerary <- NULL
 
-cw_imp_yoyage.itinerary$value <- "PTDEPIMP Imputed port where voyage began
+cw_imp_yoyage.itinerary$value <- {"PTDEPIMP Imputed port where voyage began
 Format: F5
 MJBYPTIMP Imputed principal place of slave purchase
 Format: F5
@@ -1301,9 +1302,8 @@ Format: F5"  %>% read_lines %>%
   gsub(" Imputed", "_Imputed", .) %>%
   strsplit(., "_") %>%
     lapply(., first) %>%
-    unlist()
-
-cw_imp_yoyage.itinerary$def <- "PTDEPIMP Imputed port where voyage began
+    unlist()}
+cw_imp_yoyage.itinerary$def <- {"PTDEPIMP Imputed port where voyage began
 Format: F5
 MJBYPTIMP Imputed principal place of slave purchase
 Format: F5
@@ -1321,12 +1321,12 @@ Format: F5"  %>% read_lines %>%
   gsub(" Imputed", "_Imputed", .) %>%
   strsplit(., "_") %>%
   lapply(., last) %>%
-  unlist()
+  unlist()}
 cw_imp_yoyage.itinerary <- as.data.frame.list(cw_imp_yoyage.itinerary)
 cw_imp_yoyage.itinerary$cat <- "cw_imp_yoyage.itinerary"
 
 # cw_imp_voyage.dates----
-cw_imp_voyage.dates <- "YEARDEP Year voyage began (imputed)
+cw_imp_voyage.dates <- data.frame(value = "YEARDEP Year voyage began (imputed)
 Format: F4
 YEARAF Year departed Africa (imputed)
 Format: F4
@@ -1334,7 +1334,21 @@ YEARAM Year of arrival at port of disembarkation (imputed)
 Format: F4" %>% read_lines %>%
   .[!grepl("^Format: ", .)] %>%
   gsub(" Year", "_Year", .) %>%
-  strsplit(., "_") 
+  strsplit(., "_") %>%
+    lapply(., first) %>%
+    unlist(), 
+  def = NA)
+cw_imp_voyage.dates$def <- "YEARDEP Year voyage began (imputed)
+Format: F4
+YEARAF Year departed Africa (imputed)
+Format: F4
+YEARAM Year of arrival at port of disembarkation (imputed)
+Format: F4" %>% read_lines %>%
+  .[!grepl("^Format: ", .)] %>%
+  gsub(" Year", "_Year", .) %>%
+  strsplit(., "_") %>%
+  lapply(., last) %>%
+  unlist()
 
 # cw_imp_slaves.numbers----
 cw_imp_slaves.numbers <- data.frame(colname = c("SLAXIMP", "SLAMIMP"),
@@ -2444,8 +2458,24 @@ cw_specific_places <- left_join(cw_specific_places, cw_broad.regions) %>%
 
 # write to cw----
 setwd(wd$cw)
+
+write_csv(cw_broad.regions, "cw_broad.regions.csv")
+write_csv(cw_captain.crew, "cw_captain.crew.csv")
+write_csv(cw_county_ship_register,"cw_county_ship_register.csv")
+write_csv(cw_imp_slaves.numbers,"cw_imp_slaves.numbers.csv")
+write_csv(cw_imp_voyage.dates,"cw_imp_voyage.dates.csv")
+write_csv(cw_imp_yoyage.itinerary,"cw_imp_yoyage.itinerary.csv")
+write_csv(cw_slaves.chars,"cw_slaves.chars.csv")
+write_csv(cw_slaves.numbers,"cw_slaves.numbers.csv")
+write_csv(cw_voyage.dates,"cw_voyage.dates.csv")
+write_csv(cw_voyage.itinerary,"cw_voyage.itinerary.csv")
+
+
 write_csv(x = cw_specific_places, 
           file = "cw_specific_places.csv")
+
+
+
 setwd(wd$data)
 
 rm(cw_specific_places2, cw_specific_regions, cw_broad.regions)
