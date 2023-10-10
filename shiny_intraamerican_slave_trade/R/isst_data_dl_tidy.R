@@ -4,8 +4,11 @@ library(ggplot2)
 library(data.table)
 library(networkD3)
 library(janitor)
+library(lubridate)
 
 "https://www.slavevoyages.org/american"
+"https://r-spatial.org/projects/"
+
 
 rm(list=ls());cat('\f')
 gc()
@@ -26,8 +29,6 @@ setwd(wd$R)
 setwd(wd$data)
 data.url <- "https://www.slavevoyages.org/documents/download/I-Am1.0.csv"
 
-
-
 # download csv if necessary
 if(!"I-Am1.0.csv" %in% list.files()){
   download.file(url = data.url, destfile = "I-Am1.0.csv")
@@ -38,7 +39,7 @@ if(!"I-Am1.0.csv" %in% list.files()){
 iast <- read_csv("I-Am1.0.csv")
 
 # other datasets----
-slave.dates <- data.frame(type = c("USA", "UK", 
+slave.dates <- {data.frame(type = c("USA", "UK", 
                                    "Spain", "Netherlands", 
                                    "France", 
                                    "Venezuela", 
@@ -46,13 +47,12 @@ slave.dates <- data.frame(type = c("USA", "UK",
                           date = ymd(c(18060101, 18070101, 
                                        18110101, 18140101, 
                                        18150101, 18170101, 
-                                       18190101, 18220101)))
+                                       18190101, 18220101)))}
 
 # crosswalks----
 setwd(wd$cw)
 
-
-
+# build data if necessary ----
 if(!"cw_fate.csv" %in% list.files()){
   
   fates.text <- "1 Voyage completed as intended
@@ -253,7 +253,6 @@ if(!"cw_fate.csv" %in% list.files()){
             file = "cw_fate.csv")
   rm(cw_fate, fates.num, fates.lab, fates.text)
 }
-
 if(!"cw_fate2.csv" %in% list.files()){
   fates2.text <- "1 Slaves disembarked Americas
 2 No slaves embarked
@@ -273,7 +272,6 @@ if(!"cw_fate2.csv" %in% list.files()){
             file = "cw_fate2.csv")
   rm(fates2.lab, fates2.num, fates2.text)
 }
-
 if(!"cw_fate3.csv" %in% list.files()){
   ftxt <- "1 Natural hazard
 2 Pirate/privateer action
@@ -303,7 +301,6 @@ if(!"cw_fate3.csv" %in% list.files()){
             file = "cw_fate3.csv")
   rm(ftxt, flab, fnum, cw_fate3)
 }
-
 if(!"cw_fate4.csv" %in% list.files()){
   ftxt <- "1 Delivered slaves for original owners
 2 Original goal thwarted (natural hazard)
@@ -320,7 +317,6 @@ if(!"cw_fate4.csv" %in% list.files()){
             file = "cw_fate4.csv")
   rm(ftxt, flab, fnum, cw_fate)
 }
-
 if(!"cw_fate5.csv" %in% list.files()){
   ftxt <- "1 Slave Insurrection
 2 Vessel attacked from shore
@@ -340,10 +336,9 @@ if(!"cw_fate5.csv" %in% list.files()){
   rm(ftxt, flab, fnum, cw_fate)
 }
 
-
-cw_voyage.iteniary <- data.frame(colname = c())
-
-read_lines("PORTDEP Port of departure
+# cw_voyage.itinerary----
+cw_voyage.itinerary <- NULL
+cw_voyage.itinerary$colnames <- {"PORTDEP Port of departure
 Format: F5
 EMBPORT First intended port of embarkation
 Format: F5
@@ -404,10 +399,86 @@ Format: F5
 MAJBUYPT Principal place of slave purchase
 Format: F5
 MAJSELPT Principal port of slave disembarkation
-Format: F5") %>%
-  .[!grepl("^Format: ", .)]
+Format: F5" %>% 
+  read_lines() %>%
+  .[!grepl("^Format: ", .)] %>%
+  gsub(" .*$", "", .)}
 
-"DATEDEPA Day that voyage began
+cw_voyage.itinerary$val_def <- {"PORTDEP Port of departure
+Format: F5
+EMBPORT First intended port of embarkation
+Format: F5
+EMBPORT2 Second intended port of embarkation
+Format: F5
+EMBREG First intended region of purchase of slaves
+Format: F5
+EMBREG2 Second intended region of purchase of slaves
+Format: F5
+ARRPORT First intended port of disembarkation
+Format: F5
+ARRPORT2 Second intended port of disembarkation
+Format: F5
+REGARR First intended region of slave landing
+Format: F5
+REGARR2 Second intended region of slave landing
+Format: F5
+NPPRETRA Number of ports of call prior to buying slaves
+Format: F3
+PLAC1TRA First place of slave purchase
+Format: F5
+PLAC2TRA Second place of slave purchase
+Format: F5
+PLAC3TRA Third place of slave purchase
+Format: F5
+REGEM1 First region of embarkation of slaves
+Format: F5
+REGEM2 Second region of embarkation of slaves
+Format: F5
+REGEM3 Third region of embarkation of slaves
+Format: F5
+NPAFTTRA Port of call before Atlantic crossing
+Format: F3
+NPPRIOR Number of ports of call in Americas prior to slave of slaves
+Format: F1
+SLA1PORT First place of slave landing
+Format: F5
+ADPSALE1 Second place of slave landing
+Format: F5
+ADPSALE2 Third place of slave landing
+Format: F5
+REGDIS1 First region of slave landing
+Format: F5
+REGDIS2 Second region of slave landing
+Format: F5
+REGDIS3 Third region of slave landing
+Format: F5
+PORTRET Place at which voyage ended
+Format: F5
+RETRNREG Region of return
+Format: F5
+RETRNREG1 Broad region of return
+Format: F5
+DEPTREGIMP Derived region where voyage began
+Format: F5
+DEPTREGIMP1 Derived broad region where voyage began
+Format: F5
+MAJBUYPT Principal place of slave purchase
+Format: F5
+MAJSELPT Principal port of slave disembarkation
+Format: F5" %>% 
+  read_lines() %>%
+  .[!grepl("^Format: ", .)] %>%
+  gsub(pattern =  paste("^", cw_voyage.itinerary$colnames, sep = "|", collapse = "|"), 
+       replacement = "", x = .) %>%
+  trimws()}
+
+cw_voyage.itinerary <- as.data.frame.list(cw_voyage.itinerary)
+cw_voyage.itinerary$cw_cat <- "voyage.itinerary"
+
+# cw_voyage.dates----
+cw_voyage.dates <- NULL
+cw_voyage.dates$colnames <- {
+  "DATEDEPA Day that voyage began
 Format: F2
 DATEDEPB Month that voyage began
 Format: F2
@@ -484,11 +555,104 @@ Format: F4
 VOY1IMP Voyage length from home port to disembarkation (days)
 Format: F5
 VOY2IMP Voyage length from leaving Africa to disembarkation (days)
+Format: F5"  %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(" .*$", "", .)
+}
+cw_voyage.dates$val_def <- {
+  "DATEDEPA Day that voyage began
+Format: F2
+DATEDEPB Month that voyage began
+Format: F2
+DATEDEPC Year that voyage began
+Format: F4
+D1SLATRA Day that slave purchase began
+Format: F2
+D1SLATRB Month that slave purchase began
+Format: F2
+D1SLATRC Year that slave purchase began
+Format: F4
+DLSLATRA Day that vessel left last slaving port
+Format: F2
+DLSLATRB Month that vessel left last slaving port
+Format: F2
+DLSLATRC Year that vessel left last slaving port
+Format: F4
+DATARR32 Day of first disembarkation of slaves
+Format: F2
+DATARR33 Month of first disembarkation of slaves
+Format: F2
+DATARR34 Year of first disembarkation of slaves
+Format: F4
+DATARR36 Day of arrival at second place of landing
+Format: F2
+DATARR37 Month of arrival at second place of landing
+Format: F2
+DATARR38 Year of arrival at second place of landing
+Format: F4
+DATARR39 Day of third disembarkation of slaves
+Format: F2
+DATARR40 Month of third disembarkation of slaves
+Format: F2
+DATARR41 Year of third disembarkation of slaves
+Format: F4
+DDEPAM Day of departure from last place of landing
+Format: F2
+DDEPAMB Month of departure from last place of landing
+Format: F2
+DDEPAMC Year of departure from last place of landing
+Format: F4
+DATARR43 Day on which voyage completed
+Format: F2
+DATARR44 Month in which voyage completed
+Format: F2
+DATARR45 Year in which voyage completed
+Format: F4
+DATE_DEP Date that voyage began
+Format: Date10
+DATE_BUY Date that slave purchase began
+Format: Date10
+DATE_LEFTAFR Date that vessel left last slaving port
+Format: Date10
+DATE_LAND1 Date that slaves landed at first place
+Format: Date10
+DATE_LAND2 Date that slaves landed at second place
+Format: Date10
+DATE_LAND3 Date that slaves landed at third place
+Format: Date10
+DATE_DEPAM Date ship left on return voyage
+Format: Date10
+DATE_END Date when voyage completed
+Format: Date10
+VOYAGE Length of Middle Passage in days
+Format: F3
+YEAR5 5-year period in which voyage occurred
+Format: F3
+YEAR10 Decade in which voyage occurred
+Format: F3
+YEAR25 Quarter-century in which voyage occurred
+Format: F3
+YEAR100 Century in which voyage occurred
+Format: F4
+VOY1IMP Voyage length from home port to disembarkation (days)
 Format: F5
-" %>% read_lines %>%
-  .[!grepl("^Format: ", .)]
+VOY2IMP Voyage length from leaving Africa to disembarkation (days)
+Format: F5" %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(pattern =  paste("^", cw_voyage.dates$colnames, sep = "|", collapse = "|"), 
+         replacement = "", x = .) %>%
+    trimws()
+}
+cw_voyage.dates <- as.data.frame.list(cw_voyage.dates)
+cw_voyage.dates$cw_cat <- "voyage.dates"
 
-"CAPTAINA First captain’s name
+
+# cw_captain.crew----
+cw_captain.crew <- NULL
+cw_captain.crew$colnames <- {
+  "CAPTAINA First captain’s name
 Format: A60
 CAPTAINB Second captain’s name
 Format: A40
@@ -519,11 +683,58 @@ Format: F2
 CREWDIED Crew died during complete voyage
 Format: F3
 NDESERT Total number of crew deserted
+Format: F2"   %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(" .*$", "", .)
+}
+cw_captain.crew$val_def <- {
+  "CAPTAINA First captain’s name
+Format: A60
+CAPTAINB Second captain’s name
+Format: A40
+CAPTAINC Third captain’s name
+Format: A40
+CREW1 Crew at voyage outset
+Format: F3
+CREW2 Crew at departure from last port of slave purchase
+Format: F3
+CREW3 Crew at first landing of slaves
 Format: F2
-"  %>% read_lines %>%
-  .[!grepl("^Format: ", .)]
+CREW4 Crew when return voyage began
+Format: F2
+CREW5 Crew at end of voyage
+Format: F2
+CREW Number of crew unspecified
+Format: F3
+SAILD1 Crew died before first place of trade in Africa
+Format: F2
+SAILD2 Crew died while ship was on Africa coast
+Format: F2
+SAILD3 Crew died during Middle Passage
+Format: F2
+SAILD4 Crew died in the Americas
+Format: F2
+SAILD5 Crew died on return voyage
+Format: F2
+CREWDIED Crew died during complete voyage
+Format: F3
+NDESERT Total number of crew deserted
+Format: F2"   %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(pattern =  paste("^", cw_captain.crew$colnames, sep = "|", collapse = "|"), 
+         replacement = "", x = .) %>%
+    trimws()
+}
+cw_captain.crew <- as.data.frame.list(cw_captain.crew)
+cw_captain.crew$cw_cat <- "captain.and.crew"
 
-"SLINTEND Slaves intended from first port of purchase
+
+# cw_slaves.numbers----
+cw_slaves.numbers <- NULL
+cw_slaves.numbers$colnames <- {
+  "SLINTEND Slaves intended from first port of purchase
 Format: F4
 SLINTEN2 Slaves intended from second port of purchase
 Format: F4
@@ -544,11 +755,47 @@ Format: F4
 SLAS36 Slaves disembarked at second place
 Format: F4
 SLAS39 Slaves disembarked at third place
+Format: F4" %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(" .*$", "", .)
+}
+cw_slaves.numbers$val_def <- {
+  "SLINTEND Slaves intended from first port of purchase
 Format: F4
-" %>% read_lines %>%
-  .[!grepl("^Format: ", .)]
+SLINTEN2 Slaves intended from second port of purchase
+Format: F4
+NCAR13 Slaves carried from first port of purchase
+Format: F4
+NCAR15 Slaves carried from second port of purchase
+Format: F4
+NCAR17 Slaves carried from third port of purchase
+Format: F4
+TSLAVESP Total slaves purchased
+Format: F4
+TSLAVESD Total slaves on board at departure from last slaving port
+Format: F4
+SLAARRIV Total slaves arrived at first port of disembarkation
+Format: F4
+SLAS32 Slaves disembarked at first place
+Format: F4
+SLAS36 Slaves disembarked at second place
+Format: F4
+SLAS39 Slaves disembarked at third place
+Format: F4" %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(pattern =  paste("^", cw_slaves.numbers$colnames, sep = "|", collapse = "|"), 
+         replacement = "", x = .) %>%
+    trimws()
+}
+cw_slaves.numbers <- as.data.frame.list(cw_slaves.numbers)
+cw_slaves.numbers$cw_cat <- "Slaves.(numbers)"
 
-"MEN1 Men embarked at first port of purchase
+# cw_slaves.chars ----
+cw_slaves.chars <- NULL
+cw_slaves.chars$colnames <- {
+  "MEN1 Men embarked at first port of purchase
 Format: F3
 WOMEN1 Women embarked at first port of purchase
 Format: F3
@@ -758,11 +1005,234 @@ VYMRTRAT Slave mortality rate (slave deaths / slaves embarked)
 Format: F8.5
 JAMCASPR Average price of slaves standardized on sterling cash price of prime slaves sold in
 Jamaica
-Format: F8.2
-" %>% read_lines %>%
-  .[!grepl("^Format: ", .)]
-
-"SOURCEA First source of information
+Format: F8.2"   %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(" .*$", "", .)
+}
+cw_slaves.chars$val_def <- {
+  "MEN1 Men embarked at first port of purchase
+Format: F3
+WOMEN1 Women embarked at first port of purchase
+Format: F3
+BOY1 Boys embarked at first port of purchase
+Format: F3
+GIRL1 Girls embarked at first port of purchase
+Format: F3
+ADULT1 Adults embarked at first port of purchase
+Format: F3
+CHILD1 Children embarked at first port of purchase
+Format: F3
+INFANT1 Infants embarked at first port of purchase
+Format: F3
+MALE1 Males embarked at first port of purchase
+Format: F3
+FEMALE1 Females embarked at first port of purchase
+Format: F3
+MEN2 Men who died on Middle Passage
+Format: F3
+WOMEN2 Women who died on Middle Passage
+Format: F3
+BOY2 Boys who died on Middle Passage
+Format: F3
+GIRL2 Girls who died on Middle Passage
+Format: F3
+ADULT2 Adults who died on Middle Passage
+Format: F3
+CHILD2 Children who died on Middle Passage
+Format: F3
+MALE2 Males who died on Middle Passage
+Format: F3
+FEMALE2 Females who died on Middle Passage
+Format: F3
+MEN3 Men disembarked at first place of landing
+Format: F3
+WOMEN3 Women disembarked at first place of landing
+Format: F3
+BOY3 Boys disembarked at first place of landing
+Format: F3
+GIRL3 Girls disembarked at first place of landing
+Format: F3
+ADULT3 Adults disembarked at first place of landing
+Format: F3
+CHILD3 Children disembarked at first place of landing
+Format: F3
+INFANT3 Infants disembarked at first place of landing
+Format: F3
+MALE3 Males disembarked at first place of landing
+Format: F3
+FEMALE3 Females disembarked at first place of landing
+Format: F3
+MEN4 Men embarked at second port of purchase
+Format: F3
+WOMEN4 Women embarked at second port of purchase
+Format: F3
+BOY4 Boys embarked at second port of purchase
+Format: F3
+GIRL4 Girl embarked at second port of purchase
+Format: F3
+ADULT4 Adults embarked at second port of purchase
+Format: F3
+CHILD4 Children embarked at second port of purchase
+Format: F3
+INFANT4 Infants embarked at second port of purchase
+Format: F3
+MALE4 Males embarked at second port of purchase
+Format: F3
+FEMALE4 Females embarked second port of purchase
+Format: F3
+MEN5 Men embarked at third port of purchase
+Format: F3
+WOMEN5 Women embarked at third port of purchase
+Format: F3
+BOY5 Boys embarked at third port of purchase
+Format: F3
+GIRL5 Girls embarked at third port of purchase
+Format: F3
+ADULT5 Adults embarked at third port of purchase
+Format: F3
+CHILD5 Children embarked at third port of purchase
+Format: F3
+MALE5 Males embarked at third port of purchase
+Format: F3
+FEMALE5 Females embarked at third port of purchase
+Format: F3
+MEN6 Men disembarked at second place of landing
+Format: F3
+WOMEN6 Women disembarked at second place of landing
+Format: F3
+BOY6 Boys disembarked at second place of landing
+Format: F3
+GIRL6 Girls disembarked at second place of landing
+Format: F3
+ADULT6 Adults disembarked at second place of landing
+Format: F3
+CHILD6 Children disembarked at second place of landing
+Format: F3
+MALE6 Males disembarked at second place of landing
+Format: F3
+FEMALE6 Females disembarked at second place of landing
+Format: F3
+SLADAFRI Slaves deaths before leaving Africa
+Format: F3
+SLADVOY Slaves deaths between African and the Americas
+Format: F4
+SLADAMER Slaves deaths between arrival and sale
+Format: F3
+ADLT1IMP Derived number of adult embarked
+Format: F4
+CHIL1IMP Derived number of children embarked
+Format: F4
+MALE1IMP Derived number of males embarked
+Format: F4
+FEML1IMP Derived number of females embarked
+Format: F4
+SLAVMAX1 Total slaves embarked with age and gender identified
+Format: F4
+SLAVEMA1 Total slaves embarked with age identified
+Format: F4
+SLAVEMX1 Total slaves embarked with gender identified
+Format: F4
+MENRAT1 Percentage of men among embarked slaves
+Format: F8.5
+WOMRAT1 Percentage of women among embarked slaves
+Format: F8.5
+BOYRAT1 Percentage of boys among embarked slaves
+Format: F8.5
+GIRLRAT1 Percentage of girls among embarked slaves
+Format: F8.5
+CHILRAT1 Child ratio among embarked slaves
+Format: F8.5
+MALRAT1 Male ratio among embarked slaves
+Format: F8.5
+ADLT2IMP Derived number of adults who died on Middle Passage
+Format: F4
+CHIL2IMP Derived number of children who died on Middle Passage
+Format: F4
+MALE2IMP Derived number of males who died on Middle Passage
+Format: F4
+FEML2IMP Derived number of females who died on Middle Passage
+Format: F4
+ADLT3IMP Derived number of adults landed
+Format: F4
+CHIL3IMP Derived number of children landed
+Format: F4
+MALE3IMP Derived number of males landed
+Format: F4
+FEML3IMP Derived number of females landed
+Format: F4
+SLAVMAX3 Total slaves identified by age and gender among landed slaves
+Format: F4
+SLAVEMA3 Total slaves identified by age among landed slaves
+Format: F4
+SLAVEMX3 Total slaves identified by gender among landed slaves
+Format: F4
+MENRAT3 Percentage of men among landed slaves
+Format: F8.5
+WOMRAT3 Percentage of women among landed slaves
+Format: F8.5
+BOYRAT3 Percentage of boys among landed slaves
+Format: F8.5
+GIRLRAT3 Percentage of girls among landed slaves
+Format: F8.5
+CHILRAT3 Child ratio among landed slaves
+Format: F8.5
+MALRAT3 Male ratio among landed slaves
+Format: F8.5
+MEN7 Derived number of men at departure or arrival
+Format: F4
+WOMEN7 Derived number of women at departure or arrival
+Format: F4
+BOY7 Derived number of boys at departure or arrival
+Format: F4
+GIRL7 Derived number of girls at departure or arrival
+Format: F4
+ADULT 7 Derived number of adults at departure or arrival
+Format: F4
+CHILD7 Derived number of children at departure or arrival
+Format: F4
+MALE7 Derived number of males at departure or arrival
+Format: F4
+FEMALE7 Derived number of females at departure or arrival
+Format: F4
+SLAVMAX7 Total slaves identified by age and gender at departure or arrival
+Format: F4
+SLAVEMA7 Total slaves identified by age at departure or arrival
+Format: F4
+SLAVEMX7 Total slaves identified by gender at departure or arrival
+Format: F4
+MENRAT7 Percentage of men at departure or arrival
+Format: F8.5
+WOMRAT7 Percentage of women at departure or arrival
+Format: F8.5
+BOYRAT7 Percentage of boys at departure or arrival
+Format: F8.5
+GIRLRAT7 Percentage of girls at departure or arrival
+Format: F8.5
+CHILRAT7 Child ratio at departure or arrival
+Format: F8.5
+MALRAT7 Male ratio at departure or arrival
+Format: F8.5
+TSLMTIMP Derived number of slaves embarked for mortality calculation
+Format: F4
+VYMRTIMP Derived slave deaths during Middle Passage
+Format: F4
+VYMRTRAT Slave mortality rate (slave deaths / slaves embarked)
+Format: F8.5
+JAMCASPR Average price of slaves standardized on sterling cash price of prime slaves sold in
+Jamaica
+Format: F8.2"  %>% 
+    read_lines() %>%
+    .[!grepl("^Format: ", .)] %>%
+    gsub(pattern =  paste("^", cw_slaves.chars$colnames, sep = "|", collapse = "|"), 
+         replacement = "", x = .) %>%
+    trimws()
+}
+cw_slaves.chars <- as.data.frame.list(cw_slaves.numbers)
+cw_slaves.chars$cw_cat <- "Slaves.(characteristics)"
+ 
+#cw_source----
+{"SOURCEA First source of information
 Format: A60
 SOURCEB Second source of information
 Format: A50
@@ -797,19 +1267,23 @@ Format: A40
 SOURCEQ Seventeenth source of information
 Format: A40
 SOURCER Eighteenth source of information
-Format: A40" %>% read_lines %>%
-  .[!grepl("^Format: ", .)]
+Format: A40" }
 
-cw_county_ship_register <- "3 Spain/Uruguay
-6 Portugal/Brazil
-7 Great Britain
-8 Netherlands
-9 U.S.A.
-10 France
-15 Denmark/Baltic
-30 Other"
+# cw_county_ship_register----
+cw_county_ship_register <- {data.frame(value = c(3,6,7,8,9,10,15,30), 
+                                       val_def = c("Spain/Uruguay", 
+                                                   "Portugal/Brazil", 
+                                                   "Great Britain", 
+                                                   "Netherlands",
+                                                   "U.S.A.", 
+                                                   "France",
+                                                   "Denmark/Baltic", 
+                                                   "Other"))}
 
-cw_imp_yoyage.itinerary <- "PTDEPIMP Imputed port where voyage began
+#cw_imp_yoyage.itinerary----
+cw_imp_yoyage.itinerary <- NULL
+
+cw_imp_yoyage.itinerary$value <- "PTDEPIMP Imputed port where voyage began
 Format: F5
 MJBYPTIMP Imputed principal place of slave purchase
 Format: F5
@@ -825,8 +1299,33 @@ MJSELIMP1 Imputed broad region of slave disembarkation
 Format: F5"  %>% read_lines %>%
   .[!grepl("^Format: ", .)] %>%
   gsub(" Imputed", "_Imputed", .) %>%
-  strsplit(., "_") 
+  strsplit(., "_") %>%
+    lapply(., first) %>%
+    unlist()
 
+cw_imp_yoyage.itinerary$def <- "PTDEPIMP Imputed port where voyage began
+Format: F5
+MJBYPTIMP Imputed principal place of slave purchase
+Format: F5
+MAJBYIMP Imputed principal region of slave purchase
+Format: F5
+MAJBYIMP1 Imputed broad region of slave purchase
+Format: F5
+MJSLPTIMP Imputed principal port of slave disembarkation
+Format: F5
+MJSELIMP Imputed principal region of slave disembarkation
+Format: F5
+MJSELIMP1 Imputed broad region of slave disembarkation
+Format: F5"  %>% read_lines %>%
+  .[!grepl("^Format: ", .)] %>%
+  gsub(" Imputed", "_Imputed", .) %>%
+  strsplit(., "_") %>%
+  lapply(., last) %>%
+  unlist()
+cw_imp_yoyage.itinerary <- as.data.frame.list(cw_imp_yoyage.itinerary)
+cw_imp_yoyage.itinerary$cat <- "cw_imp_yoyage.itinerary"
+
+# cw_imp_voyage.dates----
 cw_imp_voyage.dates <- "YEARDEP Year voyage began (imputed)
 Format: F4
 YEARAF Year departed Africa (imputed)
@@ -837,11 +1336,12 @@ Format: F4" %>% read_lines %>%
   gsub(" Year", "_Year", .) %>%
   strsplit(., "_") 
 
-
+# cw_imp_slaves.numbers----
 cw_imp_slaves.numbers <- data.frame(colname = c("SLAXIMP", "SLAMIMP"),
                                     def.imp = c("Imputed total slaves embarked", 
                                                 "Imputed total slaves disembarked"))
 
+# cw_specific_places----
 cw_specific_places <- {"10101 Alicante
 10102 Barcelona
 10103 Bilbao
