@@ -1,0 +1,39 @@
+AssetCode,DictionaryName,Description,Units
+RE1,Pop,Total Residents,Residents
+RE3,White,Residents That Are White,Residents
+RE4,Black,Residents That Are Black or African American,Residents
+RE5,Indian,Residents That Are American Indian or Alaska Native,Residents
+RE6,Asian,Residents That Are Asian,Residents
+RE7,PacIs,Residents That Are Native Hawaiian or Other Pacific Islander,Residents
+RE8,Other,Residents That Are Other Races,Residents
+RE2,Hisp,Residents That Are Hispanic or Latino,Residents
+RE20,HUtot,Total Housing,Units
+RE21,HUocc,Occupied Housing,Units
+RE22,HUvac,Vacant Housing,Units
+EM1,Emp,Total Employees,Employees
+EM2,GovCr,Employees in Government and Critical Facilities Sector,Employees
+EM3,Manct,Employees in Manufacturing Sector,Employees
+EM4,Serv,Employees in Services Sector,Employees
+EM5,NatRe,Employees in Natural Resources Sector,Employees
+EM6,Trade,Employees in Trade Sector,Employees
+PV1,Parcel,Total Parcel Value,Dollars
+PV2,Land,Land Parcel Value,Dollars
+PV3,Improv,Improved Parcel Value,Dollars
+RO1,Roads,All Roads,Miles
+RO2,Highwy,Highways,Miles
+RO3,Second,Secondary Streets,Miles
+RO4,Surfac,Surface Streets,Miles
+RL1,Rail,Railroads,Miles
+WW2,DWater,Drinking Water Treatment Plants,Sites
+WW3,WWater,Wastewater Treatment Plants,Sites
+WW4,LFill,Solid Waste Landfills,Sites
+CR2,Police,Police Stations,Stations
+CR3,Fire,Fire Stations,Stations
+CR4,School,Schools,Schools
+CR5,Hospit,Hospitals,Hospitals
+LC2,DevLnd,Developed Land,Square Miles
+LC3,Crops,Pasture and Crop Land,Square Miles
+LC4,Forest,Forested Land,Square Miles
+LC5,Shrub,Shrub and Grass,Square Miles
+LC6,Wetlnd,Wetlands,Square Miles
+LC7,Barren,Barren Land,Square Miles
