@@ -15,21 +15,22 @@ all.subdirs <- list.dirs( recursive = F) %>%
 
 # data_url----
 
-url_allT_1950.2022    <- "https://www.spc.noaa.gov/wcm/data/1950-2022_all_tornadoes.csv"
+
+#url_allT_1950.2022    <- "https://www.spc.noaa.gov/wcm/data/1950-2022_all_tornadoes.csv"
 url_actualT_1950.2022 <- "https://www.spc.noaa.gov/wcm/data/1950-2022_actual_tornadoes.csv"
 
 # check if data is already downloaded----
 setwd(grep("/data$", all.subdirs, ignore.case = F, value = T))
-allT.dl <- "1950-2022_all_tornadoes.csv" %in% list.files()
+#allT.dl <- "1950-2022_all_tornadoes.csv" %in% list.files()
 actualT.dl <- "1950-2022_actual_tornadoes.csv" %in% list.files()
 
 # if data is not already downloaded, download it----
-if(!allT.dl){
-  print("not DL yet")
-  download.file(url = url_allT_1950.2022, 
-                destfile = "1950-2022_all_tornadoes.csv")
-  
-}
+# if(!allT.dl){
+#   print("not DL yet")
+#   download.file(url = url_allT_1950.2022, 
+#                 destfile = "1950-2022_all_tornadoes.csv")
+#   
+# }
 
 if(!actualT.dl){
   download.file(url = url_actualT_1950.2022, 
@@ -37,10 +38,10 @@ if(!actualT.dl){
 }
 
 #  import tornado data----
-from.yr <- 1990
+from.yr <- 2008
 
-allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
-  .[.$yr >= from.yr,]
+# allT    <- read_csv("1950-2022_all_tornadoes.csv") %>%
+#   .[.$yr >= from.yr,]
 actualT <- read_csv("1950-2022_actual_tornadoes.csv") %>%
   .[.$yr >= from.yr,]
 
@@ -108,13 +109,79 @@ reg_st_list <- list("Northeast" = relist(flesh = sort(c("ME", "VT", "RI",
 
 
 
-st_co_df <- tigris_co_geo[,c("STUSPS", "NAME", "COUNTYFP")] %>%
+cw_co_fips <- tigris_co_geo[,c("STUSPS", "NAME", "COUNTYFP")] %>%
   sf::st_drop_geometry() 
-colnames(st_co_df)[2] <- "COUNTY"
+colnames(cw_co_fips)[2] <- "COUNTY"
 
-st_co_df <- st_co_df %>%
-  .[order(.$STUSPS, .$COUNTY),]
-rownames(st_co_df) <- 1:nrow(st_co_df)
+cw_co_fips <- cw_co_fips %>%
+  .[order(.$STUSPS, .$COUNTY),] %>%
+  mutate(., 
+         COUNTYFP = as.numeric(COUNTYFP))
+rownames(cw_co_fips) <- 1:nrow(cw_co_fips)
+
+# make a df of om <---> f1/f2/f3/f4
+
+tor.st_co_yr.F1 <- actualT %>%
+  group_by(om,yr,st,f1) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f1" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F2 <- actualT %>%
+  group_by(om,yr,st,f2) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f2" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F3 <- actualT %>%
+  group_by(om,yr,st,f3) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f3" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+tor.st_co_yr.F4 <- actualT %>%
+  group_by(om,yr,st,f4) %>%
+  summarise() %>%
+  ungroup() %>%
+  left_join(., 
+            cw_co_fips, 
+            by = c("st" = "STUSPS", 
+                   "f4" = "COUNTYFP")) %>%
+  .[!is.na(.$COUNTY),]
+
+colnames(tor.st_co_yr.F1)[4] <- "co_fips"
+colnames(tor.st_co_yr.F2)[4] <- "co_fips"
+colnames(tor.st_co_yr.F3)[4] <- "co_fips"
+colnames(tor.st_co_yr.F4)[4] <- "co_fips"
+
+tor.st_co_yr <- rbind(tor.st_co_yr.F1, 
+                      tor.st_co_yr.F2, 
+                      tor.st_co_yr.F3, 
+                      tor.st_co_yr.F4) %>%
+  group_by_all() %>%
+  summarise()
+
+rm(tor.st_co_yr.F1, 
+   tor.st_co_yr.F2, 
+   tor.st_co_yr.F3, 
+   tor.st_co_yr.F4)
+
+tor.st_co_yr <- tor.st_co_yr %>%
+  mutate(., 
+         uid_om.yr.st = paste(om,yr,st, sep = "-"))
+
 
 # save to shiny dir
 setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")
@@ -124,27 +191,29 @@ save(tigris_st_geo,
      actualT,
      cw_magnitude,
      reg_st_list,
-     st_co_df,
+     #st_co_df,
+     #cw_co_fips,  # use the newer file you created that's better
+     tor.st_co_yr,
      file = "tornado.RData")
 
 
 
-ggplot() + 
-  geom_sf(data = left_join(tigris_st_geo[!tigris_st_geo$STUSPS %in% 
-                          c("PR", "VI", "HI", "AK", 
-                            "AS", "GU", "MP"),], 
-          cw_tigris_reg, by = "STUSPS"), 
-          aes(fill = NAME.y))
-
-ggplot() + 
-  geom_sf(data =tigris_st_geo[!tigris_st_geo$STUSPS %in% 
-                                c("PR", "VI", "HI", "AK", 
-                                  "AS", "GU", "MP"),])+
-  geom_sf(data = tigris_reg_geo[4,],
-          alpha = 0.2,
-          color = NA, fill = "red")
-
-
+# ggplot() + 
+#   geom_sf(data = left_join(tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+#                           c("PR", "VI", "HI", "AK", 
+#                             "AS", "GU", "MP"),], 
+#           cw_tigris_reg, by = "STUSPS"), 
+#           aes(fill = NAME.y))
+# 
+# ggplot() + 
+#   geom_sf(data =tigris_st_geo[!tigris_st_geo$STUSPS %in% 
+#                                 c("PR", "VI", "HI", "AK", 
+#                                   "AS", "GU", "MP"),])+
+#   geom_sf(data = tigris_reg_geo[4,],
+#           alpha = 0.2,
+#           color = NA, fill = "red")
+# 
+# 
 
 # shiny outline----
 

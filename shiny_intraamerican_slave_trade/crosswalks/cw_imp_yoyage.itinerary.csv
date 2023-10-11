@@ -1,0 +1,8 @@
+value,def,cat
+PTDEPIMP,Imputed port where voyage began,cw_imp_yoyage.itinerary
+MJBYPTIMP,Imputed principal place of slave purchase,cw_imp_yoyage.itinerary
+MAJBYIMP,Imputed principal region of slave purchase,cw_imp_yoyage.itinerary
+MAJBYIMP1,Imputed broad region of slave purchase,cw_imp_yoyage.itinerary
+MJSLPTIMP,Imputed principal port of slave disembarkation,cw_imp_yoyage.itinerary
+MJSELIMP,Imputed principal region of slave disembarkation,cw_imp_yoyage.itinerary
+MJSELIMP1,Imputed broad region of slave disembarkation,cw_imp_yoyage.itinerary
