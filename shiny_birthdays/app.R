@@ -64,6 +64,13 @@ ui <- fluidPage(
                               textOutput(outputId = "ageindays_01")))
             ), 
             fluidRow(
+              h4(HTML(r'(<u>Days Lived to Reach 100</u>)')),
+              fluidRow(
+                column(4,
+                       textOutput(outputId = "days_lived_in_100_yrs"))
+              )
+            ),
+            fluidRow(
               h4(HTML(r'(<u>Friday-the-13ths Survived:</u>)')), 
               fluidRow(column(4,
                               textOutput(outputId = "fri13_01")))
@@ -219,7 +226,7 @@ server <- function(input, output) {
     })
   output$bday_1000.f <- shiny::renderTable({
     out <- as.character(as_date(as_date(input$my_bday) %m+% 
-                                  days(seq(0,30000, by = 1000))))
+                                  days(seq(0,50000, by = 1000))))
     #outprev <- out[(which(out <= Sys.Date()))]
     outfut <- out[which(out > Sys.Date())]
     
@@ -228,6 +235,9 @@ server <- function(input, output) {
   })
   output$bday_n_leapyears <- renderText({
     
+  })
+  output$days_lived_in_100_yrs <- renderText({
+    scales::comma(as.numeric((input$my_bday %m+% years(100)) - input$my_bday))
   })
 
     # output$distPlot <- renderPlot({
@@ -244,3 +254,5 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
