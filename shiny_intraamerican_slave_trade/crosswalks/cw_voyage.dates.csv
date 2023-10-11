@@ -1,0 +1,40 @@
+colnames,val_def,cw_cat
+DATEDEPA,Day that voyage began,voyage.dates
+DATEDEPB,Month that voyage began,voyage.dates
+DATEDEPC,Year that voyage began,voyage.dates
+D1SLATRA,Day that slave purchase began,voyage.dates
+D1SLATRB,Month that slave purchase began,voyage.dates
+D1SLATRC,Year that slave purchase began,voyage.dates
+DLSLATRA,Day that vessel left last slaving port,voyage.dates
+DLSLATRB,Month that vessel left last slaving port,voyage.dates
+DLSLATRC,Year that vessel left last slaving port,voyage.dates
+DATARR32,Day of first disembarkation of slaves,voyage.dates
+DATARR33,Month of first disembarkation of slaves,voyage.dates
+DATARR34,Year of first disembarkation of slaves,voyage.dates
+DATARR36,Day of arrival at second place of landing,voyage.dates
+DATARR37,Month of arrival at second place of landing,voyage.dates
+DATARR38,Year of arrival at second place of landing,voyage.dates
+DATARR39,Day of third disembarkation of slaves,voyage.dates
+DATARR40,Month of third disembarkation of slaves,voyage.dates
+DATARR41,Year of third disembarkation of slaves,voyage.dates
+DDEPAM,Day of departure from last place of landing,voyage.dates
+DDEPAMB,Month of departure from last place of landing,voyage.dates
+DDEPAMC,Year of departure from last place of landing,voyage.dates
+DATARR43,Day on which voyage completed,voyage.dates
+DATARR44,Month in which voyage completed,voyage.dates
+DATARR45,Year in which voyage completed,voyage.dates
+DATE_DEP,Date that voyage began,voyage.dates
+DATE_BUY,Date that slave purchase began,voyage.dates
+DATE_LEFTAFR,Date that vessel left last slaving port,voyage.dates
+DATE_LAND1,Date that slaves landed at first place,voyage.dates
+DATE_LAND2,Date that slaves landed at second place,voyage.dates
+DATE_LAND3,Date that slaves landed at third place,voyage.dates
+DATE_DEPAM,Date ship left on return voyage,voyage.dates
+DATE_END,Date when voyage completed,voyage.dates
+VOYAGE,Length of Middle Passage in days,voyage.dates
+YEAR5,5-year period in which voyage occurred,voyage.dates
+YEAR10,Decade in which voyage occurred,voyage.dates
+YEAR25,Quarter-century in which voyage occurred,voyage.dates
+YEAR100,Century in which voyage occurred,voyage.dates
+VOY1IMP,Voyage length from home port to disembarkation (days),voyage.dates
+VOY2IMP,Voyage length from leaving Africa to disembarkation (days),voyage.dates

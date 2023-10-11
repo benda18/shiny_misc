@@ -1,0 +1,32 @@
+colnames,val_def,cw_cat
+PORTDEP,Port of departure,voyage.itinerary
+EMBPORT,First intended port of embarkation,voyage.itinerary
+EMBPORT2,Second intended port of embarkation,voyage.itinerary
+EMBREG,First intended region of purchase of slaves,voyage.itinerary
+EMBREG2,Second intended region of purchase of slaves,voyage.itinerary
+ARRPORT,First intended port of disembarkation,voyage.itinerary
+ARRPORT2,Second intended port of disembarkation,voyage.itinerary
+REGARR,First intended region of slave landing,voyage.itinerary
+REGARR2,Second intended region of slave landing,voyage.itinerary
+NPPRETRA,Number of ports of call prior to buying slaves,voyage.itinerary
+PLAC1TRA,First place of slave purchase,voyage.itinerary
+PLAC2TRA,Second place of slave purchase,voyage.itinerary
+PLAC3TRA,Third place of slave purchase,voyage.itinerary
+REGEM1,First region of embarkation of slaves,voyage.itinerary
+REGEM2,Second region of embarkation of slaves,voyage.itinerary
+REGEM3,Third region of embarkation of slaves,voyage.itinerary
+NPAFTTRA,Port of call before Atlantic crossing,voyage.itinerary
+NPPRIOR,Number of ports of call in Americas prior to slave of slaves,voyage.itinerary
+SLA1PORT,First place of slave landing,voyage.itinerary
+ADPSALE1,Second place of slave landing,voyage.itinerary
+ADPSALE2,Third place of slave landing,voyage.itinerary
+REGDIS1,First region of slave landing,voyage.itinerary
+REGDIS2,Second region of slave landing,voyage.itinerary
+REGDIS3,Third region of slave landing,voyage.itinerary
+PORTRET,Place at which voyage ended,voyage.itinerary
+RETRNREG,Region of return,voyage.itinerary
+RETRNREG1,Broad region of return,voyage.itinerary
+DEPTREGIMP,Derived region where voyage began,voyage.itinerary
+DEPTREGIMP1,Derived broad region where voyage began,voyage.itinerary
+MAJBUYPT,Principal place of slave purchase,voyage.itinerary
+MAJSELPT,Principal port of slave disembarkation,voyage.itinerary

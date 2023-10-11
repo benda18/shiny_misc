@@ -1,0 +1,198 @@
+city,country,venue,opening_acts,attendance,revenue,date,opening_acts2,promo_city,long,lat,tour_name
+Glendale,United States,State Farm Stadium,ParamoreGayle,—,—,2023-03-17,Gayle,Glendale,-112.2,33.58,eras
+Glendale,United States,State Farm Stadium,ParamoreGayle,—,—,2023-03-17,Paramore,Glendale,-112.2,33.58,eras
+Glendale,United States,State Farm Stadium,ParamoreGayle,—,—,2023-03-18,Gayle,Glendale,-112.2,33.58,eras
+Glendale,United States,State Farm Stadium,ParamoreGayle,—,—,2023-03-18,Paramore,Glendale,-112.2,33.58,eras
+Paradise,United States,Allegiant Stadium,BeabadoobeeGayle,—,—,2023-03-24,Beabadoobee,Las Vegas,-115.22,36.21,eras
+Paradise,United States,Allegiant Stadium,BeabadoobeeGayle,—,—,2023-03-24,Gayle,Las Vegas,-115.22,36.21,eras
+Paradise,United States,Allegiant Stadium,BeabadoobeeGayle,—,—,2023-03-25,Beabadoobee,Las Vegas,-115.22,36.21,eras
+Paradise,United States,Allegiant Stadium,BeabadoobeeGayle,—,—,2023-03-25,Gayle,Las Vegas,-115.22,36.21,eras
+Arlington,United States,AT&T Stadium,MunaGayle,—,—,2023-03-31,Gayle,Arlington,-97.13,32.69,eras
+Arlington,United States,AT&T Stadium,MunaGayle,—,—,2023-03-31,Muna,Arlington,-97.13,32.69,eras
+Arlington,United States,AT&T Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-01,Beabadoobee,Arlington,-97.13,32.69,eras
+Arlington,United States,AT&T Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-01,Gracie_Abrams,Arlington,-97.13,32.69,eras
+Arlington,United States,AT&T Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-02,Beabadoobee,Arlington,-97.13,32.69,eras
+Arlington,United States,AT&T Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-02,Gracie_Abrams,Arlington,-97.13,32.69,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGayle,—,—,2023-04-13,Beabadoobee,Tampa,-82.48,27.96,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGayle,—,—,2023-04-13,Gayle,Tampa,-82.48,27.96,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-14,Beabadoobee,Tampa,-82.48,27.96,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-14,Gracie_Abrams,Tampa,-82.48,27.96,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-15,Beabadoobee,Tampa,-82.48,27.96,eras
+Tampa,United States,Raymond James Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-15,Gracie_Abrams,Tampa,-82.48,27.96,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-21,Beabadoobee,Houston,-95.39,29.77,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-21,Gracie_Abrams,Houston,-95.39,29.77,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-22,Beabadoobee,Houston,-95.39,29.77,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-22,Gracie_Abrams,Houston,-95.39,29.77,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-23,Beabadoobee,Houston,-95.39,29.77,eras
+Houston,United States,NRG Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-23,Gracie_Abrams,Houston,-95.39,29.77,eras
+Atlanta,United States,Mercedes-Benz Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-28,Beabadoobee,Atlanta,-84.42,33.76,eras
+Atlanta,United States,Mercedes-Benz Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-28,Gracie_Abrams,Atlanta,-84.42,33.76,eras
+Atlanta,United States,Mercedes-Benz Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-29,Beabadoobee,Atlanta,-84.42,33.76,eras
+Atlanta,United States,Mercedes-Benz Stadium,BeabadoobeeGracie Abrams,—,—,2023-04-29,Gracie_Abrams,Atlanta,-84.42,33.76,eras
+Atlanta,United States,Mercedes-Benz Stadium,MunaGayle,—,—,2023-04-30,Gayle,Atlanta,-84.42,33.76,eras
+Atlanta,United States,Mercedes-Benz Stadium,MunaGayle,—,—,2023-04-30,Muna,Atlanta,-84.42,33.76,eras
+Nashville,United States,Nissan Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-05,Gracie_Abrams,Nashville,-86.78,36.17,eras
+Nashville,United States,Nissan Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-05,Phoebe_Bridgers,Nashville,-86.78,36.17,eras
+Nashville,United States,Nissan Stadium,Phoebe BridgersGayle,—,—,2023-05-06,Gayle,Nashville,-86.78,36.17,eras
+Nashville,United States,Nissan Stadium,Phoebe BridgersGayle,—,—,2023-05-06,Phoebe_Bridgers,Nashville,-86.78,36.17,eras
+Nashville,United States,Nissan Stadium,—[b],—,—,2023-05-07,opening_acts_cancelled_weather,Nashville,-86.78,36.17,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGayle,—,—,2023-05-12,Gayle,Philadelphia,-75.13,40.01,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGayle,—,—,2023-05-12,Phoebe_Bridgers,Philadelphia,-75.13,40.01,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGayle,—,—,2023-05-13,Gayle,Philadelphia,-75.13,40.01,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGayle,—,—,2023-05-13,Phoebe_Bridgers,Philadelphia,-75.13,40.01,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGracie Abrams,—,—,2023-05-14,Gracie_Abrams,Philadelphia,-75.13,40.01,eras
+Philadelphia,United States,Lincoln Financial Field,Phoebe BridgersGracie Abrams,—,—,2023-05-14,Phoebe_Bridgers,Philadelphia,-75.13,40.01,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGayle,—,—,2023-05-19,Gayle,Foxborough,-71.248333,42.065278,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGayle,—,—,2023-05-19,Phoebe_Bridgers,Foxborough,-71.248333,42.065278,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGayle,—,—,2023-05-20,Gayle,Foxborough,-71.248333,42.065278,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGayle,—,—,2023-05-20,Phoebe_Bridgers,Foxborough,-71.248333,42.065278,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-21,Gracie_Abrams,Foxborough,-71.248333,42.065278,eras
+Foxborough,United States,Gillette Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-21,Phoebe_Bridgers,Foxborough,-71.248333,42.065278,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersGayle,—,—,2023-05-26,Gayle,East Rutherford,-74.085024,40.817097,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersGayle,—,—,2023-05-26,Phoebe_Bridgers,East Rutherford,-74.085024,40.817097,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-27,Gracie_Abrams,East Rutherford,-74.085024,40.817097,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersGracie Abrams,—,—,2023-05-27,Phoebe_Bridgers,East Rutherford,-74.085024,40.817097,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersOwenn,—,—,2023-05-28,Owenn,East Rutherford,-74.085024,40.817097,eras
+East Rutherford,United States,MetLife Stadium,Phoebe BridgersOwenn,—,—,2023-05-28,Phoebe_Bridgers,East Rutherford,-74.085024,40.817097,eras
+Chicago,United States,Soldier Field,Girl in RedOwenn,—,—,2023-06-02,Girl_in_Red,Chicago,-87.68,41.84,eras
+Chicago,United States,Soldier Field,Girl in RedOwenn,—,—,2023-06-02,Owenn,Chicago,-87.68,41.84,eras
+Chicago,United States,Soldier Field,Girl in RedOwenn,—,—,2023-06-03,Girl_in_Red,Chicago,-87.68,41.84,eras
+Chicago,United States,Soldier Field,Girl in RedOwenn,—,—,2023-06-03,Owenn,Chicago,-87.68,41.84,eras
+Chicago,United States,Soldier Field,MunaGracie Abrams,—,—,2023-06-04,Gracie_Abrams,Chicago,-87.68,41.84,eras
+Chicago,United States,Soldier Field,MunaGracie Abrams,—,—,2023-06-04,Muna,Chicago,-87.68,41.84,eras
+Detroit,United States,Ford Field,Girl in RedGracie Abrams,—,—,2023-06-09,Girl_in_Red,Detroit,-83.1,42.38,eras
+Detroit,United States,Ford Field,Girl in RedGracie Abrams,—,—,2023-06-09,Gracie_Abrams,Detroit,-83.1,42.38,eras
+Detroit,United States,Ford Field,Girl in RedOwenn,—,—,2023-06-10,Girl_in_Red,Detroit,-83.1,42.38,eras
+Detroit,United States,Ford Field,Girl in RedOwenn,—,—,2023-06-10,Owenn,Detroit,-83.1,42.38,eras
+Pittsburgh,United States,Acrisure Stadium,Girl in RedGracie Abrams,—,—,2023-06-16,Girl_in_Red,Pittsburgh,-79.98,40.44,eras
+Pittsburgh,United States,Acrisure Stadium,Girl in RedGracie Abrams,—,—,2023-06-16,Gracie_Abrams,Pittsburgh,-79.98,40.44,eras
+Pittsburgh,United States,Acrisure Stadium,Girl in RedOwenn,—,—,2023-06-17,Girl_in_Red,Pittsburgh,-79.98,40.44,eras
+Pittsburgh,United States,Acrisure Stadium,Girl in RedOwenn,—,—,2023-06-17,Owenn,Pittsburgh,-79.98,40.44,eras
+Minneapolis,United States,U.S. Bank Stadium,Girl in RedGracie Abrams,—,—,2023-06-23,Girl_in_Red,Minneapolis,-93.27,44.96,eras
+Minneapolis,United States,U.S. Bank Stadium,Girl in RedGracie Abrams,—,—,2023-06-23,Gracie_Abrams,Minneapolis,-93.27,44.96,eras
+Minneapolis,United States,U.S. Bank Stadium,Girl in RedOwenn,—,—,2023-06-24,Girl_in_Red,Minneapolis,-93.27,44.96,eras
+Minneapolis,United States,U.S. Bank Stadium,Girl in RedOwenn,—,—,2023-06-24,Owenn,Minneapolis,-93.27,44.96,eras
+Cincinnati,United States,Paycor Stadium,MunaGracie Abrams,—,—,2023-06-30,Gracie_Abrams,Cincinnati,-84.51,39.14,eras
+Cincinnati,United States,Paycor Stadium,MunaGracie Abrams,—,—,2023-06-30,Muna,Cincinnati,-84.51,39.14,eras
+Cincinnati,United States,Paycor Stadium,Muna[c],—,—,2023-07-01,Muna,Cincinnati,-84.51,39.14,eras
+Kansas City,United States,GEHA Field at Arrowhead Stadium,MunaGracie Abrams,—,—,2023-07-07,Gracie_Abrams,Kansas City,-94.55,39.12,eras
+Kansas City,United States,GEHA Field at Arrowhead Stadium,MunaGracie Abrams,—,—,2023-07-07,Muna,Kansas City,-94.55,39.12,eras
+Kansas City,United States,GEHA Field at Arrowhead Stadium,MunaGracie Abrams,—,—,2023-07-08,Gracie_Abrams,Kansas City,-94.55,39.12,eras
+Kansas City,United States,GEHA Field at Arrowhead Stadium,MunaGracie Abrams,—,—,2023-07-08,Muna,Kansas City,-94.55,39.12,eras
+Denver,United States,Empower Field at Mile High,MunaGracie Abrams,—,—,2023-07-14,Gracie_Abrams,Denver,-104.87,39.77,eras
+Denver,United States,Empower Field at Mile High,MunaGracie Abrams,—,—,2023-07-14,Muna,Denver,-104.87,39.77,eras
+Denver,United States,Empower Field at Mile High,MunaGracie Abrams,—,—,2023-07-15,Gracie_Abrams,Denver,-104.87,39.77,eras
+Denver,United States,Empower Field at Mile High,MunaGracie Abrams,—,—,2023-07-15,Muna,Denver,-104.87,39.77,eras
+Seattle,United States,Lumen Field,HaimGracie Abrams,—,—,2023-07-22,Gracie_Abrams,Seattle,-122.35,47.62,eras
+Seattle,United States,Lumen Field,HaimGracie Abrams,—,—,2023-07-22,Haim,Seattle,-122.35,47.62,eras
+Seattle,United States,Lumen Field,HaimGracie Abrams,—,—,2023-07-23,Gracie_Abrams,Seattle,-122.35,47.62,eras
+Seattle,United States,Lumen Field,HaimGracie Abrams,—,—,2023-07-23,Haim,Seattle,-122.35,47.62,eras
+Santa Clara,United States,Levi's Stadium,HaimGracie Abrams,—,—,2023-07-28,Gracie_Abrams,Santa Clara,-121.97,37.37,eras
+Santa Clara,United States,Levi's Stadium,HaimGracie Abrams,—,—,2023-07-28,Haim,Santa Clara,-121.97,37.37,eras
+Santa Clara,United States,Levi's Stadium,HaimGracie Abrams,—,—,2023-07-29,Gracie_Abrams,Santa Clara,-121.97,37.37,eras
+Santa Clara,United States,Levi's Stadium,HaimGracie Abrams,—,—,2023-07-29,Haim,Santa Clara,-121.97,37.37,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-03,Gracie_Abrams,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-03,Haim,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimOwenn,—,—,2023-08-04,Haim,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimOwenn,—,—,2023-08-04,Owenn,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGayle,—,—,2023-08-05,Gayle,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGayle,—,—,2023-08-05,Haim,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-07,Gracie_Abrams,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-07,Haim,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-08,Gracie_Abrams,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGracie Abrams,—,—,2023-08-08,Haim,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGayle,—,—,2023-08-09,Gayle,Los Angeles,-118.41,34.11,eras
+Inglewood,United States,SoFi Stadium,HaimGayle,—,—,2023-08-09,Haim,Los Angeles,-118.41,34.11,eras
+Mexico City,Mexico,Foro Sol,Sabrina Carpenter,—,—,2023-08-24,Sabrina_Carpenter,Mexico City,-99.14,19.43,eras
+Mexico City,Mexico,Foro Sol,Sabrina Carpenter,—,—,2023-08-25,Sabrina_Carpenter,Mexico City,-99.14,19.43,eras
+Mexico City,Mexico,Foro Sol,Sabrina Carpenter,—,—,2023-08-26,Sabrina_Carpenter,Mexico City,-99.14,19.43,eras
+Mexico City,Mexico,Foro Sol,Sabrina Carpenter,—,—,2023-08-27,Sabrina_Carpenter,Mexico City,-99.14,19.43,eras
+Buenos Aires,Argentina,Estadio River Plate,Sabrina Carpenter,—,—,2023-11-09,Sabrina_Carpenter,Buenos Aires,-58.37,-34.61,eras
+Buenos Aires,Argentina,Estadio River Plate,Sabrina Carpenter,—,—,2023-11-10,Sabrina_Carpenter,Buenos Aires,-58.37,-34.61,eras
+Buenos Aires,Argentina,Estadio River Plate,Sabrina Carpenter,—,—,2023-11-11,Sabrina_Carpenter,Buenos Aires,-58.37,-34.61,eras
+Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,Sabrina Carpenter,—,—,2023-11-17,Sabrina_Carpenter,Rio de Janeiro,-43.2,-22.91,eras
+Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,Sabrina Carpenter,—,—,2023-11-18,Sabrina_Carpenter,Rio de Janeiro,-43.2,-22.91,eras
+Rio de Janeiro,Brazil,Estádio Olímpico Nilton Santos,Sabrina Carpenter,—,—,2023-11-19,Sabrina_Carpenter,Rio de Janeiro,-43.2,-22.91,eras
+São Paulo,Brazil,Allianz Parque,Sabrina Carpenter,—,—,2023-11-24,Sabrina_Carpenter,Sao Paulo,-46.633333,-23.55,eras
+São Paulo,Brazil,Allianz Parque,Sabrina Carpenter,—,—,2023-11-25,Sabrina_Carpenter,Sao Paulo,-46.633333,-23.55,eras
+São Paulo,Brazil,Allianz Parque,Sabrina Carpenter,—,—,2023-11-26,Sabrina_Carpenter,Sao Paulo,-46.633333,-23.55,eras
+Tokyo,Japan,Tokyo Dome,—,—,—,2024-02-07,no_opening_acts_scheduled,Tokyo,139.77,35.67,eras
+Tokyo,Japan,Tokyo Dome,—,—,—,2024-02-08,no_opening_acts_scheduled,Tokyo,139.77,35.67,eras
+Tokyo,Japan,Tokyo Dome,—,—,—,2024-02-09,no_opening_acts_scheduled,Tokyo,139.77,35.67,eras
+Tokyo,Japan,Tokyo Dome,—,—,—,2024-02-10,no_opening_acts_scheduled,Tokyo,139.77,35.67,eras
+Melbourne,Australia,Melbourne Cricket Ground,Sabrina Carpenter,—,—,2024-02-16,Sabrina_Carpenter,Melbourne,144.96,-37.81,eras
+Melbourne,Australia,Melbourne Cricket Ground,Sabrina Carpenter,—,—,2024-02-17,Sabrina_Carpenter,Melbourne,144.96,-37.81,eras
+Melbourne,Australia,Melbourne Cricket Ground,Sabrina Carpenter,—,—,2024-02-18,Sabrina_Carpenter,Melbourne,144.96,-37.81,eras
+Sydney,Australia,Accor Stadium,Sabrina Carpenter,—,—,2024-02-23,Sabrina_Carpenter,Sydney,151.21,-33.87,eras
+Sydney,Australia,Accor Stadium,Sabrina Carpenter,—,—,2024-02-24,Sabrina_Carpenter,Sydney,151.21,-33.87,eras
+Sydney,Australia,Accor Stadium,Sabrina Carpenter,—,—,2024-02-25,Sabrina_Carpenter,Sydney,151.21,-33.87,eras
+Sydney,Australia,Accor Stadium,Sabrina Carpenter,—,—,2024-02-26,Sabrina_Carpenter,Sydney,151.21,-33.87,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-02,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-03,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-04,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-07,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-08,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Singapore,Singapore,Singapore National Stadium,Sabrina Carpenter,—,—,2024-03-09,Sabrina_Carpenter,Singapore,103.85,1.3,eras
+Nanterre,France,Paris La Défense Arena,Paramore,—,—,2024-05-09,Paramore,Paris,2.352222,48.856667,eras
+Nanterre,France,Paris La Défense Arena,Paramore,—,—,2024-05-10,Paramore,Paris,2.352222,48.856667,eras
+Nanterre,France,Paris La Défense Arena,Paramore,—,—,2024-05-11,Paramore,Paris,2.352222,48.856667,eras
+Nanterre,France,Paris La Défense Arena,Paramore,—,—,2024-05-12,Paramore,Paris,2.352222,48.856667,eras
+Stockholm,Sweden,Friends Arena,Paramore,—,—,2024-05-17,Paramore,Stockholm,18.07,59.33,eras
+Stockholm,Sweden,Friends Arena,Paramore,—,—,2024-05-18,Paramore,Stockholm,18.07,59.33,eras
+Stockholm,Sweden,Friends Arena,Paramore,—,—,2024-05-19,Paramore,Stockholm,18.07,59.33,eras
+Lisbon,Portugal,Estádio da Luz,Paramore,—,—,2024-05-24,Paramore,Lisbon,-9.14,38.72,eras
+Lisbon,Portugal,Estádio da Luz,Paramore,—,—,2024-05-25,Paramore,Lisbon,-9.14,38.72,eras
+Madrid,Spain,Santiago Bernabéu Stadium,Paramore,—,—,2024-05-30,Paramore,Madrid,-3.71,40.42,eras
+Décines-Charpieu,France,Groupama Stadium,Paramore,—,—,2024-06-02,Paramore,Lyon,4.84,45.76,eras
+Décines-Charpieu,France,Groupama Stadium,Paramore,—,—,2024-06-03,Paramore,Lyon,4.84,45.76,eras
+Edinburgh,Scotland,Murrayfield Stadium,Paramore,—,—,2024-06-07,Paramore,Edinburgh,-3.189167,55.953333,eras
+Edinburgh,Scotland,Murrayfield Stadium,Paramore,—,—,2024-06-08,Paramore,Edinburgh,-3.189167,55.953333,eras
+Edinburgh,Scotland,Murrayfield Stadium,Paramore,—,—,2024-06-09,Paramore,Edinburgh,-3.189167,55.953333,eras
+Liverpool,England,Anfield,Paramore,—,—,2024-06-13,Paramore,Liverpool,-2.991944,53.4075,eras
+Liverpool,England,Anfield,Paramore,—,—,2024-06-14,Paramore,Liverpool,-2.991944,53.4075,eras
+Liverpool,England,Anfield,Paramore,—,—,2024-06-15,Paramore,Liverpool,-2.991944,53.4075,eras
+Cardiff,Wales,Principality Stadium,Paramore,—,—,2024-06-18,Paramore,Cardiff,-3.183333,51.483333,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-06-21,Paramore,London,-0.1275,51.507222,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-06-22,Paramore,London,-0.1275,51.507222,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-06-23,Paramore,London,-0.1275,51.507222,eras
+Dublin,Ireland,Aviva Stadium,Paramore,—,—,2024-06-28,Paramore,Dublin,-6.25,53.33,eras
+Dublin,Ireland,Aviva Stadium,Paramore,—,—,2024-06-29,Paramore,Dublin,-6.25,53.33,eras
+Dublin,Ireland,Aviva Stadium,Paramore,—,—,2024-06-30,Paramore,Dublin,-6.25,53.33,eras
+Amsterdam,Netherlands,Johan Cruyff Arena,Paramore,—,—,2024-07-04,Paramore,Amsterdam,4.89,52.37,eras
+Amsterdam,Netherlands,Johan Cruyff Arena,Paramore,—,—,2024-07-05,Paramore,Amsterdam,4.89,52.37,eras
+Amsterdam,Netherlands,Johan Cruyff Arena,Paramore,—,—,2024-07-06,Paramore,Amsterdam,4.89,52.37,eras
+Zürich,Switzerland,Letzigrund,Paramore,—,—,2024-07-09,Paramore,Zurich,8.541111,47.374444,eras
+Zürich,Switzerland,Letzigrund,Paramore,—,—,2024-07-10,Paramore,Zurich,8.541111,47.374444,eras
+Milan,Italy,San Siro,Paramore,—,—,2024-07-13,Paramore,Milan,9.19,45.48,eras
+Milan,Italy,San Siro,Paramore,—,—,2024-07-14,Paramore,Milan,9.19,45.48,eras
+Gelsenkirchen,Germany,Veltins-Arena,Paramore,—,—,2024-07-17,Paramore,Gelsenkirchen,7.11,51.51,eras
+Gelsenkirchen,Germany,Veltins-Arena,Paramore,—,—,2024-07-18,Paramore,Gelsenkirchen,7.11,51.51,eras
+Gelsenkirchen,Germany,Veltins-Arena,Paramore,—,—,2024-07-19,Paramore,Gelsenkirchen,7.11,51.51,eras
+Hamburg,Germany,Volksparkstadion,Paramore,—,—,2024-07-23,Paramore,Hamburg,10,53.55,eras
+Hamburg,Germany,Volksparkstadion,Paramore,—,—,2024-07-24,Paramore,Hamburg,10,53.55,eras
+Munich,Germany,Olympiastadion,Paramore,—,—,2024-07-27,Paramore,Munich,11.58,48.14,eras
+Munich,Germany,Olympiastadion,Paramore,—,—,2024-07-28,Paramore,Munich,11.58,48.14,eras
+Warsaw,Poland,PGE Narodowy,Paramore,—,—,2024-08-01,Paramore,Warsaw,21.02,52.26,eras
+Warsaw,Poland,PGE Narodowy,Paramore,—,—,2024-08-02,Paramore,Warsaw,21.02,52.26,eras
+Warsaw,Poland,PGE Narodowy,Paramore,—,—,2024-08-03,Paramore,Warsaw,21.02,52.26,eras
+Vienna,Austria,Ernst-Happel-Stadion,Paramore,—,—,2024-08-08,Paramore,Vienna,16.37,48.22,eras
+Vienna,Austria,Ernst-Happel-Stadion,Paramore,—,—,2024-08-09,Paramore,Vienna,16.37,48.22,eras
+Vienna,Austria,Ernst-Happel-Stadion,Paramore,—,—,2024-08-10,Paramore,Vienna,16.37,48.22,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-08-15,Paramore,London,-0.1275,51.507222,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-08-16,Paramore,London,-0.1275,51.507222,eras
+London,England,Wembley Stadium,Paramore,—,—,2024-08-17,Paramore,London,-0.1275,51.507222,eras
+Miami Gardens,United States,Hard Rock Stadium,Gracie Abrams,—,—,2024-10-18,Gracie_Abrams,Miami,-80.21,25.78,eras
+Miami Gardens,United States,Hard Rock Stadium,Gracie Abrams,—,—,2024-10-19,Gracie_Abrams,Miami,-80.21,25.78,eras
+Miami Gardens,United States,Hard Rock Stadium,Gracie Abrams,—,—,2024-10-20,Gracie_Abrams,Miami,-80.21,25.78,eras
+New Orleans,United States,Caesars Superdome,Gracie Abrams,—,—,2024-10-25,Gracie_Abrams,New Orleans,-89.93,30.07,eras
+New Orleans,United States,Caesars Superdome,Gracie Abrams,—,—,2024-10-26,Gracie_Abrams,New Orleans,-89.93,30.07,eras
+New Orleans,United States,Caesars Superdome,Gracie Abrams,—,—,2024-10-27,Gracie_Abrams,New Orleans,-89.93,30.07,eras
+Indianapolis,United States,Lucas Oil Stadium,Gracie Abrams,—,—,2024-11-01,Gracie_Abrams,Indianapolis,-86.15,39.78,eras
+Indianapolis,United States,Lucas Oil Stadium,Gracie Abrams,—,—,2024-11-02,Gracie_Abrams,Indianapolis,-86.15,39.78,eras
+Indianapolis,United States,Lucas Oil Stadium,Gracie Abrams,—,—,2024-11-03,Gracie_Abrams,Indianapolis,-86.15,39.78,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-14,Gracie_Abrams,Toronto,-79.38,43.65,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-15,Gracie_Abrams,Toronto,-79.38,43.65,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-16,Gracie_Abrams,Toronto,-79.38,43.65,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-21,Gracie_Abrams,Toronto,-79.38,43.65,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-22,Gracie_Abrams,Toronto,-79.38,43.65,eras
+Toronto,Canada,Rogers Centre,Gracie Abrams,—,—,2024-11-23,Gracie_Abrams,Toronto,-79.38,43.65,eras
