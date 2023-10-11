@@ -1,0 +1,12 @@
+colnames,val_def,cw_cat
+SLINTEND,Slaves intended from first port of purchase,Slaves.(numbers)
+SLINTEN2,Slaves intended from second port of purchase,Slaves.(numbers)
+NCAR13,Slaves carried from first port of purchase,Slaves.(numbers)
+NCAR15,Slaves carried from second port of purchase,Slaves.(numbers)
+NCAR17,Slaves carried from third port of purchase,Slaves.(numbers)
+TSLAVESP,Total slaves purchased,Slaves.(numbers)
+TSLAVESD,Total slaves on board at departure from last slaving port,Slaves.(numbers)
+SLAARRIV,Total slaves arrived at first port of disembarkation,Slaves.(numbers)
+SLAS32,Slaves disembarked at first place,Slaves.(numbers)
+SLAS36,Slaves disembarked at second place,Slaves.(numbers)
+SLAS39,Slaves disembarked at third place,Slaves.(numbers)
