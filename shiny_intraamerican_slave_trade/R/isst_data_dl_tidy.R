@@ -28,8 +28,13 @@ setwd(wd$R)
 # vars----
 setwd(wd$data)
 data.url <- "https://www.slavevoyages.org/documents/download/I-Am1.0.csv"
-
+data.sav <- "https://www.slavevoyages.org/documents/download/I-Am1.0.sav"
 # download csv if necessary
+if(!"I-Am1.0.sav" %in% list.files()){
+  download.file(url = data.sav, destfile = "I-Am10.sav")
+  rm(data.sav)
+}
+
 if(!"I-Am1.0.csv" %in% list.files()){
   download.file(url = data.url, destfile = "I-Am1.0.csv")
   rm(data.url)
@@ -37,7 +42,7 @@ if(!"I-Am1.0.csv" %in% list.files()){
 
 # load data----
 iast <- read_csv("I-Am1.0.csv")
-
+iastsav <- haven::read_sav("I-Am1.0.sav")
 # other datasets----
 slave.dates <- {data.frame(type = c("USA", "UK", 
                                    "Spain", "Netherlands", 
@@ -2483,3 +2488,27 @@ rm(cw_specific_places2, cw_specific_regions, cw_broad.regions)
 
 
 # explore data----
+iast
+
+ls(pattern = "^cw_") %>%
+  grep("voyage|yoyage|place", ., value = T)
+
+cw_specific_places
+
+cw_slaves.chars
+cw_slaves.numbers
+
+#cw_imp_voyage.dates
+cw_imp_yoyage.itinerary
+
+cw_voyage.itinerary[grepl("place of|port of", cw_voyage.itinerary$val_def),]
+
+colnames(iast) %>% sort() %>%
+  grep("port|pla|loc|reg|country|col|state", ., value = T)
+
+iast$sla1port
+
+iast[iast$year100 == 1700,] %>% 
+  group_by(voyageid) %>%
+  summarise(n = n()) %>%
+  .$n %>% table
