@@ -8,6 +8,7 @@ library(magrittr)
 library(magick)
 library(stringi)
 library(pdftools)
+library(ggplot2)
 
 #https://stackoverflow.com/questions/54000691/extracting-tables-from-jpeg-into-a-dataframe-in-r
 
@@ -79,37 +80,14 @@ data.out <- gsub(pattern = "(?<=\\d) | (?=\\d)",
 
 colnames(data.out) <- colnames.out
 
+data.out
 
-# gsub(pattern = "(?<=\\d) | (?=\\d)", 
-#      replacement = "_", 
-#      x = "bob 3.3 5 tina", perl = T)
-# 
-# # (img2 <- img %>% 
-# #   image_ocr() %>% 
-# #   read_fwf(., 
-# #            col_positions = fwf_cols(name = c(1, 20), 
-# #                                     g = c(21, 27), 
-# #                                     cl = c(28, 32), 
-# #                                     Kn = c(33, 38), 
-# #                                     pa = c(39, 50)),
-# #            skip = 4, skip_empty_rows = T
-# #            ) %>%
-# #     .[!is.na(.$name),]
-# #   )
-# 
-# 
-# 
-# 
-# temp.data <- img %>%
-#   image_ocr()
-# 
-# temp.data %>%
-#   stri_split(fixed = "\n") %>%
-#   purrr::map(~ stringi::stri_split(str = ., fixed = "‘")) %>%
-#   .[[1]] %>%
-#   purrr::map_df(~ tibble::tibble(name = .[1],
-#                                  weight = .[2],
-#                                  crossload_Kn = .[3],
-#                                  result_Kn = .[4],
-#                                  pa = .[5])) %>%
-#   dplyr::glimpse()
+ggplot(data = data.out, 
+       aes(x = crossload_mbs_Kn, y = result_Kn))+
+  geom_point()+
+  geom_function(fun = function(x) x , 
+                linetype = 2, 
+                aes(color = ("safe line")))+
+  xlim(0,NA)+
+  ylim(0,NA)
+
