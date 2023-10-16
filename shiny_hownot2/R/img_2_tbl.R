@@ -25,7 +25,11 @@ wd <- list(img    = "C:/Users/bende/Documents/R/play/shiny_misc/shiny_hownot2/da
 # get image----
 setwd(wd$img)
 
-
+df.text.fixes <- data.frame(from1 = c("CAMP Nano 22", "\\|"), 
+                            to1   = c("CAMP Nano22", "I"))
+colnames.out <- c("name", "weight_g", "crossload_mbs_Kn", 
+              "result_Kn", "pulled_against")
+skip_n <- 3
 img.title <- "cross_loading_carabiners"
 img.url   <- "https://static.wixstatic.com/media/c990e4_1f596631067f4cf38c9e79a6a72ba0de~mv2.jpg"
 
@@ -34,37 +38,67 @@ img.url   <- "https://static.wixstatic.com/media/c990e4_1f596631067f4cf38c9e79a6
 # file.copy(from = paste0(img.title,".jpg"), to   = "table.jpg", 
 #           overwrite = ) # for processing
 
-
-
-# convert to PDF
 file.copy("cross_loading_carabiners.jpg", "table.jpg", overwrite = T)
 
-library(jpeg)
-library(grid)
-image <- readJPEG("table.jpg")
-pdf("table.pdf", width = 8, height = 10)
-grid.raster(image)
-dev.off()
+# read image
+img <- image_read("table.jpg") %>% 
+  image_ocr() #%>%
+  # image_crop(geometry_area(y = 35))  %>%
+  # image_transparent("white", fuzz=50) %>%
+  # image_background("white") %>%
+  # image_negate() %>%
+  # image_morphology(method = "Thinning", kernel = "Rectangle:20x1+0+0^<") %>%
+  # image_negate()
 
-# read pdf
-#pdftools::pdf_ocr_data("table.pdf")
-x <- pdftools::pdf_ocr_text("table.pdf")
+# preprocessing
 
-cat(x)
-x
-read_tsv(x)
-# # preprocessing
-# img <- image_read("table.png") %>% 
-#   image_crop(geometry_area(y = 35))  %>% 
-#   image_transparent("white", fuzz=50) %>% 
-#   image_background("white") %>%
-#   image_negate() %>%
-#   image_morphology(method = "Thinning", kernel = "Rectangle:20x1+0+0^<") %>%
-#   image_negate()
+for(i in 1:nrow(df.text.fixes)){
+  img <- gsub(pattern = df.text.fixes$from1[i], 
+       replacement = df.text.fixes$to1[i], 
+       x = img)
+}
+
+
+data1 <- img %>%
+  read_lines() %>%
+  .[!. %in% c("")]
+
+
+
+
+data.out <- gsub(pattern = "(?<=\\d) | (?=\\d)", 
+     replacement = "_", 
+     x = data1, perl = T) %>%
+  gsub(pattern = " \\(.*\\)$", "", .) %>%
+  strsplit(., "_") %>%
+  lapply(., paste0, collapse = ",") %>%
+  unlist() %>%
+  .[(1:length(.)) > skip_n] %>%
+  paste0(., collapse = "\n") %>%
+  read_csv(., col_names = F)
+
+colnames(data.out) <- colnames.out
+
+
+# gsub(pattern = "(?<=\\d) | (?=\\d)", 
+#      replacement = "_", 
+#      x = "bob 3.3 5 tina", perl = T)
 # 
-# img
+# # (img2 <- img %>% 
+# #   image_ocr() %>% 
+# #   read_fwf(., 
+# #            col_positions = fwf_cols(name = c(1, 20), 
+# #                                     g = c(21, 27), 
+# #                                     cl = c(28, 32), 
+# #                                     Kn = c(33, 38), 
+# #                                     pa = c(39, 50)),
+# #            skip = 4, skip_empty_rows = T
+# #            ) %>%
+# #     .[!is.na(.$name),]
+# #   )
 # 
-# #image_read("table.png") %>% image_ocr() %>% read_tsv()
+# 
+# 
 # 
 # temp.data <- img %>%
 #   image_ocr()
@@ -73,9 +107,9 @@ read_tsv(x)
 #   stri_split(fixed = "\n") %>%
 #   purrr::map(~ stringi::stri_split(str = ., fixed = "‘")) %>%
 #   .[[1]] %>%
-#   purrr::map_df(~ tibble::tibble(name = .[1], 
-#                                  weight = .[2], 
+#   purrr::map_df(~ tibble::tibble(name = .[1],
+#                                  weight = .[2],
 #                                  crossload_Kn = .[3],
-#                                  result_Kn = .[4], 
+#                                  result_Kn = .[4],
 #                                  pa = .[5])) %>%
 #   dplyr::glimpse()
