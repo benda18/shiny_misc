@@ -99,16 +99,14 @@ dfout_cowstail.slow <- pd(img.filename = img.title,
                                 colnames.out = co_v, 
                                 skip_n = skip_rows)
 
-img.title <- "cows_tail_drop_test_200lbs.jpg"
-co_v <- c("test", 
-  "material", "length", "knot", "kn", "notes")
-skip_rows <- 0
 
-dfout_cowstail.200lbs <- pd(img.filename = img.title, 
-                            find.replace = df_fr, 
-                            colnames.out = co_v, 
-                            skip_n = skip_rows) %>%
-  .[!colnames(.) %in% c("test")]
+
+dfout_cowstail.200lbs <- data.frame(material = c(NA), 
+                                    length   = c(NA), 
+                                    knot     = c(NA), 
+                                    kn       = c(NA), 
+                                    notes    = c(NA), 
+                                    filename = "cows_tail_drop_test_slowpull.jpg")
 
 
 dfout_cowstail.300lbs <- data.frame(material = c(rep("dynamic", 8), 
@@ -124,14 +122,20 @@ dfout_cowstail.300lbs <- data.frame(material = c(rep("dynamic", 8),
                                     kn = c(6.76, 10.43,  6.59,  9.44, 12.49, 12.87,  9.54,  8.41, 
                                            10.21, 17.04,  8.92, 12.61, 17.94, 
                                            13.37, 14.10, 
-                                           13.61, 12.38, 17.38)) %>%
+                                           13.61, 12.38, 17.38),
+                                    notes = NA, 
+                                    filename = "cows_tail_drop_test_300lbs.jpg") %>%
   as_tibble() %>%
   mutate(., 
          knot = ifelse(knot == "1", "fresh", knot), 
          knot = ifelse(knot == "2", "rock hard", knot))
 
-dfout_cowstail.300lbs
+dfout_cowstail <- rbind(dfout_cowstail.300lbs,
+      dfout_cowstail.200lbs) %>%
+  rbind(., 
+        dfout_cowstail.slow)
 
+rm(dfout_cowstail.200lbs, dfout_cowstail.300lbs, dfout_cowstail.slow)
 
 # save as RData----
 
