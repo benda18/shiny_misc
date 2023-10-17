@@ -137,14 +137,42 @@ dfout_cowstail <- rbind(dfout_cowstail.300lbs,
 
 rm(dfout_cowstail.200lbs, dfout_cowstail.300lbs, dfout_cowstail.slow)
 
+
+# ropes in sharp hangers----
+# col_kn <- image_read(path = "table.jpg") %>%
+#   image_ocr() %>% read_lines()
+# col_hanger <- image_read(path = "table.jpg") %>%
+#   image_ocr() %>% read_lines() %>% .[!. %in% ""]
+# col_rope <- image_read(path = "table.jpg") %>%
+#   image_ocr() %>% read_lines()
+# col_config <- image_read(path = "table.jpg") %>%
+#   image_ocr() %>% read_lines()
+# col_notes <- image_read(path = "table.jpg") %>%
+#   image_ocr() %>% read_lines() %>%
+#   .[!. %in% c("Notes", "")]
+
+
+(dfout_ropesinshaprhangers <- data.frame(hanger = col_hanger, 
+                                        rope = col_rope,
+                                        configuration = col_config,
+                                        results.Kn = col_kn, 
+                                        notes = col_notes) %>%
+  as_tibble())
+
+
 # save as RData----
 
 setwd(wd$output)
+
+load(file = "hownot2.RData")
+
 save(list = ls(pattern = "^dfout_"), 
      file = "hownot2.RData")
 setwd(wd$img)
 
 # remove files
+
+
 
 
 
