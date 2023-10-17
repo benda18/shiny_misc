@@ -70,7 +70,7 @@ setwd(wd$cw)
 
 
 if(! "cw_specific_places.csv" %in% list.files()){
-  download.file(url = "https://raw.githubusercontent.com/benda18/shiny_misc/087c931c7775131ed0a1a3a86aef705be04065f4/shiny_intraamerican_slave_trade/crosswalks/cw_specific_places.csv", 
+  download.file(url = "https://raw.githubusercontent.com/benda18/shiny_misc/main/shiny_intraamerican_slave_trade/crosswalks/cw_specific_places.csv", 
                 destfile = "cw_specific_places.csv")
 }
 
