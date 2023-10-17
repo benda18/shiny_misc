@@ -191,8 +191,11 @@ save(list = ls(pattern = "^dfout_"),
 setwd(wd$img)
 
 # remove files
+getwd()
 
+remove.jpg <- list.files(pattern = "\\.jpg")
 
+file.remove(remove.jpg)
 
 
 
