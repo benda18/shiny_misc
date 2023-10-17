@@ -160,6 +160,26 @@ rm(dfout_cowstail.200lbs, dfout_cowstail.300lbs, dfout_cowstail.slow)
   as_tibble())
 
 
+# climbing gym falls----
+hardiseasy_640hz <- image_read(path = "table.jpg") %>%
+  image_ocr() %>% 
+  gsub(" ", ", ", .) 
+
+hardiseasy_640hz <- "4.01, 3.56, 4.09, 3.95, 4.64, 2.39, 2.73, 3.22, 3.76, 3.93, 4.53, 3.92\n
+1.53, 1.29, 1.66, 1.46, 1.87, 0.54, 0.85, 0.59, 1.32, 1.26, 0.83, 0.54\n
+2.46, 2.35, 2.56, 2.34, 2.89, 1.41, 1.68, 2.11, 2.56, 2.75, 2.92, 2.36\n
+3.99, 3.64, 4.22, 3.8, 4.76, 1.95, 2.53, 2.7, 3.88, 4.01, 3.75, 2.9\n
+0.02, -0.08, 0.13, 0.15, -0.12, 0.44, 0.2, 0.52, -0.12, -0.08, 0.78, 1.02\n" %>% 
+  read_csv(., col_names = F)
+
+hardiseasy_640hz <- t(hardiseasy_640hz) %>% 
+  as.data.frame()
+
+colnames(hardiseasy_640hz) <- c('quickdraw', "belayer", "climber", 
+                                "belayer_climber", "friction_difference")
+
+dfout_hardiseasy_640hz <- hardiseasy_640hz
+
 # save as RData----
 
 setwd(wd$output)
