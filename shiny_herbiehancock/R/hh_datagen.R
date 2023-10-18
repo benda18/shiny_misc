@@ -2,6 +2,8 @@
 library(lubridate)
 library(ggplot2)
 library(dplyr)
+library(tesseract)
+library(magick)
 
 
 setwd("~/R/play/shiny_misc/shiny_herbiehancock/output")
@@ -1229,3 +1231,11 @@ ggplot() +
   geom_point(data = studio.albums, 
              aes(x = year, y = "solo studio albums"))+
   scale_x_continuous(limits = c(year(ymd(19400412)),year(Sys.Date())))
+
+
+tableNimages <- list.files(pattern = "^table\\d\\{1,}.jpg$")
+
+magick::image_read("table1.jpg") %>%
+  tesseract::ocr() %>%
+  read_lines() %>%
+  .[!. %in% ""]
