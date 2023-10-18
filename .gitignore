@@ -1,3 +1,8 @@
+# Manually Identified Files
+*.xml.gz
+discogs_20160101_artists.xml
+discogs_20160101_releases.xml
+
 # History files
 .Rhistory
 .Rapp.history
