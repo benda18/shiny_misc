@@ -972,12 +972,12 @@ discog <- discog %>% inner_join(., album.eras)
 discog$era_name_f <- factor(discog$era_name, levels = eras$era_name)
 
 #deaths----
-deaths <- rbind(data.frame(artist = "Dexter Gordon", year = ymd(19900425)),
-                data.frame(artist = "Tony Williams", year = ymd(19970223)),
-                data.frame(artist = "Donald Byrd", year = ymd(20130204)), 
-                data.frame(artist = "Wayne Shorter", year = ymd(20230302)), 
-                data.frame(artist = "Paul Jackson Jr", year = ymd(20210318)),
-                data.frame(artist = "Wah Wah Watson", year = mdy("October 24, 2018")))
+deaths <- rbind(data.frame(artist = "Dexter Gordon", died = ymd(19900425)),
+                data.frame(artist = "Tony Williams", died = ymd(19970223)),
+                data.frame(artist = "Donald Byrd", died = ymd(20130204)), 
+                data.frame(artist = "Wayne Shorter", died = ymd(20230302)), 
+                data.frame(artist = "Paul Jackson Jr", died = ymd(20210318)),
+                data.frame(artist = "Wah Wah Watson", died = mdy("October 24, 2018")))
 
 titleyr <- discog %>% group_by(title, year) %>% summarise()
 titleyr$title <- titleyr$title %>% as.character()
@@ -1098,7 +1098,7 @@ ggplot() +
         legend.position = "none",
         axis.text.x = element_text(angle = 45, h = 1),
         text = element_text(size = 10)) #+
-  #ggsave("resume.png", device = "png", width = 4, height = 1.5, units = "in", dpi = 300)
+#ggsave("resume.png", device = "png", width = 4, height = 1.5, units = "in", dpi = 300)
 
 # ggplot() + 
 #   geom_dotplot(data = discog ,
@@ -1153,3 +1153,79 @@ save(list = ls(),
 
 # set wd back to home
 setwd("~/R/play")
+
+
+
+album.eras
+albums
+artist.tenure
+#artistXalbum
+
+discog
+deaths
+eras
+titleyr[order(titleyr$year),]
+
+studio.albums <- tibble::tribble(
+  ~Studio.albums,
+  "Takin' Off (1962)",
+  "My Point of View (1963)",
+  "Inventions & Dimensions (1963)",
+  "Empyrean Isles (1964)",
+  "Maiden Voyage (1965)",
+  "Speak Like a Child (1968)",
+  "The Prisoner (1969)",
+  "Fat Albert Rotunda (1969)",
+  "Mwandishi (1971)",
+  "Crossings (1972)",
+  "Sextant (1973)",
+  "Head Hunters (1973)",
+  "Dedication (1974)",
+  "Thrust (1974)",
+  "Man-Child (1975)",
+  "Secrets (1976)",
+  "Third Plane (1977)",
+  "Herbie Hancock Trio (1977)",
+  "Sunlight (1978)",
+  "Directstep (1979)",
+  "The Piano (1979)",
+  "Feets, Don't Fail Me Now (1979)",
+  "Monster (1980)",
+  "Mr. Hands (1980)",
+  "Magic Windows (1981)",
+  "Herbie Hancock Trio (1982)",
+  "Quartet (1982)",
+  "Lite Me Up (1982)",
+  "Future Shock (1983)",
+  "Sound-System (1984)",
+  "Village Life (1985)",
+  "Perfect Machine (1988)",
+  "A Tribute to Miles (1994)",
+  "Dis Is da Drum (1994)",
+  "The New Standard (1996)",
+  "1+1 (1997)",
+  "Gershwin's World (1998)",
+  "Future 2 Future (2001)",
+  "Possibilities (2005)",
+  "River: The Joni Letters (2007)",
+  "The Imagine Project (2010)"
+)
+
+studio.albums <- studio.albums %>% as_tibble()
+studio.albums$album <- studio.albums$Studio.albums %>%
+  gsub("\\(.*$", "", .) %>%
+  trimws()
+studio.albums$year <- strsplit(studio.albums$Studio.albums, 
+                               split = "\\(") %>%
+  lapply(., last) %>%
+  unlist() %>%
+  trimws() %>%
+  gsub("\\)", "", .) %>%
+  as.numeric
+
+
+
+ggplot() + 
+  geom_point(data = studio.albums, 
+             aes(x = year, y = "solo studio albums"))+
+  scale_x_continuous(limits = c(year(ymd(19400412)),year(Sys.Date())))
