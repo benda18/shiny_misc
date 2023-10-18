@@ -3,6 +3,11 @@ library(lubridate)
 library(ggplot2)
 library(dplyr)
 
+
+setwd("~/R/play/shiny_misc/shiny_herbiehancock/output")
+rm(list=ls());cat('\f');gc()
+
+# Funs----
 fun_artist <- function(title, year, artist, 
                        instrument, label, instrument_type = NA) {
   df <- data.frame(title = title, 
@@ -14,6 +19,8 @@ fun_artist <- function(title, year, artist,
   return(df)
 }
 
+
+# manual data----
 discog <- rbind(fun_artist("takin' off", 19620528, 
                            "Dexter Gordon", "tenor sax", "blue note"),
                 fun_artist("takin' off", 19620528, 
@@ -475,16 +482,16 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                            label = "columbia", artist = "Herbie Hancock", 
                            instrument = "vocals", instrument_type = ""),
                 fun_artist(title = "head hunters", year = 19731013, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "bass", instrument_type = ""), 
                 fun_artist(title = "head hunters", year = 19731013, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "electric bass", instrument_type = ""),
                 fun_artist(title = "head hunters", year = 19731013, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "marimba", instrument_type = ""),
                 fun_artist(title = "head hunters", year = 19731013, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "marimbula", instrument_type = ""),
                 fun_artist(title = "head hunters", year = 19731013, 
                            label = "columbia", artist = "Paul Jackson Jr", 
@@ -598,10 +605,10 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                            label = "columbia", artist = "Herbie Hancock", 
                            instrument = "vocals", instrument_type = ""),
                 fun_artist(title = "thrust", year = 19740901, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "bass", instrument_type = ""),
                 fun_artist(title = "thrust", year = 19740901, 
-                           label = "columbia", artist = "Paul Jackson", 
+                           label = "columbia", artist = "Paul Jackson Jr", 
                            instrument = "electric bass", instrument_type = ""),
                 fun_artist(title = "thrust", year = 19740901, 
                            label = "columbia", artist = "Bennie Maupin", 
@@ -677,7 +684,7 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                 fun_artist(title = "man-child", year = 19750822, label = "columbia", 
                            "Henry Davis", "electric bass", instrument_type = ""),
                 fun_artist(title = "man-child", year = 19750822, label = "columbia", 
-                           "Paul Jackson", "electric bass", instrument_type = ""),
+                           "Paul Jackson Jr", "electric bass", instrument_type = ""),
                 fun_artist(title = "man-child", year = 19750822, label = "columbia", 
                            "Louis Johnson", "electric bass", instrument_type = ""),
                 fun_artist(title = "man-child", year = 19750822, label = "columbia", 
@@ -725,7 +732,7 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                 fun_artist(title = "secrets", year = 19760801, label = "columbia", 
                            "Ray Parker Jr", "backing vocals", instrument_type = ""),
                 fun_artist(title = "secrets", year = 19760801, label = "columbia", 
-                           "Paul Jackson", "bass", instrument_type = ""),
+                           "Paul Jackson Jr", "bass", instrument_type = ""),
                 fun_artist(title = "secrets", year = 19760801, label = "columbia", 
                            "James Levi", "drums", instrument_type = ""),
                 fun_artist(title = "secrets", year = 19760801, label = "columbia", 
@@ -763,7 +770,7 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
                            "Byron Miller", "electric bass", instrument_type = ""),
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
-                           "Paul Jackson", "electric bass", instrument_type = ""),
+                           "Paul Jackson Jr", "electric bass", instrument_type = ""),
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
                            "Jaco Pastorius", "electric bass", instrument_type = ""),
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
@@ -805,13 +812,40 @@ discog <- rbind(fun_artist("takin' off", 19620528,
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
                            "Linda Wood", "strings", instrument_type = ""),
                 fun_artist(title = "sunlight", year = 19780615, label = "columbia", 
-                           "Emily VanValkenburgh", "strings", instrument_type = "")
-                
-)
+                           "Emily VanValkenburgh", "strings", instrument_type = "")) %>% 
+  as_tibble()
+
+# tidy---
+discog[discog$instrument_type == "" & 
+         !is.na(discog$instrument_type),]
+
+
+library(data.table)
+
+temp <- discog %>%
+  group_by(instrument, 
+           it_good = ifelse(instrument_type == "" | is.na(instrument_type),
+                            "BLANK", "INS.TYPE")) %>%
+  summarise(n = n()) %>%
+  as.data.table() %>%
+  dcast(., 
+        instrument ~ it_good, 
+        fill = 0) %>% 
+  as.data.frame() %>% as_tibble()
+
+
+temp$blank2 <- temp$BLANK != 0
+temp$ins.type2 <- temp$INS.TYPE != 0
+
+temp %>%
+  group_by(blank2, ins.type2) %>%
+  summarise(n = n())
+
+rm(temp)
 
 discog$artist <- tolower(discog$artist)
 #instrument type assignments----
-discog$instrument <- as.character(discog$instrument)
+#discog$instrument <- as.character(discog$instrument)
 discog$instrument_type[discog$instrument %in% c("harmonica", "wind")]           <- "wind"
 discog$instrument_type[discog$instrument %in% c("cornet", "trombone", 
                                                 "flugelhorn", "brass",
@@ -850,7 +884,7 @@ discog$instrument_type[discog$instrument %in% c("percussion", "drums", "congo",
                                                 "tabla",
                                                 "pipe", "marimba", "marimbula")] <- "percussion"
 
-synths <- discog
+#synths <- discog
 
 #instrument generalizations----
 discog$instrument[discog$instrument != "drums" & discog$instrument_type == "percussion"] <- "percussion"
@@ -938,9 +972,12 @@ discog <- discog %>% inner_join(., album.eras)
 discog$era_name_f <- factor(discog$era_name, levels = eras$era_name)
 
 #deaths----
-deaths <- rbind(data.frame(artist = "Dexter Gordon", year = ymd(19900425)),
-                data.frame(artist = "Tony Williams", year = ymd(19970223)),
-                data.frame(artist = "Donald Byrd", year = ymd(20130204)))
+deaths <- rbind(data.frame(artist = "Dexter Gordon", died = ymd(19900425)),
+                data.frame(artist = "Tony Williams", died = ymd(19970223)),
+                data.frame(artist = "Donald Byrd", died = ymd(20130204)), 
+                data.frame(artist = "Wayne Shorter", died = ymd(20230302)), 
+                data.frame(artist = "Paul Jackson Jr", died = ymd(20210318)),
+                data.frame(artist = "Wah Wah Watson", died = mdy("October 24, 2018")))
 
 titleyr <- discog %>% group_by(title, year) %>% summarise()
 titleyr$title <- titleyr$title %>% as.character()
@@ -953,7 +990,7 @@ titleyr$instrument_type <- "album"
 ggplot() + 
   scale_x_date(name = "Year", date_breaks = "1 year",
                date_labels = "%Y") +
-  scale_y_discrete(name = "Personnel") + 
+  scale_y_discrete() + 
   geom_path(data = discog,  color = "black",
             aes(x = year, y = instrument, 
                 group = instrument, linewidth = I(1.5))) +
@@ -961,10 +998,15 @@ ggplot() +
              aes(x = year, y = instrument, 
                  #shape = I(22), 
                  fill = title, size = I(3))) +
-  #facet_grid(instrument_type~artist, space = "free", scales = "free" ) +
+  facet_grid(instrument_type~., space = "free", scales = "free" ) +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "bottom",
         axis.text.x = element_text(angle = 90, h = 1))
+
+ggplot() + 
+  geom_bin2d(data = discog, 
+             aes(x = title, y = instrument_type))+
+  scale_fill_viridis_c(option = "C")
 
 ggplot() + 
   scale_x_discrete(name = "Album") +
@@ -1019,6 +1061,7 @@ hhe.artists <- discog %>% group_by(artist, era_name) %>% summarise() %>%
   .[.$era_name == "head hunters era",] %>% .$artist %>%
   unique() %>% as.character()
 
+
 ggplot() + 
   scale_x_date(name = "Year", date_labels = "%Y", date_breaks = "1 year") +
   scale_y_discrete(name = "Personnel") + 
@@ -1033,6 +1076,8 @@ ggplot() +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "bottom",
         axis.text.x = element_text(angle = 45, h = 1)) 
+
+
 # geom_text(data = deaths, 
 #            aes(x = year, y = artist, label = "RIP"))
 
@@ -1052,8 +1097,8 @@ ggplot() +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "none",
         axis.text.x = element_text(angle = 45, h = 1),
-        text = element_text(size = 10)) +
-  ggsave("resume.png", device = "png", width = 4, height = 1.5, units = "in", dpi = 300)
+        text = element_text(size = 10)) #+
+#ggsave("resume.png", device = "png", width = 4, height = 1.5, units = "in", dpi = 300)
 
 # ggplot() + 
 #   geom_dotplot(data = discog ,
@@ -1101,3 +1146,86 @@ ggplot() +
            aes(x = title, y = n)) +
   coord_flip() 
 
+# save .RData to output
+setwd("~/R/play/shiny_misc/shiny_herbiehancock/output")
+save(list = ls(), 
+     file = "herbiehancock.RData")
+
+# set wd back to home
+setwd("~/R/play")
+
+
+
+album.eras
+albums
+artist.tenure
+#artistXalbum
+
+discog
+deaths
+eras
+titleyr[order(titleyr$year),]
+
+studio.albums <- tibble::tribble(
+  ~Studio.albums,
+  "Takin' Off (1962)",
+  "My Point of View (1963)",
+  "Inventions & Dimensions (1963)",
+  "Empyrean Isles (1964)",
+  "Maiden Voyage (1965)",
+  "Speak Like a Child (1968)",
+  "The Prisoner (1969)",
+  "Fat Albert Rotunda (1969)",
+  "Mwandishi (1971)",
+  "Crossings (1972)",
+  "Sextant (1973)",
+  "Head Hunters (1973)",
+  "Dedication (1974)",
+  "Thrust (1974)",
+  "Man-Child (1975)",
+  "Secrets (1976)",
+  "Third Plane (1977)",
+  "Herbie Hancock Trio (1977)",
+  "Sunlight (1978)",
+  "Directstep (1979)",
+  "The Piano (1979)",
+  "Feets, Don't Fail Me Now (1979)",
+  "Monster (1980)",
+  "Mr. Hands (1980)",
+  "Magic Windows (1981)",
+  "Herbie Hancock Trio (1982)",
+  "Quartet (1982)",
+  "Lite Me Up (1982)",
+  "Future Shock (1983)",
+  "Sound-System (1984)",
+  "Village Life (1985)",
+  "Perfect Machine (1988)",
+  "A Tribute to Miles (1994)",
+  "Dis Is da Drum (1994)",
+  "The New Standard (1996)",
+  "1+1 (1997)",
+  "Gershwin's World (1998)",
+  "Future 2 Future (2001)",
+  "Possibilities (2005)",
+  "River: The Joni Letters (2007)",
+  "The Imagine Project (2010)"
+)
+
+studio.albums <- studio.albums %>% as_tibble()
+studio.albums$album <- studio.albums$Studio.albums %>%
+  gsub("\\(.*$", "", .) %>%
+  trimws()
+studio.albums$year <- strsplit(studio.albums$Studio.albums, 
+                               split = "\\(") %>%
+  lapply(., last) %>%
+  unlist() %>%
+  trimws() %>%
+  gsub("\\)", "", .) %>%
+  as.numeric
+
+
+
+ggplot() + 
+  geom_point(data = studio.albums, 
+             aes(x = year, y = "solo studio albums"))+
+  scale_x_continuous(limits = c(year(ymd(19400412)),year(Sys.Date())))
