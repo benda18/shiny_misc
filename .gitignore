@@ -2,6 +2,7 @@
 data/*.xml.gz
 data/discogs_20160101_artists.xml
 data/discogs_20160101_releases.xml
+R/api_token.R
 
 # History files
 .Rhistory
