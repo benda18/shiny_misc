@@ -2,7 +2,7 @@ library(jsonlite)
 library(curl)
 library(readr)
 library(glue)
-
+library(dplyr)
 
 setwd("~/R/play/shiny_misc/shiny_herbiehancock/output")
 rm(list=ls());cat('\f');gc()
@@ -16,10 +16,12 @@ jsonlite::fromJSON(ex1)
 "https://www.discogs.com/developers/#page:database,header:database-search"
 
 # search for artist----
-search_artist <- "herbiehancock"
+setwd("~/R/play/shiny_misc/shiny_herbiehancock/data")
+search_artist <- "herbie-hancock"
+source(".env")
 
-curl_sa <- curl(url = glue("https://api.discogs.com/database/search?artist={search_artist}"))
-fromJSON(curl_sa)
+curl_sa <- curl(url = glue("https://api.discogs.com/database/search?artist={search_artist}&token={API_TOKEN}"))
+df_artist <- fromJSON(curl_sa) %>% as_tibble()
 
 # get albums----
 
