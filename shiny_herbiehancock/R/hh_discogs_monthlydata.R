@@ -66,7 +66,28 @@ hh_main_artist_ids$id
 
 
 
-temp.members <- temp[grepl(pattern = paste0("<id>", hh_main_artist_ids$id, "</id>", 
+temp.members <- temp[grepl(pattern = paste0("<artist><id>", hh_main_artist_ids$id, "</id>", 
                                             sep = "|", collapse = ""), 
                            x = temp)]
 gc()
+
+length(temp.members)
+length(temp)
+
+grepl(pattern = "<id>3865</id>", x = temp) %>% table
+grepl(pattern = "<artist><id>3865</id>", x = temp) %>% table
+
+some.temps <- temp[sample(1:length(temp),size = 100, replace = F)]
+
+grep("<members>", x = some.temps, value = T)
+
+grep(pattern = "</id>", x = c("tim bender", "tim bender</id>"), value = T)
+
+some.temps %>%
+  gsub("<data_quality>.*</data_quality>", "", .) %>%
+  gsub("<images>.*</images>", "", .) %>%
+  gsub("<namevariations>.*</namevariations>", "", .) %>%
+  gsub("<urls>.*</urls>", "", .) %>%
+  gsub("<aliases>.*</aliases>", "", .) %>%
+  gsub("<realname>.*</realname>", "", .) %>%
+  gsub("<profile>.*</profile>", "", .)
