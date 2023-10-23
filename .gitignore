@@ -1,6 +1,7 @@
 # Manually Identified Files
 .env
-/data/*.jpg
+table1.jpg
+/shiny_herbiehancock/data/table2.jpg
 
 
 # History files
