@@ -34,12 +34,23 @@ load(list.files(pattern = "\\.RData$"))
 iastsav <- iastsav %>% haven::as_factor()
 nastsav <- nastsav %>% haven::as_factor()
 
-
-colname_defs <- iastsav %>%
+na.colname_defs <- nastsav %>%
   map_dfc(attr, "label") %>%
   t() %>%
   as.data.frame
 
-colname_defs$def <- colname_defs$V1
-colname_defs$colname <- rownames(colname_defs)
-colname_defs <- as_tibble(colname_defs[,c("colname", "def")])
+na.colname_defs$def <- na.colname_defs$V1
+na.colname_defs$colname <- rownames(na.colname_defs)
+na.colname_defs <- na.colname_defs %>% as_tibble() %>%
+  .[,c("colname", "def")]
+
+ia.colname_defs <- iastsav %>%
+  map_dfc(attr, "label") %>%
+  t() %>%
+  as.data.frame 
+
+ia.colname_defs$def <- ia.colname_defs$V1
+ia.colname_defs$colname <- rownames(ia.colname_defs)
+ia.colname_defs <- as_tibble(ia.colname_defs) %>%
+  .[,c("colname", "def")]
+
