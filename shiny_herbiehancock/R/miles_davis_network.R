@@ -49,8 +49,8 @@ for(i in var_artid){
   
   temp <- try(out_art$groups) 
   try(temp$artist_id <- i)
-  colnames(temp) <- c("group_id", "group_name", "group_url", "group_active", 
-                      "artist_id")
+  # colnames(temp) <- c("group_id", "group_name", "group_url", "group_active", 
+  #                     "artist_id")
   
     out_artG.list[[as.character(i)]] <- try(temp)
   
@@ -69,18 +69,27 @@ out_artG.list
 
 out_artM.list <- list()
 for(i in out_artG.list[[1]]$id){
-  curl_art <- curl(url = glue("https://api.discogs.com/artists/{i}"))
-  out_art  <- fromJSON(txt = curl_art)
-  out_artM.list[[as.character(i)]] <- try(out_art$members)
-  try(out_artM.list[[as.character(i)]]$DQ <- NA)
-  try(out_artM.list[[as.character(i)]]$DQ <- out_art$data_quality)
+  Sys.sleep(0.25)
+  curl_art <- try(curl(url = glue("https://api.discogs.com/artists/{i}")))
+  out_art  <- try(fromJSON(txt = curl_art))
   
-  try(out_artM.list[[as.character(i)]]$grpname <- NA)
-  try(out_artM.list[[as.character(i)]]$grpname <- out_art$name)
-  
-  #out_artG.list[[as.character(i)]] <- try(out_art$groups) 
+  if(class(out_art) != "try-error"){
+    if(out_art$data_quality == "Correct"){
+      out_artM.list[[as.character(i)]] <- try(out_art$members)
+      try(out_artM.list[[as.character(i)]]$DQ <- NA)
+      try(out_artM.list[[as.character(i)]]$DQ <- out_art$data_quality)
+      
+      try(out_artM.list[[as.character(i)]]$grpname <- NA)
+      try(out_artM.list[[as.character(i)]]$grpname <- out_art$name)
+      
+      #out_artG.list[[as.character(i)]] <- try(out_art$groups) 
+    }
+  }
   
 }
+
+
+
 
 library(janitor)
 
@@ -110,9 +119,9 @@ for(i in quint.membersurls$resource_url){
 
 out_artM.list
 
-# artist_groups <- out_artG.list[[1]][grepl("Donald Byrd|Joe Henderson|Buster Williams|Bobby Hutcherson|Rockit Band|Charles Tolliver|Herbie Hancock|Eric Dolphy|Headhunters$|Miles Davis|Hank Mobley|V\\.S\\.O\\.P\\.", 
-#                                           x = out_artG.list[[1]]$name, ignore.case = T),]
-# 
+artist_groups <- out_artG.list[[1]][grepl("Donald Byrd|Joe Henderson|Buster Williams|Bobby Hutcherson|Rockit Band|Charles Tolliver|Herbie Hancock|Eric Dolphy|Headhunters$|Miles Davis|Hank Mobley|V\\.S\\.O\\.P\\.",
+                                          x = out_artG.list[[1]]$name, ignore.case = T),]
+
 # artist_groups <- artist_groups[,c("id", "name")] 
 # colnames(artist_groups) <- c("group_id", "group_name")
 # artist_groups$artist_id <- var_artid
