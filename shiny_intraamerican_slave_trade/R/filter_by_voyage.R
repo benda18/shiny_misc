@@ -31,50 +31,45 @@ setwd(wd$data)
 
 load(list.files(pattern = "\\.RData$"))
 
-not.cn.ptrns <- c("^ADLT\\d", 
-                  "^ADULT\\d{1,1}$", 
-                  "^BOY\\d{1,1}$", 
-                  "^BOYRAT\\d{1,}$", 
-                  "^CHIL\\d{1,1}IMP$",
-                  "^CHILD\\d{1,}$", 
-                  "^CHILRAT\\d{1,}$",
-                  "^CREW\\d{1,}$",
-                  "^DATARR\\d{1,}$", 
-                  "^DATELAND\\d{1,}$", 
-                  "^DATELEFTAFR$", 
-                  "^DDEP", 
-                  "^DLSLA", "^EVGREEN$", 
-                  "^FEMALE", 
-                  "^FEML", 
-                  "^GIRL\\d{1,}$", 
-                  "^GIRLRAT", 
-                  "^INFANT", 
-                  "^MALE\\d{1,}$|^MALE\\d{1,}IMP$", 
-                  "^MALRAT", 
-                  "^MEN\\d{1,}$", 
-                  "^MENRAT", 
-                  "^NCAR", 
-                  "^NPPRETRA$", 
-                  "^NPPRIOR$", 
-                  "^SAILD\\d{1,}$", 
-                  "^SLAS\\d{1,}$", 
-                  "^SLADAMER", 
-                  "^SLAV.*\\d{1,}$", 
-                  "^WOMEN\\d{1,}$")
+
 
 place.colnames <- c("ADPSALE1", "ADPSALE2", "ARRPORT", "ARRPORT2", "EMBPORT", "EMBPORT2",
-                    "MAJBUYPT", "MAJSELPT", "MJBYPTIMP", "MJSLPTIMP", "NATINIMP", 
-                    "NATIONAL", "NPAFTTRA", 
+                    "MAJBUYPT", "MAJSELPT", "MJBYPTIMP", "MJSLPTIMP", 
+                    #"NATIONAL", "NATINIMP", 
+                    "NPAFTTRA", 
                     "PLAC1TRA", "PLAC2TRA", "PLAC3TRA", 
-                    "PLACCONS", "PLACREG", 
+                    #"PLACCONS", "PLACREG", 
                     "PORTDEP", "PORTRET", 
-                    "PTDEPIMP", "SLA1PORT", "SLAARRIV") %>% sort
+                    "PTDEPIMP", "SLA1PORT", "SLAARRIV", "VOYAGEID") %>% sort
 
-as_tibble(cw_master.col.labels$nast_col.labels) %>%
-  #.[grepl("place|port|location| at | in | to |landed|arrived|depart|arriv", .$col_def, ignore.case= T),] %>%
-  .[grepl("place|port|location", .$col_def, ignore.case= T),] %>%
-  .[order(.$col.name),] %>%
-  .[!grepl(pattern = paste0(not.cn.ptrns, collapse = "|"), 
-           x = .$col.name),] %>%
-  .[!.$col.name %in% place.colnames,]
+pl_nast <- nastsav[colnames(nastsav) %in% place.colnames]
+pl_iast <- iastsav[colnames(iastsav) %in% tolower(place.colnames)]
 
+
+length(unique(pl_nast$VOYAGEID))
+length(unique(pl_iast$voyageid))
+
+attributes(pl_nast$PTDEPIMP)[1]
+
+
+?apply
+
+pl_nast$count_places_identified <- apply(X = as_tibble(as.data.frame(is.na(pl_nast[,2:ncol(pl_nast)]))), 
+      MARGIN = 1, 
+      FUN = sum, na.rm = T)
+pl_iast$count_places_identified <- apply(X = as_tibble(as.data.frame(is.na(pl_iast[,2:ncol(pl_iast)]))), 
+                                         MARGIN = 1, 
+                                         FUN = sum, na.rm = T)
+
+
+mean(pl_iast$count_places_identified)
+sd(pl_iast$count_places_identified)
+
+mean(pl_nast$count_places_identified)
+sd(pl_nast$count_places_identified)
+
+library(ggplot2)
+
+attr(pl_nast$MAJBUYPT,"label")
+haven::print_labels(pl_nast$MAJBUYPT) %>% as.data.frame() %>% head()
+haven::as_factor(pl_nast$MAJBUYPT)
