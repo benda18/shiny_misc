@@ -46,8 +46,13 @@ for(i in var_artid){
   curl_art <- curl(url = glue("https://api.discogs.com/artists/{i}"))
   out_art  <- fromJSON(txt = curl_art)
   #out_artM.list[[as.character(i)]] <- try(out_art$members) 
-  out_artG.list[[as.character(i)]] <- try(out_art$groups) 
   
+  temp <- try(out_art$groups) 
+  try(temp$artist_id <- i)
+  colnames(temp) <- c("group_id", "group_name", "group_url", "group_active", 
+                      "artist_id")
+  
+    out_artG.list[[as.character(i)]] <- try(temp)
   
   # try(temp <- expand.grid(from = out_art$members$id, 
   #             to = out_art$members$id) %>%
@@ -57,8 +62,10 @@ for(i in var_artid){
   #          name = out_art$name))
   # try(art_grp_members <- rbind(art_grp_members, 
   #                          temp))
-  # try(rm(temp))
+  try(rm(temp))
 }
+
+out_artG.list
 
 out_artM.list <- list()
 for(i in out_artG.list[[1]]$id){
