@@ -1,6 +1,6 @@
 # Manually Identified Files
 .env
-.jpg
+*.jpg
 
 # History files
 .Rhistory
