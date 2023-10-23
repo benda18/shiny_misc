@@ -5,6 +5,7 @@ library(data.table)
 library(lubridate)
 library(ggplot2)
 library(haven)
+library(purrr)
 
 #https://stackoverflow.com/questions/57552015/how-to-extract-column-variable-attributes-labels-from-r-to-csv-or-excel
 
@@ -34,13 +35,11 @@ iastsav <- iastsav %>% haven::as_factor()
 nastsav <- nastsav %>% haven::as_factor()
 
 
+colname_defs <- iastsav %>%
+  map_dfc(attr, "label") %>%
+  t() %>%
+  as.data.frame
 
-
-class(iastsav$rig)
-class(iastsav[,"rig"] %>% unlist())
-identical(iastsav$rig, 
-          unname(unlist(iastsav[,"rig"])))
-
-
-select(iastsav, "rig")
-?select
+colname_defs$def <- colname_defs$V1
+colname_defs$colname <- rownames(colname_defs)
+colname_defs <- as_tibble(colname_defs[,c("colname", "def")])
