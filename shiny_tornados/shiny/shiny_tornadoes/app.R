@@ -7,6 +7,7 @@ library(ggplot2)
 library(scales)
 
 
+setwd("~/R/play/shiny_misc/shiny_tornados/shiny/shiny_tornadoes")
 
 rm(list=ls());cat('\f');gc()
 load("tornado.RData")
@@ -70,7 +71,6 @@ ui <- fluidPage(
                shiny::selectInput(inputId = "sel_counties", 
                                   label = "Select Count(y/ies)", 
                                   choices = 'N/A',
-                                  #selected = c("OH", "IN", "KY"),
                                   multiple = T))),
       # Filter years
       fluidRow(column(12,
