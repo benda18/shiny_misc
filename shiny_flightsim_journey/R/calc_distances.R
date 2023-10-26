@@ -57,9 +57,51 @@ data_countries
 # start_ap
 # end_ap
 
+# runway types
 
+# not closed
+data_airports <- data_airports[!data_airports$type %in% "closed",]
+# 4-dig codes
+data_airports <- data_airports[nchar(data_airports$ident) == 4,]
+data_airports[grepl(pattern = "\\D{4,4}", data_airports$ident),]
+
+# select two airports----
+
+
+
+library(ggrepel)
+valid.apts <- data_runways[!is.na(data_runways$le_longitude_deg) & 
+                             !is.na(data_runways$le_latitude_deg) & 
+                             !is.na(data_runways$he_longitude_deg) & 
+                             !is.na(data_runways$he_latitude_deg),] %>%
+  group_by(airport_ident) %>%
+  summarise() %>%
+  .$airport_ident
+
+valid.apts <- data_airports[data_airports$ident %in% valid.apts & 
+                !is.na(data_airports$iata_code),]$ident
+
+some.apts <- sample(valid.apts,size=2,replace=F)
+
+
+
+data_airports[data_airports$ident == "KS64",]
+data_runways[data_runways$airport_ident == "KS64",]
+data_airport_freq[data_airport_freq$airport_ident == "KS64",]
+
+ggplot(data = data_airports[data_airports$ident %in% some.apts,]) + 
+  geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
+          fill = "white", color = "white")+
+  geom_sf(data = sf::st_as_sf(rnaturalearthdata::coastline110), 
+          color = "grey")+
+  geom_path(aes(x = longitude_deg, y = latitude_deg)) +
+  geom_label_repel(min.segment.length = 0,
+                   aes(x = longitude_deg, y = latitude_deg, 
+                 label = ident))+
+  geom_point(aes(x = longitude_deg, y = latitude_deg))+
+  coord_sf()
 
 data_airports
 
-save(list = ls(pattern = "^data_|^cw_"), 
-     file = "airport_data.RData")
+# save(list = ls(pattern = "^data_|^cw_"), 
+#      file = "airport_data.RData")

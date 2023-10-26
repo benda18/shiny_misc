@@ -40,7 +40,7 @@ if(! "data_airports" %in% ls()){
 
 # Explore----
 
-data_airports <- data_airports[,c("id", "ident", "name", "latitude_deg", "longitude_deg", 
+data_airports <- data_airports[,c("id", "ident", "type", "name", "latitude_deg", "longitude_deg", 
                  "elevation_ft", "continent", "iso_country", "iso_region", 
                  "municipality", "scheduled_service", 
                  "iata_code", "local_code")]
@@ -53,12 +53,22 @@ data_regions   <- data_regions[,c("id", "code", "local_code",
 colnames(data_regions) <- c("id", "iso_region", "local_code", "region_name", 
                             "continent", "iso_country")
 
-
+save(list = ls(pattern = "^data_|^cw_"), 
+     file = "airport_data.RData")
 
 
 
 # airport layout----
-a.apt <- "KJFK"
+a.apt <- "KS64"
+
+#View(data_runways[data_runways$airport_ident %in% a.apt,])
+
+data_runways[grepl("^H", data_runways$le_ident) &
+               !grepl("^\\d", data_runways$airport_ident) & 
+               !is.na(data_runways$le_longitude_deg) & 
+               !is.na(data_runways$le_ident),]$airport_ident %>%
+  unique() %>%
+  .[nchar(.) == 4]
 
 data_airport_freq[data_airport_freq$airport_ident %in% a.apt,] %>%
   .[order(.$type,.$description),c("airport_ident", "type", "description", "frequency_mhz")] %>%
@@ -67,7 +77,8 @@ data_airport_freq[data_airport_freq$airport_ident %in% a.apt,] %>%
 
 ggplot(data = data_runways[data_runways$airport_ident %in% a.apt,]) +
 geom_segment(aes(x = le_longitude_deg, xend = he_longitude_deg, 
-               y = le_latitude_deg, yend = he_latitude_deg), 
+               y = le_latitude_deg, yend = he_latitude_deg, 
+               color = closed), 
                linewidth = 4) +
   geom_label_repel(aes(x = le_longitude_deg, y = le_latitude_deg, 
                  label = le_ident), 
@@ -77,6 +88,8 @@ geom_segment(aes(x = le_longitude_deg, xend = he_longitude_deg,
                  label = he_ident), 
              fontface = "bold", color = "black", 
              min.segment.length = 0, direction = "y") +
+  geom_point(aes(x =  he_longitude_deg, y = he_latitude_deg))+
+  geom_point(aes(x =  le_longitude_deg, y = le_latitude_deg))+
   coord_quickmap()+
   labs(title = a.apt) +
   theme(axis.text = element_blank(), 
@@ -102,5 +115,4 @@ cw_navaid.type <- data.frame(type = c("DME", "NDB", "NDB-DME",
 
 # cleanup columnnames
 
-save(list = ls(pattern = "^data_|^cw_"), 
-     file = "airport_data.RData")
+
