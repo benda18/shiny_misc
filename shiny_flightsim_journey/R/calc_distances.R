@@ -77,6 +77,29 @@ data_airports[grepl(pattern = "\\D{4,4}", data_airports$ident),]
 data_airports$elevation_ft %>% range(., na.rm = T)
 data_runways$length_ft %>% range(., na.rm = T)
 
+table_surfaces <- data_runways$surface %>% tolower %>% table %>%
+  as.matrix() %>%
+  as.data.frame() 
+table_surfaces$type <- rownames(table_surfaces)
+table_surfaces <- as_tibble(table_surfaces)
+colnames(table_surfaces) <- c("count", "type")
+
+table_surfaces <- table_surfaces[order(table_surfaces$count,decreasing = T),]
+
+table_surfaces[substr(table_surfaces$type, 1,1) == "a",]
+
+table_surfaces$asph.concr <- table_surfaces$type %>% grepl("^asp|-asp|^con|-con", .)
+table_surfaces[grepl("wat", table_surfaces$type),]
+
+
+cw_surfaces <- data.frame(surface = NA, 
+                          surftype = c("Paved", "Unpaved", "Water", "Helipad"))
+
+table_surfaces$type <- table_surfaces$type %>%
+  gsub("^\\'|\\'$", "", .) 
+
+
+
 valid.apts <- data_runways[!is.na(data_runways$le_longitude_deg) & 
                              !is.na(data_runways$le_latitude_deg) & 
                              !is.na(data_runways$he_longitude_deg) & 

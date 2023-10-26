@@ -11,16 +11,41 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
+          # elevation filter
             sliderInput(inputId = "runwayElev",
                         "Runway Elevation (ft)",
                         min = -1500,
                         max = 15000,
                         value = c(0,3000)),
+            # runway length filter
             sliderInput(inputId = "runwayLen", 
                         "Runway Length (ft)", 
                         min = 0, 
                         max = 30000, 
-                        value = c(100,4000))
+                        value = c(100,4000)),
+            # surface type filter
+            checkboxGroupInput(inputId = "surfaceType", 
+                               label = "Runway Surface Type(s)", 
+                               choices = NULL, 
+                               selected = NULL, 
+                               inline = F, 
+                               width = NULL, 
+                               choiceNames = NULL, 
+                               choiceValues = NULL), 
+            # continent
+            checkboxGroupInput(inputId = "continentCB", 
+                               label = "Runway Surface Type(s)", 
+                               choices = NULL, 
+                               selected = NULL, 
+                               inline = F, 
+                               width = NULL, 
+                               choiceNames = NULL, 
+                               choiceValues = NULL),
+            # country
+            # interactive updateable checkbox group----
+            
+            # start airport
+            # end airport
         ),
 
         # Show a plot of the generated distribution
