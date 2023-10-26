@@ -1,11 +1,18 @@
 
 # calculating distances bw locations
 # airports
+
+# read: https://r-spatial.org/r/2023/05/15/evolution4.html
+# https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html
+
 library(ggplot2)
 library(janitor)
 library(dplyr)
 library(readr)
 library(ggrepel)
+library(glue)
+library(rnaturalearthdata)
+library(sf)
 
 rm(list=ls());cat('\f');gc()
 
@@ -67,9 +74,9 @@ data_airports[grepl(pattern = "\\D{4,4}", data_airports$ident),]
 
 # select two airports----
 
+data_airports$elevation_ft %>% range(., na.rm = T)
+data_runways$length_ft %>% range(., na.rm = T)
 
-
-library(ggrepel)
 valid.apts <- data_runways[!is.na(data_runways$le_longitude_deg) & 
                              !is.na(data_runways$le_latitude_deg) & 
                              !is.na(data_runways$he_longitude_deg) & 
@@ -85,9 +92,16 @@ some.apts <- sample(valid.apts,size=2,replace=F)
 
 
 
-data_airports[data_airports$ident == "KS64",]
-data_runways[data_runways$airport_ident == "KS64",]
-data_airport_freq[data_airport_freq$airport_ident == "KS64",]
+rw.metadata <- data_runways[data_runways$airport_ident %in% some.apts,] %>%
+  group_by(airport_ident) %>%
+  slice_max(., order_by = length_ft, n = 1) %>%
+  group_by(ident = airport_ident, 
+           surface, 
+           length_ft, 
+           elevation = le_elevation_ft) %>%
+  summarise()
+
+paste(scales::comma(rw.metadata$elevation), sep = ", ", collapse = ", ")
 
 ggplot(data = data_airports[data_airports$ident %in% some.apts,]) + 
   geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
@@ -99,9 +113,14 @@ ggplot(data = data_airports[data_airports$ident %in% some.apts,]) +
                    aes(x = longitude_deg, y = latitude_deg, 
                  label = ident))+
   geom_point(aes(x = longitude_deg, y = latitude_deg))+
-  coord_sf()
+  coord_sf() +
+  labs(title = paste(data_airports[data_airports$ident %in% some.apts,]$name, 
+                      collapse = " >>> "), 
+  subtitle = glue("Elevation: {paste(scales::comma(rw.metadata$elevation), \"ft\",  collapse = \", \")}
+  Runway Length: {paste(scales::comma(rw.metadata$length_ft),  \"ft\", collapse = \", \")}
+  Runway Surface: {paste(rw.metadata$surface,collapse = \", \")}
+  Flight Distance: {scales::comma(calculate_distance(lon1 = data_airports$longitude_deg[data_airports$ident == some.apts[1]], 
+                   lat1 = data_airports$latitude_deg[data_airports$ident == some.apts[1]], 
+                   lon2 = data_airports$longitude_deg[data_airports$ident == some.apts[2]], 
+                   lat2 = data_airports$latitude_deg[data_airports$ident == some.apts[2]])/1609.34)} miles\n"))
 
-data_airports
-
-# save(list = ls(pattern = "^data_|^cw_"), 
-#      file = "airport_data.RData")
