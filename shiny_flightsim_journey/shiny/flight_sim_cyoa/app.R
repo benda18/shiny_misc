@@ -1,11 +1,14 @@
 library(shiny)
 library(dplyr)
-library(rnaturalearthdata)
+#library(rnaturalearthdata)
 library(ggplot2)
 library(ggrepel)
+library(glue)
 
 # load data----
 load("shinyData.RData")
+load("countries110.RData")
+
 
 calculate_distance <- function(lon1, lat1, lon2, lat2) {
   require(geosphere)
@@ -105,7 +108,7 @@ server <- function(input, output) {
   # airports plot----
   output$airportsPlot <- renderPlot({
     ggplot() + 
-      geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
+      geom_sf(data = sf::st_as_sf(countries110), 
               fill = "white", color = "grey")+
       geom_point(data = data_airports[data_airports$continent %in% input$sel_continents & 
                                         data_airports$ident %in% 
@@ -137,7 +140,7 @@ server <- function(input, output) {
       summarise()
     
     out.plot <- ggplot(data = data_airports[data_airports$ident %in% some.apts,]) + 
-      geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
+      geom_sf(data = sf::st_as_sf(countries110), 
               fill = "white", color = "grey")+
       geom_path(aes(x = longitude_deg, y = latitude_deg)) +
       geom_label_repel(min.segment.length = 0,
