@@ -92,7 +92,7 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  
+  # airports plot----
   output$airportsPlot <- renderPlot({
     ggplot() + 
       geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
@@ -102,12 +102,13 @@ server <- function(input, output) {
             strip.background =  element_rect("red"), 
             axis.line = element_blank(), 
             panel.grid = element_line(color = "skyblue", linetype = 23))+
-      geom_point(data = data_airports, 
+      geom_point(data = data_airports[data_airports$continent %in% input$sel_continents,], 
                  aes(x = longitude_deg, y = latitude_deg))+
       coord_sf()
       
   })
   
+  # flight plot----
   output$flightPlot <- renderPlot({
     
     #some.apts <- c("KCVG", "KLAX")
