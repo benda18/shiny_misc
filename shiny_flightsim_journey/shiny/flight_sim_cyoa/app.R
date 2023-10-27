@@ -110,10 +110,15 @@ server <- function(input, output) {
     ggplot() + 
       geom_sf(data = sf::st_as_sf(countries110), 
               fill = "white", color = "grey")+
-      geom_point(data = data_airports[data_airports$continent %in% input$sel_continents & 
+      geom_point(data = data_airports[data_airports$continent %in% 
+                                        input$sel_continents & 
                                         data_airports$ident %in% 
-                                        data_runways$airport_ident[data_runways$length_ft <= max(input$runwayLen) & 
-                                                                     data_runways$length_ft >= min(input$runwayLen)],], 
+                                        data_runways$airport_ident[data_runways$length_ft <= 
+                                                                     max(input$runwayLen) & 
+                                                                     data_runways$length_ft >=
+                                                                     min(input$runwayLen)] & 
+                                        data_airports$elevation_ft <= max(input$airportElev) & 
+                                        data_airports$elevation_ft >= min(input$airportElev),], 
                  aes(x = longitude_deg, y = latitude_deg))+
       theme(panel.background = element_rect(fill = "powderblue"), 
             plot.background = element_rect(fill = "light grey"), 
@@ -121,14 +126,22 @@ server <- function(input, output) {
             axis.line = element_blank(), 
             panel.grid = element_line(color = "skyblue", linetype = 23))+
       coord_sf()
-      
+    
   })
   
   # flight plot----
   output$flightPlot <- renderPlot({
     
     #some.apts <- c("KCVG", "KLAX")
-    some.apts <- sample(data_airports$ident,2,replace=F)
+    some.apts <- sample(data_airports[data_airports$continent %in% 
+                                        input$sel_continents & 
+                                        data_airports$ident %in% 
+                                        data_runways$airport_ident[data_runways$length_ft <= 
+                                                                     max(input$runwayLen) & 
+                                                                     data_runways$length_ft >=
+                                                                     min(input$runwayLen)],]$ident,
+                        2,
+                        replace=F)
     
     rw.metadata <- data_runways[data_runways$airport_ident %in% some.apts,] %>%
       group_by(airport_ident) %>%
