@@ -1,11 +1,14 @@
 library(shiny)
 library(dplyr)
-library(rnaturalearthdata)
+#library(rnaturalearthdata)
 library(ggplot2)
 library(ggrepel)
+library(glue)
 
 # load data----
 load("shinyData.RData")
+load("countries110.RData")
+
 
 calculate_distance <- function(lon1, lat1, lon2, lat2) {
   require(geosphere)
@@ -50,8 +53,8 @@ ui <- fluidPage(
                   max = 10000, 
                   value = 100),
       # elevation filter
-      sliderInput(inputId = "runwayElev",
-                  "Runway Elevation (ft)",
+      sliderInput(inputId = "airportElev",
+                  "Airport Elevation (ft)",
                   min = -1500,
                   max = 15000,
                   value = c(0,3000)),
@@ -83,6 +86,10 @@ ui <- fluidPage(
       ),
       fluidRow(
         plotOutput("airportsPlot")
+      ),
+      fluidRow(
+        # print some kind of text here
+        textOutput(outputId = "test_text")
       )
       
       
@@ -92,27 +99,49 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  
+  output$test_text <- renderText({
+    #input$runwayLen
+  })
+  
   # airports plot----
   output$airportsPlot <- renderPlot({
     ggplot() + 
-      geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
+      geom_sf(data = sf::st_as_sf(countries110), 
               fill = "white", color = "grey")+
+      geom_point(data = data_airports[data_airports$continent %in% 
+                                        input$sel_continents & 
+                                        data_airports$ident %in% 
+                                        data_runways$airport_ident[data_runways$length_ft <= 
+                                                                     max(input$runwayLen) & 
+                                                                     data_runways$length_ft >=
+                                                                     min(input$runwayLen)] & 
+                                        data_airports$elevation_ft <= max(input$airportElev) & 
+                                        data_airports$elevation_ft >= min(input$airportElev),], 
+                 aes(x = longitude_deg, y = latitude_deg))+
       theme(panel.background = element_rect(fill = "powderblue"), 
             plot.background = element_rect(fill = "light grey"), 
             strip.background =  element_rect("red"), 
             axis.line = element_blank(), 
             panel.grid = element_line(color = "skyblue", linetype = 23))+
-      geom_point(data = data_airports[data_airports$continent %in% input$sel_continents,], 
-                 aes(x = longitude_deg, y = latitude_deg))+
       coord_sf()
-      
+    
   })
   
   # flight plot----
   output$flightPlot <- renderPlot({
     
     #some.apts <- c("KCVG", "KLAX")
-    some.apts <- sample(data_airports$ident,2,replace=F)
+    some.apts <- sample(data_airports[data_airports$continent %in% 
+                                        input$sel_continents & 
+                                        data_airports$ident %in% 
+                                        data_runways$airport_ident[data_runways$length_ft <= 
+                                                                     max(input$runwayLen) & 
+                                                                     data_runways$length_ft >=
+                                                                     min(input$runwayLen)],]$ident,
+                        2,
+                        replace=F)
     
     rw.metadata <- data_runways[data_runways$airport_ident %in% some.apts,] %>%
       group_by(airport_ident) %>%
@@ -124,7 +153,7 @@ server <- function(input, output) {
       summarise()
     
     out.plot <- ggplot(data = data_airports[data_airports$ident %in% some.apts,]) + 
-      geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
+      geom_sf(data = sf::st_as_sf(countries110), 
               fill = "white", color = "grey")+
       geom_path(aes(x = longitude_deg, y = latitude_deg)) +
       geom_label_repel(min.segment.length = 0,
