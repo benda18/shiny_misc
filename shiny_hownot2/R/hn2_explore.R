@@ -112,3 +112,20 @@ ggplot() +
 #   facet_grid(length~knot)
 
 #dfout_crossloadcarabiners
+dfout_crossloadcarabiners
+
+ggplot(data = dfout_crossloadcarabiners, 
+       aes(x = crossload_mbs_Kn, 
+           y = result_Kn, 
+           color = pulled_against)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  geom_function(fun = function(x) x, 
+                color = "black", 
+                linetype = 23)
+
+ggplot(data = dfout_crossloadcarabiners, 
+       aes(x = crossload_mbs_Kn, 
+           y = weight_g)) + 
+  geom_point() +
+  geom_smooth(method = "lm") 
