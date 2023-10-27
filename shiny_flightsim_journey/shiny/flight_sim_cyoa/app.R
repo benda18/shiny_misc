@@ -50,8 +50,8 @@ ui <- fluidPage(
                   max = 10000, 
                   value = 100),
       # elevation filter
-      sliderInput(inputId = "runwayElev",
-                  "Runway Elevation (ft)",
+      sliderInput(inputId = "airportElev",
+                  "Airport Elevation (ft)",
                   min = -1500,
                   max = 15000,
                   value = c(0,3000)),
@@ -83,6 +83,10 @@ ui <- fluidPage(
       ),
       fluidRow(
         plotOutput("airportsPlot")
+      ),
+      fluidRow(
+        # print some kind of text here
+        textOutput(outputId = "test_text")
       )
       
       
@@ -92,18 +96,27 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  
+  output$test_text <- renderText({
+    #input$runwayLen
+  })
+  
   # airports plot----
   output$airportsPlot <- renderPlot({
     ggplot() + 
       geom_sf(data = sf::st_as_sf(rnaturalearthdata::countries110), 
               fill = "white", color = "grey")+
+      geom_point(data = data_airports[data_airports$continent %in% input$sel_continents & 
+                                        data_airports$ident %in% 
+                                        data_runways$airport_ident[data_runways$length_ft <= max(input$runwayLen) & 
+                                                                     data_runways$length_ft >= min(input$runwayLen)],], 
+                 aes(x = longitude_deg, y = latitude_deg))+
       theme(panel.background = element_rect(fill = "powderblue"), 
             plot.background = element_rect(fill = "light grey"), 
             strip.background =  element_rect("red"), 
             axis.line = element_blank(), 
             panel.grid = element_line(color = "skyblue", linetype = 23))+
-      geom_point(data = data_airports[data_airports$continent %in% input$sel_continents,], 
-                 aes(x = longitude_deg, y = latitude_deg))+
       coord_sf()
       
   })
