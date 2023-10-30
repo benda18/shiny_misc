@@ -73,9 +73,15 @@ ui <- fluidPage(
                          width = NULL, 
                          choiceNames = c("North America", "South America", "Europe", 
                                          "Africa", "Asia", "Oceania", "Antarctica"), 
-                         choiceValues = c("NA", "SA", "EU", "AF", "AS", "OC", "AN"))
+                         choiceValues = c("NA", "SA", "EU", "AF", "AS", "OC", "AN")),
       # start airport
+      textInput(inputId = "startICAO", 
+                label = "Start Airport Code", 
+                placeholder = "e.g. KLAX"),
       # end airport
+      textInput(inputId = "endICAO", 
+                label = "End Airport Code", 
+                placeholder = "e.g. LEMD")
       # click button to choose
     ),
     
@@ -142,6 +148,13 @@ server <- function(input, output) {
                                                                      min(input$runwayLen)],]$ident,
                         2,
                         replace=F)
+    
+    if(nchar(input$startICAO) == 4){
+      some.apts[1] <- toupper(input$startICAO)
+    }
+    if(nchar(input$endICAO) == 4){
+      some.apts[2] <- toupper(input$endICAO)
+    }
     
     rw.metadata <- data_runways[data_runways$airport_ident %in% some.apts,] %>%
       group_by(airport_ident) %>%
