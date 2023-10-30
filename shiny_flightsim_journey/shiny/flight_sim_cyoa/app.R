@@ -73,9 +73,15 @@ ui <- fluidPage(
                          width = NULL, 
                          choiceNames = c("North America", "South America", "Europe", 
                                          "Africa", "Asia", "Oceania", "Antarctica"), 
-                         choiceValues = c("NA", "SA", "EU", "AF", "AS", "OC", "AN"))
+                         choiceValues = c("NA", "SA", "EU", "AF", "AS", "OC", "AN")),
       # start airport
+      textInput(inputId = "startICAO", 
+                label = "Start Airport Code", 
+                placeholder = "e.g. KLAX"),
       # end airport
+      textInput(inputId = "endICAO", 
+                label = "End Airport Code", 
+                placeholder = "e.g. LEMD")
       # click button to choose
     ),
     
