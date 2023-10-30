@@ -149,6 +149,13 @@ server <- function(input, output) {
                         2,
                         replace=F)
     
+    if(nchar(input$startICAO) == 4){
+      some.apts[1] <- toupper(input$startICAO)
+    }
+    if(nchar(input$endICAO) == 4){
+      some.apts[2] <- toupper(input$endICAO)
+    }
+    
     rw.metadata <- data_runways[data_runways$airport_ident %in% some.apts,] %>%
       group_by(airport_ident) %>%
       slice_max(., order_by = length_ft, n = 1) %>%
