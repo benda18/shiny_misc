@@ -26,7 +26,7 @@ ui <- fluidPage(
     sidebarPanel(
       sliderInput(inputId = "sliderDates",
                   "Select Tour Dates Range:",
-                  min = ymd(20180508),
+                  min = ymd(20230101), #ymd(20180508),
                   max = ymd(20241123),
                   value = ymd(c(20230317,20241123)))
     ),
@@ -60,14 +60,17 @@ server <- function(input, output) {
     eras_date.geo2 <- eras_date.geo[data.table::between(x = eras_date.geo$date, 
                                                         lower = min(input$sliderDates), 
                                                         upper = max(input$sliderDates)),]
-    edg.stamen <- get_stamenmap(bbox = c(left   = min(eras_date.geo2$long)*1.00, 
+    edg.stamen <- get_stadiamap(bbox = c(left   = min(eras_date.geo2$long)*1.00,
+    #edg.stamen <- get_stamenmap(bbox = c(left   = min(eras_date.geo2$long)*1.00, 
                                          bottom = min(eras_date.geo2$lat)*1.00, 
                                          top    = max(eras_date.geo2$lat)*1.00, 
                                          right  = max(eras_date.geo2$long)*1.00), 
                                 zoom = 3, 
-                                maptype = "terrain", 
+                                maptype = "stamen_terrain",                            
+                                # maptype = "terrain", 
                                 crop = F, 
                                 color = "color",
+    force = T,
                                 size = 1)
     
     ggmap(edg.stamen) +
