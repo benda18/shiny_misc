@@ -8,12 +8,19 @@
 #
 
 library(shiny)
-library(readr)
+# library(readr)
 library(lubridate)
-library(readr)
-library(ggmap)
-library(lubridate)
-library(data.table)
+# library(readr)
+ library(ggmap)
+# library(lubridate)
+ library(data.table)
+
+
+#rsconnect::deployApp()
+
+
+#stadiamap set api----
+register_stadiamaps(key = "[STADIA MAP API KEY HERE]", write = FALSE)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -26,7 +33,7 @@ ui <- fluidPage(
     sidebarPanel(
       sliderInput(inputId = "sliderDates",
                   "Select Tour Dates Range:",
-                  min = ymd(20230101), #ymd(20180508),
+                  min = ymd(20230317), #ymd(20180508),
                   max = ymd(20241123),
                   value = ymd(c(20230317,20241123)))
     ),
@@ -47,11 +54,13 @@ server <- function(input, output) {
   library(data.table)
   
   output$geoPlot <- renderPlot({
-    eras_date.geo <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/eras_date.geo.csv")
-    repu_date.geo <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/reputation_date.geo.csv")
+    #eras_date.geo <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/eras_date.geo.csv")
+    eras_date.geo <- read_csv("eras_date.geo.csv")
+    #repu_date.geo <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/reputation_date.geo.csv")
+    #repu_date.geo <- read_csv("reputation_date.geo.csv")
     
-    eras_date.geo <- rbind(eras_date.geo, 
-                           repu_date.geo)
+    #eras_date.geo <- rbind(eras_date.geo, 
+    #                      repu_date.geo)
     
     next_show.date <- min(eras_date.geo[eras_date.geo$date >= Sys.Date(),]$date)
     next_show.geo  <- eras_date.geo[eras_date.geo$date == next_show.date,]
@@ -61,7 +70,7 @@ server <- function(input, output) {
                                                         lower = min(input$sliderDates), 
                                                         upper = max(input$sliderDates)),]
     edg.stamen <- get_stadiamap(bbox = c(left   = min(eras_date.geo2$long)*1.00,
-    #edg.stamen <- get_stamenmap(bbox = c(left   = min(eras_date.geo2$long)*1.00, 
+                                         #edg.stamen <- get_stamenmap(bbox = c(left   = min(eras_date.geo2$long)*1.00, 
                                          bottom = min(eras_date.geo2$lat)*1.00, 
                                          top    = max(eras_date.geo2$lat)*1.00, 
                                          right  = max(eras_date.geo2$long)*1.00), 
@@ -70,14 +79,14 @@ server <- function(input, output) {
                                 # maptype = "terrain", 
                                 crop = F, 
                                 color = "color",
-    force = T,
+                                force = T,
                                 size = 1)
     
     ggmap(edg.stamen) +
       geom_point(data = next_show.geo, 
-                aes(x = long, y = lat, 
-                    color = promo_city), 
-                size = 10) +
+                 aes(x = long, y = lat, 
+                     color = promo_city), 
+                 size = 10) +
       scale_color_manual(name = "Next Show Location", 
                          values = "cyan")+
       geom_path(data = eras_date.geo2, 
@@ -92,7 +101,7 @@ server <- function(input, output) {
                  shape = 19,
                  size = 4, color = "orange",
                  aes(x = long, y = lat)) +
-       
+      
       labs(title = "Tour Locations")+
       theme(axis.text = element_blank(), 
             axis.ticks = element_blank(), 
@@ -101,7 +110,8 @@ server <- function(input, output) {
   })
   
   output$slPlot <- renderPlot({
-    setwd("~/R/play/eras_tour/data")
+    #setwd("~/R/play/eras_tour/data")
+    #sl.files <- list.files(pattern = "^sl_\\d{8,8}\\.csv$")
     sl.files <- list.files(pattern = "^sl_\\d{8,8}\\.csv$")
     eras_sl <- NULL
     for(i in sl.files){
@@ -117,17 +127,18 @@ server <- function(input, output) {
       group_by(song) %>%
       summarise(n_shows = n()) %>%
       .[order(.$song),]
-  
+    
     adist(unique(eras_sl$song), ignore.case = T)
     
     
     which(data.table::between(adist(unique(eras_sl$song), ignore.case = T), 
-                        lower = 1, upper = 3))
+                              lower = 1, upper = 3))
     
   })
   
   output$oaPlot <- renderPlot({
-    eras_date.oa <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/eras_date.oa.csv")
+    #eras_date.oa <- read_csv("C:/Users/bende/Documents/R/play/eras_tour/data/eras_date.oa.csv")
+    eras_date.oa <- read_csv("eras_date.oa.csv")
     eras_date.oa$opening_acts2_f <- factor(eras_date.oa$opening_acts2, 
                                            levels = unique(eras_date.oa$opening_acts2[order(eras_date.oa$join_tour,decreasing = T)]), 
                                            exclude = c("no_opening_acts_scheduled", 
