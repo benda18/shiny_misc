@@ -94,39 +94,37 @@ sales.res.2023 %>%
 #   group_by(n_recs_with_name) %>%
 #   summarise(count = n()) 
 
-  
-temp.order.owners <-  sales.res.2023[,c("OLDOWN", 
-                                          "OWNERNAME1")] %>% 
-    t %>% 
-    as.data.frame() %>% 
-    as.list.data.frame 
-  
-sales.res.2023$own1 <- lapply(temp.order.owners, sort) %>% lapply(., first) %>% unlist()
-sales.res.2023$own2 <- lapply(temp.order.owners, sort) %>% lapply(., last) %>%
 
-rel_owners <- sales.res.2023[,c("OLDOWN", 
-                                "OWNERNAME1", 
-                                #"SALEDTE",
-                                "PARID", "sale_valid")] %>%
+temp.order.owners <-  sales.res.2023[,c("OLDOWN", 
+                                        "OWNERNAME1")] %>% 
+  t %>% 
+  as.data.frame() %>% 
+  as.list.data.frame 
+
+sales.res.2023$own1 <- lapply(temp.order.owners, sort) %>% lapply(., first) %>% unlist()
+sales.res.2023$own2 <- lapply(temp.order.owners, sort) %>% lapply(., last) %>% unlist()
+
+rel_owners <- sales.res.2023[,c("own1", 
+                                "own2", 
+                                "SALEDTE",
+                                "PARID", 
+                                "sale_valid"#, 
+                                #"DEEDREFERENCE"
+)] %>%
   group_by_all() %>%
   summarise(n = n()) %>%
   ungroup() %>%
   .[.$sale_valid,] %>%
-  .[order(.$n,decreasing = T),]
-  .[,c("OLDOWN", "OWNERNAME1"),]
-
-  
+  .[order(.$n,decreasing = T),] %>%
+  .[,c("own1", "own2"),]
 
 
-
-  
-  
-rel_owners %>% matrix(., ncol = 2, byrow = T) %>% as.list() %>% str
-replicate(1000,list(sample(letters, size = 2))) %>% 
-  lapply(., sort) #%>% 
-  #lapply(., diff) %>% 
-  #unlist() %>%
-  #fivenum
+# rel_owners %>% matrix(., ncol = 2, byrow = T) %>% as.list() %>% str
+# replicate(1000,list(sample(letters, size = 2))) %>% 
+#   lapply(., sort) #%>% 
+# #lapply(., diff) %>% 
+# #unlist() %>%
+# #fivenum
 gr2023 <- igraph::graph_from_data_frame(rel_owners, directed = F)
 
 # ?igraph::groups()
