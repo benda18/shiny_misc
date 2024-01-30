@@ -4,6 +4,7 @@ library(data.table)
 library(lubridate)
 library(igraph)
 library(renv)
+library(ggplot2)
 
 rm(list=ls());cat('\f')
 
@@ -27,14 +28,14 @@ setwd(short.wd)
 # https://rstudio.github.io/renv/articles/renv.html
 
 # initialize a new project
-renv::init()
+# renv::init()
 
 
 
 
 # data source urls----
-mc.delinquient.tax <- "https://go.mcohio.org/applications/treasurer/search/fdpopup.cfm?dtype=DQ"
-mc.sales.annual    <- "https://go.mcohio.org/applications/treasurer/search/fdpopup.cfm?dtype=YS"
+# mc.delinquient.tax <- "https://go.mcohio.org/applications/treasurer/search/fdpopup.cfm?dtype=DQ"
+# mc.sales.annual    <- "https://go.mcohio.org/applications/treasurer/search/fdpopup.cfm?dtype=YS"
 
 
 # download data---
@@ -79,6 +80,137 @@ sales.res.2023 %>%
   group_by(n_records) %>%
   summarise(n = n()) 
 
-# Delinquent Tax Data Tidy----
+# # cleanup and create master owner name crosswalk
+# cw_sales_owners <- rbind(data.frame(o_name = sales.res.2023$OLDOWN, 
+#                                     srccol = "OLDOWN"), 
+#                          data.frame(o_name = sales.res.2023$OWNERNAME1, 
+#                                     srccol = "OWNERNAME1")) %>% 
+#   as_tibble()
+# 
+# cw_sales_owners %>%
+#   group_by(o_name) %>%
+#   summarise(n_recs_with_name = n()) %>%
+#   .[order(.$n_recs_with_name,decreasing = T),] %>%
+#   group_by(n_recs_with_name) %>%
+#   summarise(count = n()) 
+
+  
+temp.order.owners <-  sales.res.2023[,c("OLDOWN", 
+                                          "OWNERNAME1")] %>% 
+    t %>% 
+    as.data.frame() %>% 
+    as.list.data.frame 
+  
+sales.res.2023$own1 <- lapply(temp.order.owners, sort) %>% lapply(., first) %>% unlist()
+sales.res.2023$own2 <- lapply(temp.order.owners, sort) %>% lapply(., last) %>%
+
+rel_owners <- sales.res.2023[,c("OLDOWN", 
+                                "OWNERNAME1", 
+                                #"SALEDTE",
+                                "PARID", "sale_valid")] %>%
+  group_by_all() %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  .[.$sale_valid,] %>%
+  .[order(.$n,decreasing = T),]
+  .[,c("OLDOWN", "OWNERNAME1"),]
+
+  
+
+
+
+  
+  
+rel_owners %>% matrix(., ncol = 2, byrow = T) %>% as.list() %>% str
+replicate(1000,list(sample(letters, size = 2))) %>% 
+  lapply(., sort) #%>% 
+  #lapply(., diff) %>% 
+  #unlist() %>%
+  #fivenum
+gr2023 <- igraph::graph_from_data_frame(rel_owners, directed = F)
+
+# ?igraph::groups()
+# g <- make_graph("Zachary")
+# plot(g)
+# fgc <- cluster_fast_greedy(g)
+# groups(fgc)
+# 
+# g2 <- make_ring(10) + make_full_graph(5)
+# plot(g2)
+# groups(components(g2))
+# ?groups
+
+# size of clusters----
+igraph::clusters(gr2023) %>% 
+  groups() %>%
+  lapply(., length) %>%
+  unname() %>%
+  unlist() %>% unique() %>% sort() %>% plot
+
+igraph::components(gr2023) %>% 
+  groups() %>%
+  lapply(., length) %>%
+  unname() %>%
+  unlist() %>% unique() %>% sort() %>% plot
+ 
+component_distribution(graph = gr2023, 
+                       cumulative = F, 
+                       mul.size = F)
+
+
+# igraph::as_membership(gr2023) not appropriate implementation
+
+?igraph::communities(gr2023)
+cluster_walktrap(gr2023)
+cluster_fast_greedy(gr2023)
+#cluster_edge_betweenness(gr2023)
+
+cluster.distribution(gr2023)
+largest_component(gr2023)
+count_components(gr2023)
+data.frame(cluster_size =
+           1:length(component_distribution(gr2023, F,F)), 
+           distribution = component_distribution(gr2023, F,F)) %>%
+  as_tibble() %>%
+  .[.$distribution != 0,]  %>%
+  .[order(.$distribution, decreasing = T),]
+
+  
+var_organized.owners <- c("TRUSTEES", 
+                          "CORPORATION", 
+                          "CORPORATION", 
+                          "ASSOCIATION", 
+                          "REUTILIZATION"  , 
+                          "CONSTRUCTION",
+                          "DEVELOPMENT", "IMPROVEMENT", "PARTNERSHIP", 
+                          "INVESTMENTS", "INCORPORATED", "NEIGHBORHOOD", 
+                          "MANAGEMENT", "PROPERTIES", "CONSULTING", "COMMUNITY",
+                          "TRUSTEES", "TRUSTEE", "LIMITED", "TRUST",
+                          "CORP", "BANK", "LLC", "INC", "LTD", "TR", "LP", "NA") %>%
+  paste(" ", ., "$", 
+      sep = "") %>%
+  paste(., collapse = "|")
+
+
+# data.frame(o_name.suffix = unlist(lapply(strsplit(gsub(", {0,}", ", ", cw_sales_owners$o_name), " "), 
+#                                          last))) %>%
+#   as_tibble() %>%
+#   group_by(o_name.suffix) %>%
+#   summarise(n = n()) %>%
+#   mutate(., 
+#          nchar_sfx = nchar(o_name.suffix)) %>%
+#    .[order(.$nchar_sfx, .$n, decreasing = T),] #%>%
+#   # .[.$n > 1,] %>%
+#   # .[.$nchar_sfx == 1,]
+  
+
+
+
+
+
+
+
+
+  # Delinquent Tax Data Tidy----
 files.deltax.all <- list.files(pattern = "^Delq_\\d{8,8}\\.csv$")
 
