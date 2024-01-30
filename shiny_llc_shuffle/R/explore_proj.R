@@ -55,11 +55,12 @@ sales.res.2023$SALEDTE <- dmy(sales.res.2023$SALEDTE)
 sales.res.2023$PRICE   <- as.numeric(sales.res.2023$PRICE)
 sales.res.2023$ACRES   <- as.numeric(sales.res.2023$ACRES)
 
-sales.res.2023$SALETYPE %>% unique()
-sales.res.2023$SALEVALIDITY %>% unique()
 
 sales.res.2023$sale_valid <- grepl("^DESIGNATED|^VALID |^LAND CONTRACT|^LIQUIDATION|^PARTIAL|^RELATED|^Mobile |^SALE INVOLVING", 
                                    x = sales.res.2023$SALEVALIDITY)
+
+# backup original here
+bu_sales.res.2023 <- sales.res.2023
 
 sales.res.2023 %>%
   group_by(sale_valid,SALEVALIDITY ) %>%
@@ -147,34 +148,120 @@ igraph::clusters(gr2023) %>%
   unlist() %>% unique() %>% sort() %>% plot
 
 names(clusters(gr2023))
+
+
 clusters(gr2023)$csize
 clusters(gr2023)$membership %>% 
   unname() %>% table() %>%
   unname() %>% table
 
+# convert membership (below) to a crosswalk table
+clusters(gr2023)$membership
+names(clusters(gr2023)$membership)  # owner names
+unname(clusters(gr2023)$membership) # cluster id
 
-component_distribution(graph = gr2023, 
-                       cumulative = F, 
-                       mul.size = F)
+cw_owners_clusterid <- data.frame(owner_name = names(clusters(gr2023)$membership), 
+                                  cluster_id = unname(clusters(gr2023)$membership)) %>%
+  as_tibble()
+
+# error-check (ok if returns values 1:Inf)
+cw_owners_clusterid %>%
+  group_by(cluster_id) %>%
+  summarise(n_onames = n_distinct(owner_name)) %>%
+  .$n_onames %>% unique() %>% sort
+
+# error-check (ok if returns value 1 only)
+cw_owners_clusterid %>%
+  group_by(owner_name) %>%
+  summarise(n_cid= n_distinct(cluster_id)) %>%
+  .$n_cid %>% unique() %>% sort
+
+#join crosswalk----
+sales.res.2023_out <- sales.res.2023[,c("own1", 
+                                        "own2", 
+                                        "SALEDTE",
+                                        "PARID", 
+                                        "sale_valid")] %>%
+  group_by_all() %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  .[.$sale_valid,] %>%
+  .[order(.$n,decreasing = T),] %>%
+  left_join(., 
+            cw_owners_clusterid, 
+            by = c("own1" = "owner_name")) %>%
+  left_join(., 
+            cw_owners_clusterid, 
+            by = c("own2" = "owner_name"), 
+            suffix = c(".own1", ".own2"))
 
 
-# igraph::as_membership(gr2023) not appropriate implementation
+table(sales.res.2023_out$cluster_id.own1 == sales.res.2023_out$cluster_id.own2)
 
-?igraph::communities(gr2023)
-cluster_walktrap(gr2023)
-#cluster_fast_greedy(gr2023)
-#cluster_edge_betweenness(gr2023)
 
-cluster.distribution(gr2023)
-largest_component(gr2023)
-count_components(gr2023)
-data.frame(cluster_size =
-           1:length(component_distribution(gr2023, F,F)), 
-           distribution = component_distribution(gr2023, F,F)) %>%
-  as_tibble() %>%
-  .[.$distribution != 0,]  %>%
-  .[order(.$distribution, decreasing = T),] 
-  
+# now lets look at how often properties stick in clusters
+cw_props_clusterid <- sales.res.2023_out %>%
+  group_by(PARID, 
+           #SALEDTE, 
+           cluster_id = cluster_id.own1) %>%
+  summarise(n = n(), 
+            n_saledates = n_distinct(SALEDTE)) %>%
+  .[order(.$n, decreasing = T),]
+
+summary_props_clusters <- cw_props_clusterid %>%
+  group_by(PARID) %>%
+  summarise(sum_n = sum(n), 
+            n = n(),
+            n_clusterids = n_distinct(cluster_id)) %>%
+  .[order(.$n, .$sum_n, decreasing = T),]
+
+
+# ERROR FOUND
+summary_props_clusters$pid_typo_chec <- F
+summary_props_clusters[!grepl("^.{9,9} ", summary_props_clusters$PARID) |
+                               !grepl("^.{3,3} ", summary_props_clusters$PARID),]$pid_typo_chec <- T
+
+
+cw_pidtypocheck  <- summary_props_clusters %>%
+  group_by(PARID, pid_typo_chec) %>%
+  summarise()
+
+bu_sales.res.2023 %>%
+  left_join(., cw_pidtypocheck) %>%
+  .[.$sale_valid,] %>% 
+  #.[.$ACRES > 0,] %>%
+  #group_by()
+  group_by(PARCELLOCATION , 
+           ACRES
+           ) %>%
+  summarise(n_parid = n_distinct(PARID), 
+            n = n(), 
+            pid.chec = any(pid_typo_chec)) %>%
+  .[order(.$n_parid, decreasing = T),] %>%
+  .[.$n_parid > 1,]
+
+# component_distribution(graph = gr2023, 
+#                        cumulative = F, 
+#                        mul.size = F)
+# 
+# 
+# # igraph::as_membership(gr2023) not appropriate implementation
+# 
+# #?igraph::communities(gr2023)
+# #cluster_fast_greedy(gr2023)
+# #cluster_edge_betweenness(gr2023)
+# 
+# cluster.distribution(gr2023)
+# largest_component(gr2023)
+# count_components(gr2023)
+# data.frame(cluster_size =
+#            1:length(component_distribution(gr2023, F,F)), 
+#            distribution = component_distribution(gr2023, F,F)) %>%
+#   as_tibble() %>%
+#   .[.$distribution != 0,]  %>%
+#   .[order(.$distribution, decreasing = T),] 
+#   
+
 var_organized.owners <- c("TRUSTEES", 
                           "CORPORATION", 
                           "CORPORATION", 
@@ -189,22 +276,6 @@ var_organized.owners <- c("TRUSTEES",
   paste(" ", ., "$", 
       sep = "") %>%
   paste(., collapse = "|")
-
-
-# data.frame(o_name.suffix = unlist(lapply(strsplit(gsub(", {0,}", ", ", cw_sales_owners$o_name), " "), 
-#                                          last))) %>%
-#   as_tibble() %>%
-#   group_by(o_name.suffix) %>%
-#   summarise(n = n()) %>%
-#   mutate(., 
-#          nchar_sfx = nchar(o_name.suffix)) %>%
-#    .[order(.$nchar_sfx, .$n, decreasing = T),] #%>%
-#   # .[.$n > 1,] %>%
-#   # .[.$nchar_sfx == 1,]
-  
-
-
-
 
 
 
