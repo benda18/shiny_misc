@@ -2,7 +2,8 @@ library(dplyr)
 library(readr)
 library(data.table)
 library(lubridate)
-
+library(igraph)
+library(renv)
 
 rm(list=ls());cat('\f')
 
@@ -10,10 +11,7 @@ rm(list=ls());cat('\f')
 
 
 
-
 # working directory----
-
-
 long.wd <- "C:\\Users\\bende\\Documents\\R\\play\\shiny_misc\\shiny_llc_shuffle"
 short.wd <- "~/R/play/shiny_misc/shiny_llc_shuffle"
 setwd(short.wd)
@@ -24,6 +22,14 @@ setwd(short.wd)
 # ?setwd()
 # ?normalizePath()
 # ?shortPathName()
+
+# Renv----
+# https://rstudio.github.io/renv/articles/renv.html
+
+# initialize a new project
+renv::init()
+
+
 
 
 # data source urls----
@@ -58,24 +64,20 @@ sales.res.2023 %>%
   group_by(sale_valid,SALEVALIDITY ) %>%
   summarise()
 
+# check if ACRES ever changes with PARID (it doesn't)
+sales.res.2023 %>%
+  group_by(PARID) %>%
+  summarise(n = n(), 
+            n_acres = n_distinct(ACRES)) %>%
+  group_by(n,n_acres) %>%
+  summarise(n2 = n())
 
-
-
-
-grep(pattern = "OWN|NAME", 
-     x = colnames(sales.res.2023), 
-     value = T, 
-     ignore.case = T)
-
-grep(pattern = "deed|conv", 
-     x = colnames(sales.res.2023), 
-     value = T, 
-     ignore.case = T)
-
-grep(pattern = "sale", 
-     x = colnames(sales.res.2023), 
-     value = T, 
-     ignore.case = T)
+# check if multiple records per transaction ( there can be)
+sales.res.2023 %>%
+  group_by(PARID, SALEDTE) %>%
+  summarise(n_records = n()) %>%
+  group_by(n_records) %>%
+  summarise(n = n()) 
 
 # Delinquent Tax Data Tidy----
 files.deltax.all <- list.files(pattern = "^Delq_\\d{8,8}\\.csv$")
