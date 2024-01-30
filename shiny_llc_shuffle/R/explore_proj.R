@@ -139,18 +139,20 @@ gr2023 <- igraph::graph_from_data_frame(rel_owners, directed = F)
 # ?groups
 
 # size of clusters----
+
 igraph::clusters(gr2023) %>% 
   groups() %>%
   lapply(., length) %>%
   unname() %>%
   unlist() %>% unique() %>% sort() %>% plot
 
-igraph::components(gr2023) %>% 
-  groups() %>%
-  lapply(., length) %>%
-  unname() %>%
-  unlist() %>% unique() %>% sort() %>% plot
- 
+names(clusters(gr2023))
+clusters(gr2023)$csize
+clusters(gr2023)$membership %>% 
+  unname() %>% table() %>%
+  unname() %>% table
+
+
 component_distribution(graph = gr2023, 
                        cumulative = F, 
                        mul.size = F)
@@ -160,7 +162,7 @@ component_distribution(graph = gr2023,
 
 ?igraph::communities(gr2023)
 cluster_walktrap(gr2023)
-cluster_fast_greedy(gr2023)
+#cluster_fast_greedy(gr2023)
 #cluster_edge_betweenness(gr2023)
 
 cluster.distribution(gr2023)
@@ -171,8 +173,7 @@ data.frame(cluster_size =
            distribution = component_distribution(gr2023, F,F)) %>%
   as_tibble() %>%
   .[.$distribution != 0,]  %>%
-  .[order(.$distribution, decreasing = T),]
-
+  .[order(.$distribution, decreasing = T),] 
   
 var_organized.owners <- c("TRUSTEES", 
                           "CORPORATION", 
