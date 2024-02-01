@@ -97,8 +97,29 @@ M_own2parid <- rbind(summarise(group_by(master_sales.23, owner = own1, PARID)),
   summarise()
 
 # build graph
-GR_own2own <- graph_from_data_frame(d = M_own2own, directed = F)
+GR_own2own       <- graph_from_data_frame(d = M_own2own, directed = F)
 
+igraph::gsize(GR_own2own)  # number of edges of graph
+
+clusters_own2own <- clusters(GR_own2own)
+groups_own2own   <- groups(clusters_own2own)
+
+clusters_own2own$membership # name = owner, value = cluster_id
+clusters_own2own$csize      # cluster_id number of members
+clusters_own2own$no         # total number of clusters
+
+CW_owner.clusterid <- data.frame(owner      = names(clusters_own2own$membership), 
+                                 cluster_id = unname(clusters_own2own$membership)) %>% as_tibble()
+
+M_clusterid_size  <- data.frame(cluster_id = 1:length(clusters_own2own$csize), 
+                                n_owners   = clusters_own2own$csize) %>% as_tibble()
+
+
+igraph::clusters(GR_own2own) %>% 
+  groups() %>% 
+  #length() # tells you how many cluster groups
+  summary() %>% 
+  as.data.table() %>% as.data.frame() %>% as_tibble()
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
