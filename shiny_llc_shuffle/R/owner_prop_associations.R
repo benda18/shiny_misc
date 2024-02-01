@@ -123,8 +123,14 @@ CW_owner.clusterid <- data.frame(owner      = names(clusters_own2own$membership)
                                  cluster_id = as.integer(unname(clusters_own2own$membership))) %>% 
   as_tibble()
 
-M_clusterid_size  <- data.frame(cluster_id = as.integer(1:length(clusters_own2own$csize)), 
-                                n_owners   = clusters_own2own$csize) %>% 
+M_clusterid_size.o2o  <- data.frame(cluster_id = as.integer(1:length(clusters_own2own$csize)), 
+                                    n_o2o   = clusters_own2own$csize) %>% 
+  as_tibble()
+M_clusterid_size.o2p  <- data.frame(cluster_id = as.integer(1:length(clusters_own2parid$csize)), 
+                                    n_o2p   = clusters_own2parid$csize) %>% 
+  as_tibble()
+M_clusterid_size.o2pd  <- data.frame(cluster_id = as.integer(1:length(clusters_own2pardate_id$csize)), 
+                                     n_o2pd   = clusters_own2pardate_id$csize) %>% 
   as_tibble()
 
 CW_parid.clusterid       <- data.frame(owner      = names(clusters_own2parid$membership), 
@@ -143,31 +149,37 @@ CW_owner.clusterid
 CW_parid.clusterid
 CW_pardate_id.clusterid
 
-M_clusterid_size
+M_clusterid_size.o2o
+M_clusterid_size.o2p
+M_clusterid_size.o2pd
 
 M_own2own
 M_own2parid
 M_own2pardate_id
 
 # see if we can filter down graphs
-View(GR_own2own)
+
+grep("size", ls(), ignore.case = T, value = T)
+M_clusterid_size.o2o
 
 
 
+# g <- (make_full_graph(10) + make_full_graph(10)) #%>%
+# plot(g)
+# g <- g %>%
+#   rewire(graph = ., 
+#          with = each_edge(p = 0.2))
+# plot(g)
+# 
+# correct <- rep(1:2, each = 10) %>% as_membership()
+# class(correct)
+# fc <- cluster_fast_greedy(g)
+# compare(correct, fc)
+# compare(correct, membership(fc))
+# 
+# (membership(fc)-correct) %>% mean
 
-g <- (make_full_graph(10) + make_full_graph(10)) #%>%
-plot(g)
-g <- g %>%
-  rewire(graph = ., 
-         with = each_edge(p = 0.2))
-plot(g)
 
-correct <- rep(1:2, each = 10) %>% as_membership()
-class(correct)
-fc <- cluster_fast_greedy(g)
-compare(correct, fc)
-compare(correct, membership(fc))
 
-(membership(fc)-correct) %>% mean
 
 # ASSOC:  OWNER <--> PROPERTY ----
