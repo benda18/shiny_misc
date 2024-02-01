@@ -195,40 +195,93 @@ M_own2pardate_id
 
 #master_sales.23
 
+# Find clusters with LLCs in them----
+# set var_ptrn_llc ----
+var_ptrn_llc <- "LLC$|LTD$| LLC AND"
 
-# Find Big Clusters ----
-# big clusters - o2o
+
+LLC_clustersA <- CW_owner.clusterid %>%
+  .[grepl(var_ptrn_llc, .$owner),] %>%
+  .$cluster_id %>%
+  unique() 
+
+LLC_clustersB <- CW_parid.clusterid %>%
+  .[grepl(var_ptrn_llc, .$owner),] %>%
+  .$cluster_id %>%
+  unique() 
+
+LLC_clustersC <- CW_pardate_id.clusterid %>%
+  .[grepl(var_ptrn_llc, .$owner),] %>%
+  .$cluster_id %>%
+  unique() 
+
+
+LLC_clusters <- c(LLC_clustersA, LLC_clustersB, LLC_clustersC) %>% unique()
+rm(LLC_clustersA, LLC_clustersB, LLC_clustersC)
+
+
+# Find Clusters ----
+# big random - o2o
 ls()
 grep("^\\w{1,3}_", ls(), ignore.case = T, value = T) 
-
-CW_owner.clusterid
-CW_parid.clusterid
-CW_pardate_id.clusterid
 
 M_clusterid_size
 
 
 # SELECT DOWN TO OWNERS YOU WANT TO GRAPH----
 # set var_topn ----
-var_topn <- 1
+var_topn <- 3
 
-bigclust_o2o <- M_clusterid_size %>%
+var_explore.further <- c("LINKO PROPERTIES LLC", 
+                         "AUTUMN GROVE INVESTMENTS LLC",
+                         "LEWIS AND LEWIS PROPERTY MANAGEMENT LLC", 
+                         "AFFORDABLE HOUSES LLC", 
+                         "BEE INTENTIONAL LIMITED LLC", 
+                         "MADINA PROPERTY MANAGEMENT LLC", 
+                         "NW INVESTMENT PROPERTIES", 
+                         "VAUGHN KEY HOMES LLC", 
+                         "JAR LLC", 
+                         "DEVIN CONSTRUCTION CO LLC", 
+                         "DEVIN CONSTRUCTION", 
+                         "DESIGN HOMES & DEVELOPMENT CO INC", 
+                         "DEVIN CONSTRUCTION CO, LLC", 
+                         "DEVIN CONSTRUCTION CO , LLC", 
+                         "TRAILS PARTNERS LLC", 
+                         "G A WHITE DEVELOPMENT CO LLC", 
+                         "BERTRAM BUILDERS LLC AND")
+
+var_explore.clusters <- c("o2p_144", "o2o_16")
+
+outliers_clust_o2o <- M_clusterid_size %>%
+  .[.$cluster_id %in% LLC_clusters,] %>%
   .[.$variable == "n_o2o",] %>%
-  slice_max(., order_by = value, n = var_topn)
-bigclust_o2p <- M_clusterid_size %>%
-  .[.$variable == "n_o2p",] %>%
-  slice_max(., order_by = value, n = var_topn)
+  slice_sample(., n = var_topn)
 
-smclust_o2o <- M_clusterid_size %>%
-  .[.$variable == "n_o2o",] %>%
-  slice_min(., order_by = value, n = var_topn)
-smclust_o2p <- M_clusterid_size %>%
-  .[.$variable == "n_o2p",] %>%
-  slice_min(., order_by = value, n = var_topn)
+outliers_clust_o2p <- M_clusterid_size %>%
+  .[.$cluster_id %in% LLC_clusters,] %>%
+    .[.$variable == "n_o2p",] %>%
+    slice_sample(., n = var_topn)
 
-outliers_clust_o2o <- rbind(bigclust_o2o, smclust_o2o) 
-  
-outliers_clust_o2p <- rbind(bigclust_o2p, smclust_o2p)
+# bigclust_o2o <- M_clusterid_size %>%
+#   .[.$cluster_id %in% LLC_clusters,] %>%
+#   .[.$variable == "n_o2o",] %>%
+#   slice_max(., order_by = value, n = var_topn)
+# bigclust_o2p <- M_clusterid_size %>%
+#   .[.$cluster_id %in% LLC_clusters,] %>%
+#   .[.$variable == "n_o2p",] %>%
+#   slice_max(., order_by = value, n = var_topn)
+# 
+# smclust_o2o <- M_clusterid_size %>%
+#   .[.$cluster_id %in% LLC_clusters,] %>%
+#   .[.$variable == "n_o2o",] %>%
+#   slice_min(., order_by = value, n = var_topn)
+# smclust_o2p <- M_clusterid_size %>%
+#   .[.$cluster_id %in% LLC_clusters,] %>%
+#   .[.$variable == "n_o2p",] %>%
+#   slice_min(., order_by = value, n = var_topn)
+# 
+# outliers_clust_o2o <- rbind(bigclust_o2o, smclust_o2o)
+# outliers_clust_o2p <- rbind(bigclust_o2p, smclust_o2p)
 
 
 outlier_members.o2o <- CW_owner.clusterid[CW_owner.clusterid$cluster_id %in% 
@@ -249,13 +302,14 @@ GR_own2own_filter        <- graph_from_data_frame(d = M_own2own[M_own2own$own1 %
                                                   directed = F) %>% 
   simplify()
 gsize(GR_own2own_filter)
-# plot(GR_own2own)
+plot(GR_own2own_filter); Sys.sleep(3)
 
 GR_own2parid_filter      <- graph_from_data_frame(d = M_own2parid[M_own2parid$owner %in% outlier_members.o2p | 
                                                                     M_own2parid$PARID %in% outlier_members.o2p ,], directed = F) %>% 
   simplify()
 
 gsize(GR_own2parid_filter)
+plot(GR_own2parid_filter)
 
 #GR_own2pardate_id_filter <- graph_from_data_frame(d = M_own2pardate_id, directed = F) %>% simplify()
 
