@@ -149,7 +149,25 @@ M_own2own
 M_own2parid
 M_own2pardate_id
 
+# see if we can filter down graphs
+View(GR_own2own)
 
 
+
+
+g <- (make_full_graph(10) + make_full_graph(10)) #%>%
+plot(g)
+g <- g %>%
+  rewire(graph = ., 
+         with = each_edge(p = 0.2))
+plot(g)
+
+correct <- rep(1:2, each = 10) %>% as_membership()
+class(correct)
+fc <- cluster_fast_greedy(g)
+compare(correct, fc)
+compare(correct, membership(fc))
+
+(membership(fc)-correct) %>% mean
 
 # ASSOC:  OWNER <--> PROPERTY ----
