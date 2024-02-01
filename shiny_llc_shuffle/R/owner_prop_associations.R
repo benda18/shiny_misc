@@ -76,7 +76,7 @@ master_sales.23 <- sales.res.2023[,c("own1",
   group_by_all() %>%
   summarise(n = n()) %>% 
   ungroup() %>%
-  #.[.$sale_valid,] %>%
+  .[.$sale_valid,] %>%
   .[order(.$n,decreasing = T),] %>%
   mutate(., pardate_id = paste(PARID,SALEDTE)) 
 # .[,c("own1", "own2",
@@ -104,9 +104,9 @@ M_own2pardate_id <- rbind(summarise(group_by(master_sales.23, owner = own1, pard
   summarise()
 
 # build graph
-GR_own2own       <- graph_from_data_frame(d = M_own2own, directed = F)
-GR_own2parid     <- graph_from_data_frame(d = M_own2parid, directed = F)
-GR_own2pardate_id <- graph_from_data_frame(d = M_own2pardate_id, directed = F)
+GR_own2own       <- graph_from_data_frame(d = M_own2own, directed = F) %>% simplify()
+GR_own2parid     <- graph_from_data_frame(d = M_own2parid, directed = F) %>% simplify()
+GR_own2pardate_id <- graph_from_data_frame(d = M_own2pardate_id, directed = F) %>% simplify()
 
 # igraph::gsize(GR_own2own)  # number of edges of graph
 # igraph::gsize(GR_own2parid)
@@ -126,6 +126,18 @@ CW_owner.clusterid <- data.frame(owner      = names(clusters_own2own$membership)
   as_tibble() %>%
   mutate(., 
          cluster_id =  paste("o2o", cluster_id, sep = "_"))
+
+CW_parid.clusterid       <- data.frame(owner      = names(clusters_own2parid$membership), 
+                                       cluster_id = as.integer(unname(clusters_own2parid$membership))) %>% 
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2p", cluster_id, sep = "_"))
+
+CW_pardate_id.clusterid  <- data.frame(owner      = names(clusters_own2pardate_id$membership), 
+                                       cluster_id = as.integer(unname(clusters_own2pardate_id$membership))) %>% 
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2pd", cluster_id, sep = "_"))
 
 M_clusterid_size.o2o  <- data.frame(cluster_id = as.integer(1:length(clusters_own2own$csize)), 
                                     n_o2o   = clusters_own2own$csize) %>% 
@@ -157,20 +169,10 @@ M_clusterid_size.o2pd  <- data.frame(cluster_id = as.integer(1:length(clusters_o
   as.data.frame() %>%
   as_tibble()
 
-CW_parid.clusterid       <- data.frame(owner      = names(clusters_own2parid$membership), 
-                                       cluster_id = as.integer(unname(clusters_own2parid$membership))) %>% 
-  as_tibble() %>%
-  mutate(., 
-         cluster_id =  paste("o2p", cluster_id, sep = "_"))
-
-CW_pardate_id.clusterid  <- data.frame(owner      = names(clusters_own2pardate_id$membership), 
-                                       cluster_id = as.integer(unname(clusters_own2pardate_id$membership))) %>% 
-  as_tibble() %>%
-  mutate(., 
-         cluster_id =  paste("o2pd", cluster_id, sep = "_"))
 
 
-rm(clusters_own2own, clusters_own2parid, clusters_own2pardate_id)
+
+#rm(clusters_own2own, clusters_own2parid, clusters_own2pardate_id)
 
 M_clusterid_size <- rbind(M_clusterid_size.o2o, 
                           M_clusterid_size.o2p, 
@@ -191,7 +193,7 @@ M_own2own
 M_own2parid
 M_own2pardate_id
 
-master_sales.23
+#master_sales.23
 
 
 # Find Big Clusters ----
@@ -205,27 +207,57 @@ CW_pardate_id.clusterid
 
 M_clusterid_size
 
+
+# SELECT DOWN TO OWNERS YOU WANT TO GRAPH----
+# set var_topn ----
+var_topn <- 1
+
 bigclust_o2o <- M_clusterid_size %>%
   .[.$variable == "n_o2o",] %>%
-  slice_max(., order_by = value, n = 10)
+  slice_max(., order_by = value, n = var_topn)
 bigclust_o2p <- M_clusterid_size %>%
   .[.$variable == "n_o2p",] %>%
-  slice_max(., order_by = value, n = 10)
+  slice_max(., order_by = value, n = var_topn)
 
 smclust_o2o <- M_clusterid_size %>%
   .[.$variable == "n_o2o",] %>%
-  slice_min(., order_by = value, n = 10)
+  slice_min(., order_by = value, n = var_topn)
 smclust_o2p <- M_clusterid_size %>%
   .[.$variable == "n_o2p",] %>%
-  slice_min(., order_by = value, n = 10)
+  slice_min(., order_by = value, n = var_topn)
 
-rbind(bigclust_o2o, smclust_o2o) %>%
+outliers_clust_o2o <- rbind(bigclust_o2o, smclust_o2o) 
   
-rbind(bigclust_o2p, smclust_o2p)
+outliers_clust_o2p <- rbind(bigclust_o2p, smclust_o2p)
 
-GR_own2own_filter        <- graph_from_data_frame(d = M_own2own, directed = F)
-GR_own2parid_filter      <- graph_from_data_frame(d = M_own2parid, directed = F)
-GR_own2pardate_id_filter <- graph_from_data_frame(d = M_own2pardate_id, directed = F)
+
+outlier_members.o2o <- CW_owner.clusterid[CW_owner.clusterid$cluster_id %in% 
+                                           outliers_clust_o2o$cluster_id,] %>%
+  group_by(owner) %>%
+  summarise() %>%
+  .$owner
+
+
+outlier_members.o2p <- CW_parid.clusterid[CW_parid.clusterid$cluster_id %in% 
+                                           outliers_clust_o2p$cluster_id,] %>%
+  group_by(owner) %>%
+  summarise() %>%
+  .$owner
+
+GR_own2own_filter        <- graph_from_data_frame(d = M_own2own[M_own2own$own1 %in% outlier_members.o2o |
+                                                                  M_own2own$own2 %in% outlier_members.o2o,], 
+                                                  directed = F) %>% 
+  simplify()
+gsize(GR_own2own_filter)
+# plot(GR_own2own)
+
+GR_own2parid_filter      <- graph_from_data_frame(d = M_own2parid[M_own2parid$owner %in% outlier_members.o2p | 
+                                                                    M_own2parid$PARID %in% outlier_members.o2p ,], directed = F) %>% 
+  simplify()
+
+gsize(GR_own2parid_filter)
+
+#GR_own2pardate_id_filter <- graph_from_data_frame(d = M_own2pardate_id, directed = F) %>% simplify()
 
 # big clusters - o2p
 grep("^\\w{1,3}_", ls(), ignore.case = T, value = T)
