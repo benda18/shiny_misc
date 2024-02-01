@@ -121,24 +121,39 @@ clusters_own2pardate_id <- clusters(GR_own2pardate_id)
 
 CW_owner.clusterid <- data.frame(owner      = names(clusters_own2own$membership), 
                                  cluster_id = as.integer(unname(clusters_own2own$membership))) %>% 
-  as_tibble()
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2o", cluster_id, sep = "_"))
 
 M_clusterid_size.o2o  <- data.frame(cluster_id = as.integer(1:length(clusters_own2own$csize)), 
                                     n_o2o   = clusters_own2own$csize) %>% 
-  as_tibble()
+  as_tibble()  %>%
+  mutate(., 
+         cluster_id =  paste("o2o", cluster_id, sep = "_"))
+
 M_clusterid_size.o2p  <- data.frame(cluster_id = as.integer(1:length(clusters_own2parid$csize)), 
                                     n_o2p   = clusters_own2parid$csize) %>% 
-  as_tibble()
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2p", cluster_id, sep = "_"))
+
 M_clusterid_size.o2pd  <- data.frame(cluster_id = as.integer(1:length(clusters_own2pardate_id$csize)), 
                                      n_o2pd   = clusters_own2pardate_id$csize) %>% 
-  as_tibble()
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2pd", cluster_id, sep = "_"))
 
 CW_parid.clusterid       <- data.frame(owner      = names(clusters_own2parid$membership), 
                                        cluster_id = as.integer(unname(clusters_own2parid$membership))) %>% 
-  as_tibble()
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2p", cluster_id, sep = "_"))
+
 CW_pardate_id.clusterid  <- data.frame(owner      = names(clusters_own2pardate_id$membership), 
                                        cluster_id = as.integer(unname(clusters_own2pardate_id$membership))) %>% 
-  as_tibble()
+  as_tibble() %>%
+  mutate(., 
+         cluster_id =  paste("o2pd", cluster_id, sep = "_"))
 
 
 rm(clusters_own2own, clusters_own2parid, clusters_own2pardate_id)
@@ -160,6 +175,28 @@ CW_pardate_id.clusterid
 M_clusterid_size[,c(2:4)]%>% plot()
 M_clusterid_size 
 
+slice_max(M_clusterid_size, 
+          order_by = n_o2o, 
+          n = 10)
+
+M_clusterid_size %>%
+  slice_max(., 
+            #n = 10, 
+            prop = 0.1,
+            order_by = tibble(n_o2o, n_o2p))
+
+M_clusterid_size %>%
+  slice_max(., 
+            #n = 10, 
+            prop = 0.1,
+            order_by = tibble(n_o2p, n_o2o))
+
+mtcars %>% 
+  slice_min(tibble(cyl, mpg), n = 3)
+mtcars %>% 
+  slice_min(tibble(mpg, cyl), n = 3)
+
+args(slice_max)
 M_own2own
 M_own2parid
 M_own2pardate_id
