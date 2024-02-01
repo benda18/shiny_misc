@@ -96,6 +96,8 @@ M_own2parid <- rbind(summarise(group_by(master_sales.23, owner = own1, PARID)),
   group_by_all() %>%
   summarise()
 
+# build graph
+GR_own2own <- graph_from_data_frame(d = M_own2own, directed = F)
 
 
 
