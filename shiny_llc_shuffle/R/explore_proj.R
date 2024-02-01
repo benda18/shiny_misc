@@ -284,3 +284,54 @@ var_organized.owners <- c("TRUSTEES",
   # Delinquent Tax Data Tidy----
 files.deltax.all <- list.files(pattern = "^Delq_\\d{8,8}\\.csv$")
 
+del_0623 <- read_csv(grep("202306.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "6")
+del_0723 <- read_csv(grep("202307.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "7")
+del_0823 <- read_csv(grep("202308.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "8")
+del_0923 <- read_csv(grep("202309.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "9")
+del_1023 <- read_csv(grep("202310.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "10")
+del_1123 <- read_csv(grep("202311.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "11")
+del_1223 <- read_csv(grep("202312.{2,2}\\.csv", files.deltax.all, value = T), col_types = "c") %>% mutate(., prd = "12")
+
+del_23H2 <- rbind(del_0623,del_0723,del_0823, del_0923, 
+                  del_1023,del_1123,del_1223)
+
+rm(del_0623, del_0723, del_0823, del_0923, del_1023, del_1123, del_1223)
+
+
+del_23H2$HLF1CHG %>% as.numeric()
+
+names(del_23H2) %>% 
+  sort %>%
+  grep("date|due|amount|asm", ., value = T, ignore.case = T)
+
+del_23H2$LEGAL1
+
+napcts <- NULL
+
+for(ic in 1:ncol(del_23H2)){
+  #print(ic)
+  prt <- sum(is.na(as.numeric(unname(unlist(del_23H2[,ic])))))/nrow(del_23H2)
+  
+  napcts <- c(napcts, prt)
+  
+  if(prt > 0){
+    #cat(ic, scales::percent(prt, accuracy = 0.1), "\n\n", sep = "---")
+  }
+  
+  #print("  ")
+  #print("  ")
+  #Sys.sleep(0.25)
+}
+
+scales::percent(napcts)
+napcts %>%
+  sort %>%
+  round(., 4) %>%
+  unique() %>%
+  scales::percent(., accuracy = 0.0000001)
+summary(napcts)
+
+del_23H2[, napcts < 0.03] 
+
+
+# change field classes
