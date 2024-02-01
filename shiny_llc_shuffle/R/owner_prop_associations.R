@@ -106,16 +106,18 @@ GR_own2own       <- graph_from_data_frame(d = M_own2own, directed = F)
 GR_own2parid     <- graph_from_data_frame(d = M_own2parid, directed = F)
 GR_own2pardate_id <- graph_from_data_frame(d = M_own2pardate_id, directed = F)
 
-igraph::gsize(GR_own2own)  # number of edges of graph
-igraph::gsize(GR_own2parid)
-igraph::gsize(GR_own2pardate_id)
+# igraph::gsize(GR_own2own)  # number of edges of graph
+# igraph::gsize(GR_own2parid)
+# igraph::gsize(GR_own2pardate_id)
 
-clusters_own2own <- clusters(GR_own2own)
-#groups_own2own   <- groups(clusters_own2own)
+clusters_own2own        <- clusters(GR_own2own)
+clusters_own2parid      <- clusters(GR_own2parid)
+clusters_own2pardate_id <- clusters(GR_own2pardate_id)
 
-clusters_own2own$membership # name = owner, value = cluster_id
-clusters_own2own$csize      # cluster_id number of members
-clusters_own2own$no         # total number of clusters
+
+# clusters_own2own$membership # name = owner, value = cluster_id
+# clusters_own2own$csize      # cluster_id number of members
+# clusters_own2own$no         # total number of clusters
 
 CW_owner.clusterid <- data.frame(owner      = names(clusters_own2own$membership), 
                                  cluster_id = as.integer(unname(clusters_own2own$membership))) %>% 
@@ -125,20 +127,27 @@ M_clusterid_size  <- data.frame(cluster_id = as.integer(1:length(clusters_own2ow
                                 n_owners   = clusters_own2own$csize) %>% 
   as_tibble()
 
-CW_parid.clusterid       <- clusters
-CW_pardate_id.clusterid
+CW_parid.clusterid       <- data.frame(owner      = names(clusters_own2parid$membership), 
+                                       cluster_id = as.integer(unname(clusters_own2parid$membership))) %>% 
+  as_tibble()
+CW_pardate_id.clusterid  <- data.frame(owner      = names(clusters_own2pardate_id$membership), 
+                                       cluster_id = as.integer(unname(clusters_own2pardate_id$membership))) %>% 
+  as_tibble()
 
 
-rm(clusters_own2own)
+rm(clusters_own2own, clusters_own2parid, clusters_own2pardate_id)
 
 
 # review
 CW_owner.clusterid
+CW_parid.clusterid
+CW_pardate_id.clusterid
+
 M_clusterid_size
 
 M_own2own
 M_own2parid
-
+M_own2pardate_id
 
 
 
