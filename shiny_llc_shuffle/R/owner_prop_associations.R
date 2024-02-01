@@ -143,15 +143,22 @@ CW_pardate_id.clusterid  <- data.frame(owner      = names(clusters_own2pardate_i
 
 rm(clusters_own2own, clusters_own2parid, clusters_own2pardate_id)
 
+M_clusterid_size <- full_join(M_clusterid_size.o2o, 
+                              M_clusterid_size.o2p) %>%
+  full_join(., 
+            M_clusterid_size.o2pd)
+
+rm(M_clusterid_size.o2o, 
+   M_clusterid_size.o2p, 
+   M_clusterid_size.o2pd)
 
 # review
 CW_owner.clusterid
 CW_parid.clusterid
 CW_pardate_id.clusterid
 
-M_clusterid_size.o2o
-M_clusterid_size.o2p
-M_clusterid_size.o2pd
+M_clusterid_size[,c(2:4)]%>% plot()
+M_clusterid_size 
 
 M_own2own
 M_own2parid
