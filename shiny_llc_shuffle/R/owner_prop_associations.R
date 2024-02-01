@@ -56,9 +56,6 @@ sales.res.2023$ACRES   <- as.numeric(sales.res.2023$ACRES)
 sales.res.2023$sale_valid <- grepl("^DESIGNATED|^VALID |^LAND CONTRACT|^LIQUIDATION|^PARTIAL|^RELATED|^Mobile |^SALE INVOLVING", 
                                    x = sales.res.2023$SALEVALIDITY)
 
-
-
-# ASSOC: OWNER <--> OWNER ----
 temp.order.owners <-  sales.res.2023[,c("OLDOWN", 
                                         "OWNERNAME1")] %>% 
   t %>% 
@@ -80,20 +77,44 @@ master_sales.23 <- sales.res.2023[,c("own1",
   #.[.$sale_valid,] %>%
   .[order(.$n,decreasing = T),] %>%
   mutate(., pardate_id = paste(PARID,SALEDTE)) 
-  # .[,c("own1", "own2",
-  #      "ACRES",
-  #      "sale_valid", "PARID", "SALEDTE"),]
+# .[,c("own1", "own2",
+#      "ACRES",
+#      "sale_valid", "PARID", "SALEDTE"),]
+
+rm(temp.order.owners)
+
+
+# ASSOC: OWNER <--> OWNER ----
 
 M_own2own <- master_sales.23 %>%
   group_by(own1, own2) %>%
-  summarise(n_trans = n(), 
-            n_parid = n_distinct(PARID)) %>%
-  mutate(., n_parid.per.trans = n_parid/n_trans) %>%
-  .[order(.$n_parid.per.trans,decreasing = F),] 
+  summarise()
 
-M_own2own$n_parid.per.trans %>% unique
 
-plot(y = M_own2own$n_parid, 
-     x = M_own2own$n_parid.per.trans)
+M_own2parid <- rbind(summarise(group_by(master_sales.23, owner = own1, PARID)),
+                     summarise(group_by(master_sales.23, owner = own2, PARID))) %>%
+  group_by_all() %>%
+  summarise()
+
+
+# master_sales.23 %>%
+#   .[.$sale_valid,] %>%
+#   group_by(own1, own2) %>%
+#   summarise(n = n(), 
+#             n_parid   = n_distinct(PARID), 
+#             n_saledte = n_distinct(SALEDTE), 
+#             n_par.sale = n_distinct(pardate_id),
+#             pct_valid   = sum(sale_valid)/n,
+#             ) %>%
+#   .[order(.$pct_valid,decreasing = F),] %>%
+#   .[,c("n", "pct_valid")] %>% 
+#   smoothScatter(., 
+#                 nrpoints = Inf,  #100 = default
+#                 pch = 20, # see ?points; represents point symbol shape
+#                 nbin = c(20))
+
+
+
+
 
 # ASSOC:  OWNER <--> PROPERTY ----
