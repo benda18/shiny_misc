@@ -47,6 +47,8 @@ sales.res.2023 <- read_csv(file = grep(pattern = "2023", x = files.res.sales, va
                            #col_types = "c",
                            guess_max = min(c(10000, Inf)))
 
+rm(files.res.sales)
+
 sales.res.2023$SALEDTE <- dmy(sales.res.2023$SALEDTE)
 #sales.res.2023$CONVNUM <- as.numeric(sales.res.2023$CONVNUM)  #no NAs result but not ideal
 sales.res.2023$PRICE   <- as.numeric(sales.res.2023$PRICE)
@@ -185,15 +187,51 @@ CW_pardate_id.clusterid
 
 M_clusterid_size 
 
-slice_max(group_by(M_clusterid_size, variable), 
-          order_by = value,
-          n = 3, 
-          #prop = 0.1
-          )
-
 M_own2own
 M_own2parid
 M_own2pardate_id
+
+master_sales.23
+
+
+# Find Big Clusters ----
+# big clusters - o2o
+ls()
+grep("^\\w{1,3}_", ls(), ignore.case = T, value = T) 
+
+CW_owner.clusterid
+CW_parid.clusterid
+CW_pardate_id.clusterid
+
+M_clusterid_size
+
+bigclust_o2o <- M_clusterid_size %>%
+  .[.$variable == "n_o2o",] %>%
+  slice_max(., order_by = value, n = 10)
+bigclust_o2p <- M_clusterid_size %>%
+  .[.$variable == "n_o2p",] %>%
+  slice_max(., order_by = value, n = 10)
+
+smclust_o2o <- M_clusterid_size %>%
+  .[.$variable == "n_o2o",] %>%
+  slice_min(., order_by = value, n = 10)
+smclust_o2p <- M_clusterid_size %>%
+  .[.$variable == "n_o2p",] %>%
+  slice_min(., order_by = value, n = 10)
+
+rbind(bigclust_o2o, smclust_o2o) %>%
+  
+rbind(bigclust_o2p, smclust_o2p)
+
+GR_own2own_filter        <- graph_from_data_frame(d = M_own2own, directed = F)
+GR_own2parid_filter      <- graph_from_data_frame(d = M_own2parid, directed = F)
+GR_own2pardate_id_filter <- graph_from_data_frame(d = M_own2pardate_id, directed = F)
+
+# big clusters - o2p
+grep("^\\w{1,3}_", ls(), ignore.case = T, value = T)
+
+
+
 
 # see if we can filter down graphs
 
