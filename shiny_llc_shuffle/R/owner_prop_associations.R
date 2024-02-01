@@ -97,24 +97,6 @@ M_own2parid <- rbind(summarise(group_by(master_sales.23, owner = own1, PARID)),
   summarise()
 
 
-# master_sales.23 %>%
-#   .[.$sale_valid,] %>%
-#   group_by(own1, own2) %>%
-#   summarise(n = n(), 
-#             n_parid   = n_distinct(PARID), 
-#             n_saledte = n_distinct(SALEDTE), 
-#             n_par.sale = n_distinct(pardate_id),
-#             pct_valid   = sum(sale_valid)/n,
-#             ) %>%
-#   .[order(.$pct_valid,decreasing = F),] %>%
-#   .[,c("n", "pct_valid")] %>% 
-#   smoothScatter(., 
-#                 nrpoints = Inf,  #100 = default
-#                 pch = 20, # see ?points; represents point symbol shape
-#                 nbin = c(20))
-
-
-
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
