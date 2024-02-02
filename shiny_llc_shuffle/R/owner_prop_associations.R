@@ -264,8 +264,8 @@ outliers_clust_o2o <- M_clusterid_size %>%
 
 outliers_clust_o2p <- M_clusterid_size %>%
   .[.$cluster_id %in% LLC_clusters,] %>%
-    .[.$variable == "n_o2p",] %>%
-    slice_sample(., n = var_topn)
+  .[.$variable == "n_o2p",] %>%
+  slice_sample(., n = var_topn)
 
 # bigclust_o2o <- M_clusterid_size %>%
 #   .[.$cluster_id %in% LLC_clusters,] %>%
@@ -290,14 +290,14 @@ outliers_clust_o2p <- M_clusterid_size %>%
 
 
 outlier_members.o2o <- CW_owner.clusterid[CW_owner.clusterid$cluster_id %in% 
-                                           outliers_clust_o2o$cluster_id,] %>%
+                                            outliers_clust_o2o$cluster_id,] %>%
   group_by(owner) %>%
   summarise() %>%
   .$owner
 
 
 outlier_members.o2p <- CW_parid.clusterid[CW_parid.clusterid$cluster_id %in% 
-                                           outliers_clust_o2p$cluster_id,] %>%
+                                            outliers_clust_o2p$cluster_id,] %>%
   group_by(owner) %>%
   summarise() %>%
   .$owner
@@ -342,49 +342,42 @@ ls() %>%
   grep("^CW_", ., value = T)
 
 
+master_explore <- CW_owner.clusterid[CW_owner.clusterid$cluster_id %in% 
+                                       CW_owner.clusterid$cluster_id[CW_owner.clusterid$owner %in%
+                                                                       var_explore.further] | 
+                                       CW_owner.clusterid$cluster_id %in%
+                                       var_explore.clusters,]
 
 
-var_explore.clusters
-var_explore.further
-var_ptrn_llc
+explore_graphs_list <- list()
+for(i in unique(master_explore$cluster_id)){
+  
+  clust.owners <- master_explore$owner[master_explore$cluster_id == i]
+  
+  temp.df <- summarise(group_by_all(master_sales.23[master_sales.23$own1 %in% clust.owners | 
+                                             master_sales.23$own2 %in% clust.owners,
+                                           c("own1", "own2", "pardate_id")]))
+  
+  explore_graphs_list[[i]] <- graph_from_data_frame(temp.df[,c("own1", "own2")], 
+                                                    directed = F)
+  
+  #rm(clust.owners, temp.df)
+}
 
-# adist(x = "MENDENHALL PROPERTIES 4 LLC", 
-#       y = "MENDENHALL PROPERTIES f LLC") %>% 
-#   as.list() %>%
-#   unlist 
-# 
-# agrep(pattern = "MENDENHALL PROPERTIES 4 LLC", 
-#       x       = "MENDENHALL PROPERTIES fff LLC", 
-#       value = T)
-# 
-# adist(x = c("tim 1"), 
-#       y = c("tom 5", "tim", "timmy", "timothy"))
-# 
-# 
-# df_similar_names <- data.frame(name1 = var_explore.further, 
-#                                n_agrep_matches = NA, 
-#                                list.names = NA) %>% as_tibble()
-# 
-# 
-# for(i in 1:nrow(df_similar_names)){
-#   df_similar_names$n_agrep_matches[i] <- 
-#     agrep(pattern = df_similar_names$name1[i],
-#           max.distance = c(1),#0.09,
-#          x = CW_owner.clusterid$owner, value = T) %>%
-#     length()
-#   df_similar_names$list.names[i] <- 
-#     list(agrep(pattern = df_similar_names$name1[i],
-#           max.distance = c(1),
-#           x = CW_owner.clusterid$owner, value = T))
-# }
-# 
-# df_similar_names$list.names[1]
-# df_similar_names$list.names[7]
-# df_similar_names$list.names[9]
-# df_similar_names$list.names[10]
+explore_graphs_list[[1]] %>% plot
 
 master_sales.23$sale_valid %>% table()
 master_sales.23
+
+
+# frequently transacted properties----
+master_sales.23 %>%
+  group_by(PARID) %>%
+  summarise(n = n()) %>%
+  ungroup() %>%
+  slice_max(., 
+            order_by = n, 
+            n = 3)
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
