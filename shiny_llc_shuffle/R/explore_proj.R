@@ -8,6 +8,9 @@ library(ggplot2)
 
 rm(list=ls());cat('\f')
 
+renv::status()
+# renv::snapshot()
+
 # Funs----
 
 
