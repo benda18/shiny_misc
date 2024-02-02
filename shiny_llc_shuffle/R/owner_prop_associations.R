@@ -342,26 +342,49 @@ ls() %>%
   grep("^CW_", ., value = T)
 
 
+
+
 var_explore.clusters
 var_explore.further
 var_ptrn_llc
 
-adist(x = "MENDENHALL PROPERTIES 4 LLC", 
-      y = "MENDENHALL PROPERTIES f LLC") %>% 
-  as.list() %>%
-  unlist 
+# adist(x = "MENDENHALL PROPERTIES 4 LLC", 
+#       y = "MENDENHALL PROPERTIES f LLC") %>% 
+#   as.list() %>%
+#   unlist 
+# 
+# agrep(pattern = "MENDENHALL PROPERTIES 4 LLC", 
+#       x       = "MENDENHALL PROPERTIES fff LLC", 
+#       value = T)
+# 
+# adist(x = c("tim 1"), 
+#       y = c("tom 5", "tim", "timmy", "timothy"))
+# 
+# 
+# df_similar_names <- data.frame(name1 = var_explore.further, 
+#                                n_agrep_matches = NA, 
+#                                list.names = NA) %>% as_tibble()
+# 
+# 
+# for(i in 1:nrow(df_similar_names)){
+#   df_similar_names$n_agrep_matches[i] <- 
+#     agrep(pattern = df_similar_names$name1[i],
+#           max.distance = c(1),#0.09,
+#          x = CW_owner.clusterid$owner, value = T) %>%
+#     length()
+#   df_similar_names$list.names[i] <- 
+#     list(agrep(pattern = df_similar_names$name1[i],
+#           max.distance = c(1),
+#           x = CW_owner.clusterid$owner, value = T))
+# }
+# 
+# df_similar_names$list.names[1]
+# df_similar_names$list.names[7]
+# df_similar_names$list.names[9]
+# df_similar_names$list.names[10]
 
-agrep(pattern = "MENDENHALL PROPERTIES 4 LLC", 
-      x       = "MENDENHALL PROPERTIES fff LLC", 
-      value = T)
-
-adist(x = c("tim 1"), 
-      y = c("tom 5", "tim", "timmy", "timothy"))
-
-
-choose(length(unique(grep(pattern = var_ptrn_llc, 
-                          x = CW_owner.clusterid$owner, 
-                          value = T, ignore.case = T))),2) %>% scales::comma()
+master_sales.23$sale_valid %>% table()
+master_sales.23
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
