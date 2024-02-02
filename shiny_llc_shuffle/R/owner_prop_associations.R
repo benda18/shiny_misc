@@ -371,13 +371,45 @@ master_sales.23
 
 
 # frequently transacted properties----
-master_sales.23 %>%
-  group_by(PARID) %>%
-  summarise(n = n()) %>%
-  ungroup() %>%
-  slice_max(., 
-            order_by = n, 
-            n = 3)
+master_sales.23 <- master_sales.23 %>%
+  left_join(., CW_owner.clusterid, 
+            by = c("own1" = "owner")) %>%
+  left_join(., CW_owner.clusterid, 
+            by = c("own2" = "owner"))
+
+master_sales.23$cluster_id <- ifelse(is.na(master_sales.23$cluster_id.x), 
+                                     master_sales.23$cluster_id.y, 
+                                     master_sales.23$cluster_id.x)
+
+master_sales.23 <- master_sales.23[!colnames(master_sales.23) %in% 
+                  c("cluster_id.x", "cluster_id.y")]
+
+
+
+ms23_summary <- master_sales.23 %>%
+  group_by(cluster_id, 
+           self_sale = own1 == own2) %>%
+  summarise(n_records = n(),
+            n_parids = n_distinct(PARID), 
+            n_own1   = n_distinct(own1), 
+            n_own2   = n_distinct(own2)) %>%
+  left_join(., 
+            summarise(group_by(CW_owner.clusterid, cluster_id), 
+                      n_distinct.own = n_distinct(owner)))
+
+ms23_summary$self_sale %>% table
+# what i'm looking for: 
+# * lots of transactions
+# * for a single (or minimal) properties 
+# * between a minimal number of owners
+
+# how to quantify this ^^^: 
+ms23_summary[ms23_summary$n_parids == 1,]
+
+
+CW_owner.clusterid
+
+
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
