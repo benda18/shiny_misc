@@ -248,7 +248,8 @@ var_explore.further <- c("LINKO PROPERTIES LLC",
                          "DEVIN CONSTRUCTION CO , LLC", 
                          "TRAILS PARTNERS LLC", 
                          "G A WHITE DEVELOPMENT CO LLC", 
-                         "BERTRAM BUILDERS LLC AND")
+                         "BERTRAM BUILDERS LLC AND", 
+                         "BELMONT PROPERTY MANAGEMENT LLC")
 
 var_explore.clusters <- c("o2p_144", "o2o_16")
 
@@ -301,8 +302,23 @@ GR_own2own_filter        <- graph_from_data_frame(d = M_own2own[M_own2own$own1 %
                                                                   M_own2own$own2 %in% outlier_members.o2o,], 
                                                   directed = F) %>% 
   simplify()
+
 gsize(GR_own2own_filter)
 plot(GR_own2own_filter); Sys.sleep(3)
+neighborhood(GR_own2own_filter) %>% 
+  lapply(., length) %>%
+  unlist()
+
+igraph::cluster_walktrap()
+
+
+
+GR_own2own_filter %>%
+  neighborhood() %>%
+  lapply(., length) %>%
+  unlist() %>%
+  unique() %>%
+  sort() 
 
 GR_own2parid_filter      <- graph_from_data_frame(d = M_own2parid[M_own2parid$owner %in% outlier_members.o2p | 
                                                                     M_own2parid$PARID %in% outlier_members.o2p ,], directed = F) %>% 
