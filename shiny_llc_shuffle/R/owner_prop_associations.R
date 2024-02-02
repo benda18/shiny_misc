@@ -12,7 +12,8 @@ renv::status()
 # renv::snapshot()
 
 # Funs----
-
+?adist
+?agrep
 
 
 # working directory----
@@ -332,35 +333,35 @@ plot(GR_own2parid_filter)
 
 #GR_own2pardate_id_filter <- graph_from_data_frame(d = M_own2pardate_id, directed = F) %>% simplify()
 
-# big clusters - o2p
-grep("^\\w{1,3}_", ls(), ignore.case = T, value = T)
+
+# FINAL STEP----
+ls() %>%
+  grep("var_ptrn_llc|^var_explore|^var_ptrn|own2own|^CW_owner.clusterid|o2o|M_clusterid_size|master_sales", ., value = T)
+
+ls() %>%
+  grep("^CW_", ., value = T)
 
 
+var_explore.clusters
+var_explore.further
+var_ptrn_llc
+
+adist(x = "MENDENHALL PROPERTIES 4 LLC", 
+      y = "MENDENHALL PROPERTIES f LLC") %>% 
+  as.list() %>%
+  unlist 
+
+agrep(pattern = "MENDENHALL PROPERTIES 4 LLC", 
+      x       = "MENDENHALL PROPERTIES fff LLC", 
+      value = T)
+
+adist(x = c("tim 1"), 
+      y = c("tom 5", "tim", "timmy", "timothy"))
 
 
-# see if we can filter down graphs
-
-grep("size", ls(), ignore.case = T, value = T)
-M_clusterid_size
-
-
-
-# g <- (make_full_graph(10) + make_full_graph(10)) #%>%
-# plot(g)
-# g <- g %>%
-#   rewire(graph = ., 
-#          with = each_edge(p = 0.2))
-# plot(g)
-# 
-# correct <- rep(1:2, each = 10) %>% as_membership()
-# class(correct)
-# fc <- cluster_fast_greedy(g)
-# compare(correct, fc)
-# compare(correct, membership(fc))
-# 
-# (membership(fc)-correct) %>% mean
-
-
+choose(length(unique(grep(pattern = var_ptrn_llc, 
+                          x = CW_owner.clusterid$owner, 
+                          value = T, ignore.case = T))),2) %>% scales::comma()
 
 
 # ASSOC:  OWNER <--> PROPERTY ----
