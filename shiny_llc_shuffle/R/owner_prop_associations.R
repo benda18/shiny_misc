@@ -7,6 +7,7 @@ library(renv)
 library(ggplot2)
 
 rm(list=ls());cat('\f')
+gc()
 
 renv::status()
 # renv::snapshot()
@@ -80,17 +81,48 @@ sales.res.2018 <- read_csv(file = grep(pattern = "2018", x = files.res.sales, va
                            guess_max = min(c(15912, Inf))) %>%
   mutate(., 
          NBHD = NA)
+sales.res.2017 <- read_csv(file = grep(pattern = "2017", x = files.res.sales, value = T), 
+                           #col_types = "c",
+                           guess_max = min(c(10000, Inf))) %>%
+  mutate(., 
+         NBHD = NA)
+sales.res.2016 <- read_csv(file = grep(pattern = "2016", x = files.res.sales, value = T), 
+                           #col_types = "c",
+                           guess_max = min(c(10000, Inf))) %>%
+  mutate(., 
+         NBHD = NA)
+sales.res.2015 <- read_csv(file = grep(pattern = "2015", x = files.res.sales, value = T), 
+                           #col_types = "c",
+                           guess_max = min(c(10000, Inf))) %>%
+  mutate(., 
+         NBHD = NA)
+sales.res.2014 <- read_csv(file = grep(pattern = "2014", x = files.res.sales, value = T), 
+                           #col_types = "c",
+                           guess_max = min(c(19000, Inf))) %>%
+  mutate(., 
+         NBHD = NA)
 
+colnames(sales.res.2023)[!colnames(sales.res.2023) %in% colnames(sales.res.2017)]
 
 sales.res.2023 <- rbind(sales.res.2023, 
                         sales.res.2022, 
                         sales.res.2021,
                         sales.res.2020, 
                         sales.res.2019, 
-                        sales.res.2018)
+                        sales.res.2018, 
+                        sales.res.2017, 
+                        sales.res.2016, 
+                        sales.res.2015, 
+                        sales.res.2014)
 
 rm(files.res.sales, sales.res.2022, sales.res.2021, sales.res.2020, 
-   sales.res.2019, sales.res.2018)
+   sales.res.2019, sales.res.2018,
+   sales.res.2017, 
+   sales.res.2016, 
+   sales.res.2015, 
+   sales.res.2014)
+
+gc()
 
 sales.res.2023$SALEDTE <- dmy(sales.res.2023$SALEDTE)
 #sales.res.2023$CONVNUM <- as.numeric(sales.res.2023$CONVNUM)  #no NAs result but not ideal
@@ -119,49 +151,146 @@ igraph::gsize(temp.gr)
 temp.clusters <- igraph::clusters(temp.gr)
 
 
-# summarise clusters
+# EXPLORE CLUSTER SUMMARY----
 summary_clust <- NULL
 # loop through clusters
 for(i in unique(temp.clusters$membership)){
   if(i %% 1000 == 0){
     print(i)
   }
-  # cluster members - ppl
-  temp_owner <- names(temp.clusters$membership[temp.clusters$membership == i]) %>%
-    .[!grepl(" \\d{4,4}$", .)]
-  # cluster members - propertie
-  temp_parid <- names(temp.clusters$membership[temp.clusters$membership == i]) %>%
-    .[grepl(" \\d{4,4}$", .)]
-  # cluster size
-  temp_c.size <- temp.clusters$csize[i]
-  # number LLC
-  temp_n.llc  <- sum(grepl(" LLC$", temp_owner))
-  # number of properties
-  temp_n.parid <- length(temp_parid)
-  temp_n.owner <- length(temp_owner)
   
-  # number of transactions
-  # sales.res.2023[sales.res.2023$OLDOWN %in% temp_owner |
-  #                  sales.res.2023$OWNERNAME1 %in% temp_owner | 
-  #                  sales.res.2023$PADDR1 %in% temp_parid,]
-  temp_n.trans <- sum(sales.res.2023$OLDOWN %in% temp_owner |
-                        sales.res.2023$OWNERNAME1 %in% temp_owner | 
-                        sales.res.2023$PADDR1 %in% temp_parid)
-  
-  summary_clust <- rbind(summary_clust, 
-                         data.frame(cid = i, 
-                                    csize = temp_c.size, 
-                                    n_llc = temp_n.llc,
-                                    n_parid = temp_n.parid, 
-                                    n_owner = temp_n.owner, 
-                                    n_trans = temp_n.trans))
-  
+  # skip records that have already been written
+  if(!i %in% summary_clust$cid){
+    # cluster members - ppl
+    temp_owner <- names(temp.clusters$membership[temp.clusters$membership == i]) %>%
+      .[!grepl(" \\d{4,4}$", .)]
+    # cluster members - propertie
+    temp_parid <- names(temp.clusters$membership[temp.clusters$membership == i]) %>%
+      .[grepl(" \\d{4,4}$", .)]
+    # cluster size
+    temp_c.size <- temp.clusters$csize[i]
+    # number LLC
+    temp_n.llc  <- sum(grepl(" LLC$", temp_owner))
+    # number of properties
+    temp_n.parid <- length(temp_parid)
+    temp_n.owner <- length(temp_owner)
+    
+    
+    
+    # number of transactions
+    # sales.res.2023[sales.res.2023$OLDOWN %in% temp_owner |
+    #                  sales.res.2023$OWNERNAME1 %in% temp_owner | 
+    #                  sales.res.2023$PADDR1 %in% temp_parid,]
+    temp_n.trans <- sum(sales.res.2023$OLDOWN %in% temp_owner |
+                          sales.res.2023$OWNERNAME1 %in% temp_owner | 
+                          sales.res.2023$PADDR1 %in% temp_parid)
+    
+    summary_clust <- rbind(summary_clust, 
+                           data.frame(cid = i, 
+                                      csize = temp_c.size, 
+                                      n_llc = temp_n.llc,
+                                      n_parid = temp_n.parid, 
+                                      n_owner = temp_n.owner, 
+                                      n_trans = temp_n.trans))
+    
+    # temp: stop when n_llc > 0 & only 1 property and # of owners > 3
+    if(temp_n.llc   > 1 & # number of llcs
+       temp_n.parid == 1 & # number of properties
+       temp_n.owner > 0 & # number of people
+       i > 878){
+      print(i)
+      stop("found one")
+    }
+  }
 }
 
-head(summary_clust)
+summary_clust <- as_tibble(summary_clust)
+tail(summary_clust)
 
-summary_clust %>% as_tibble() %>%
+# temp: check a cluster
+temp_checknames <- names(temp.clusters$membership[temp.clusters$membership == 987])
+df_grchecknames <- rbind(mutate(sales.res.2023[sales.res.2023$OLDOWN %in% temp_checknames | 
+                              sales.res.2023$OWNERNAME1 %in% temp_checknames | 
+                              sales.res.2023$PARID %in% temp_checknames,], 
+             par_date = paste(PARID, SALEDTE, sep = "_"),
+             from = OLDOWN,
+             to = par_date,
+             #to = PARID, 
+             attcolor = PARID)[,c("from", "to", "attcolor")],
+      mutate(sales.res.2023[sales.res.2023$OLDOWN %in% temp_checknames | 
+                              sales.res.2023$OWNERNAME1 %in% temp_checknames | 
+                              sales.res.2023$PARID %in% temp_checknames,], 
+             par_date = paste(PARID, SALEDTE, sep = "_"),
+             from = par_date, 
+             #from = PARID,
+             to = OWNERNAME1, 
+             attcolor = PARID)[,c("from", "to", "attcolor")]#,
+      # mutate(sales.res.2023[sales.res.2023$OLDOWN %in% temp_checknames |
+      #                         sales.res.2023$OWNERNAME1 %in% temp_checknames |
+      #                         sales.res.2023$PARID %in% temp_checknames,],
+      #        par_date = paste(PARID, SALEDTE, sep = "_"),
+      #        from = par_date,
+      #        #from = PARID,
+      #        to = PARID,
+      #        attcolor = PARID)[,c("from", "to", "attcolor")]
+      )
+df_grchecknames
+temp_grchecknames <- graph_from_data_frame(df_grchecknames, directed = T) 
+
+# set vertex colors, 1 unique for each parid
+
+cw_checkcolors <- data.frame(attcolor = unique(df_grchecknames$attcolor), 
+                             prntcolor = rainbow(n = length(unique(df_grchecknames$attcolor))))
+
+
+cw_checkcolors2 <- data.frame(v_name = vertex.attributes(temp_grchecknames)$name, 
+                              prntcolor = "tan")
+for(i in unique(cw_checkcolors$attcolor)){
+  cw_checkcolors2[grepl(i, x = cw_checkcolors2$v_name),]$prntcolor <- cw_checkcolors$prntcolor[cw_checkcolors$attcolor == i]
+}
+
+rm(cw_checkcolors)
+
+plot(temp_grchecknames, 
+     layout = layout_as_tree, 
+     # vertex.color = ifelse(grepl("\\d{4,4}-\\d{2,2}-\\d{2,2}$", 
+     #                             vertex.attributes(temp_grchecknames)$name), 
+     #                       "green", "tan"), 
+     vertex.color = cw_checkcolors2$prntcolor)
+
+
+
+tkplot(temp_grchecknames, 
+       vertex.color = cw_checkcolors2$prntcolor, 
+       layout = layout_as_tree)
+
+
+
+
+
+# goal: find properties with too many transactions
+summary_clust <- summary_clust %>%
+  mutate(., 
+         trans_per_parid = n_parid/n_trans) 
+
+hist(summary_clust$trans_per_parid)
+fivenum(summary_clust$trans_per_parid)
+summary(summary_clust$trans_per_parid)
+
+# goal: find owners who have owned a property multiple times
+
+# goal: identify LLCs which represent the same person-owner
+ggplot(data = summary_clust[summary_clust$n_owner <= 100,], 
+       aes(x = n_owner, y = n_llc)) + 
+  geom_jitter(aes(color = n_llc / n_owner)) +
+  geom_smooth() +
+  scale_y_continuous(breaks = seq(0,100,by=1))
+
+
+summary_clust %>% 
+  # filter to show only clusters with LLCs
   .[.$n_llc > 0,] %>%
+  # filter to adjust number of properties
   .[.$n_parid <= 1000,] %>%
   ggplot(data = ., 
          aes(x = csize, 
