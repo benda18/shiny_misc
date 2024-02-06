@@ -141,7 +141,7 @@ temp.gr <- rbind(mutate(sales.res.2023[sales.res.2023$sale_valid,],
                  mutate(sales.res.2023[sales.res.2023$sale_valid,], 
                         from = OLDOWN, to = PARID)[,c("from", "to")]) %>%
   graph_from_data_frame(., 
-                        directed = T) %>% simplify()
+                        directed = T) #%>% simplify()
 
 
 
@@ -197,7 +197,8 @@ for(i in unique(temp.clusters$membership)){
     if(temp_n.llc   > 1 & # number of llcs
        temp_n.parid == 1 & # number of properties
        temp_n.owner > 0 & # number of people
-       i > 878){
+       temp_c.size  > 3 &
+       i > 3257){
       print(i)
       stop("found one")
     }
@@ -208,8 +209,9 @@ summary_clust <- as_tibble(summary_clust)
 tail(summary_clust)
 
 # temp: check a cluster
-temp_checknames <- names(temp.clusters$membership[temp.clusters$membership == 987])
-df_grchecknames <- rbind(mutate(sales.res.2023[sales.res.2023$OLDOWN %in% temp_checknames | 
+temp_checknames <- names(temp.clusters$membership[temp.clusters$membership == 3405])
+df_grchecknames <- rbind(mutate(sales.res.2023[sales.res.2023$OLDOWN %in%
+                                                 temp_checknames | 
                               sales.res.2023$OWNERNAME1 %in% temp_checknames | 
                               sales.res.2023$PARID %in% temp_checknames,], 
              par_date = paste(PARID, SALEDTE, sep = "_"),
