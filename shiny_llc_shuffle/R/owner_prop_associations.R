@@ -129,17 +129,9 @@ sales.res.2023$SALEDTE <- dmy(sales.res.2023$SALEDTE)
 sales.res.2023$PRICE   <- as.numeric(sales.res.2023$PRICE)
 sales.res.2023$ACRES   <- as.numeric(sales.res.2023$ACRES)
 
-sales.res.2023$sale_valid <- grepl("^DESIGNATED|^VALID |^LAND CONTRACT|^LIQUIDATION|^PARTIAL|^RELATED|^Mobile |^SALE INVOLVING", 
+sales.res.2023$sale_valid <- grepl("^NOT OPEN MARKET|^DESIGNATED|^VALID |^LAND CONTRACT|^LIQUIDATION|^PARTIAL|^RELATED|^Mobile |^SALE INVOLVING", 
                                    x = sales.res.2023$SALEVALIDITY)
 
-sales.res.2023 %>%
-  group_by(SALEVALIDITY) %>%
-  summarise(n = n()) %>%
-  .[order(.$n, decreasing = T),] %>%
-  as.data.frame()
-
-
-sum(is.na(sales.res.2023$PARID))
 
 # remove NAs----
 sales.res.2023 <- sales.res.2023[which(!is.na(sales.res.2023$SALEVALIDITY) & 
@@ -149,71 +141,137 @@ sales.res.2023 <- sales.res.2023[which(!is.na(sales.res.2023$SALEVALIDITY) &
 sales.res.2023 <- sales.res.2023[sales.res.2023$CLS == "R" & 
                                    !is.na(sales.res.2023$CLS),]
 
-# filter out invalid sales here----
-sales.res.2023 <- sales.res.2023[sales.res.2023$sale_valid,]
+# # filter out invalid sales here----
+# sales.res.2023 %>%
+#   group_by(sale_valid,SALEVALIDITY) %>%
+#   summarise(n = n())
+# 
+# sales.res.2023 <- sales.res.2023[sales.res.2023$sale_valid,]
 
-# conveyance number separates out transactions by each year.  
-sales.res.2023 %>%
-  .[sample(1:nrow(.), size = 25000, replace = F),] %>%
-  group_by(CONVNUM, 
-           yr = year(SALEDTE)) %>%
-  summarise(n = n(), 
-            n_oldown = n_distinct(OLDOWN), 
-            n_parid = n_distinct(PARID), 
-            n_date   = n_distinct(SALEDTE)) %>%
-  .[order(.$n_date, decreasing = T),] %>% plot()
-  
-
-x <- sales.res.2023[,c("PARID", "OLDOWN", "OWNERNAME1", 
-                  "SALEDTE", "ACRES", "SALETYPE", 
-                  "sale_valid")] %>%
-  group_by(PARID, ACRES, 
-           SALETYPE) %>%
-  summarise(n = n(), 
-            n_dates = n_distinct(SALEDTE)) 
-
-nrow(x)
-
-subx <- x %>%
-  .[.$ACRES > 0,] %>%
-  .[.$SALETYPE == "LAND AND BUILDING",] %>%
-  ungroup() %>%
-  slice_max(., 
-            order_by = n_dates, 
-            n = 10)
-
-subx
-
-
-
-
-sales.res.2023[sales.res.2023$PARID == subx$PARID[4],
-               c("OLDOWN", "OWNERNAME1")] %>%
-  graph_from_data_frame(., directed = T) %>% 
-  plot(., layout = layout_as_tree)
+# x <- sales.res.2023[,c("PARID", "OLDOWN", "OWNERNAME1", 
+#                   "SALEDTE", "ACRES", "SALETYPE", 
+#                   "sale_valid")] %>%
+#   group_by(PARID, ACRES, 
+#            SALETYPE) %>%
+#   summarise(n = n(), 
+#             n_dates = n_distinct(SALEDTE)) 
+# 
+# nrow(x)
+# 
+# subx <- x %>%
+#   .[.$ACRES > 0,] %>%
+#   .[.$SALETYPE == "LAND AND BUILDING",] %>%
+#   ungroup() %>%
+#   slice_max(., 
+#             order_by = n_dates, 
+#             n = 10)
+# 
+# subx
+# 
+# 
+# 
+# 
+# sales.res.2023[sales.res.2023$PARID == subx$PARID[4],
+#                c("OLDOWN", "OWNERNAME1")] %>%
+#   graph_from_data_frame(., directed = T) %>% 
+#   plot(., layout = layout_as_tree)
 
 
 
-# import delq_files
+# import delq_files----
 delq.files <- list.files(pattern = "^Delq_")
+
+read_csv(delq.files[16])
 
 df_delq <- NULL
 for(i in delq.files) {
-  df_delq <- rbind(i, 
-                   read_csv(i), guess_max = 10000)
+  df_delq <- rbind(df_delq, 
+                   read_csv(i), guess_max = ifelse(i == "Delq_20230831.csv", 
+                                                   15000, 30000))
 }
 
-delq_props <- df_delq[!grepl("^Delq_", df_delq$PARCELID),
+gc()
+
+# cleanup messed up records
+df_delq <- df_delq[nchar(df_delq$PARCELID) == 14,]
+gc()
+
+cw_class <- data.frame(CLS = c("A", "C", "E", 
+                               "I", "R", "U"), 
+                       lu_class = c("agricultural", "commercial", "exempt", 
+                                    "industrial", "residential" ,"utilities"))
+
+df_delq <- left_join(df_delq, 
+                     cw_class)
+
+# filter down to residential only
+df_delq <- df_delq[df_delq$lu_class == "residential",]
+gc()
+
+
+(delq_props <- df_delq[!grepl("^Delq_", df_delq$PARCELID),
         c("PARCELID", 
           "OWNERNAME1", 
           "ACRES", 
           "NETDELQ", 
-          "DUEDATE")] %>%
+          "DUEDATE",
+          "CERTDLQYR", 
+          "FRCLSR", 
+          "AC",      # appeal code
+          "HLF1PEN", # 1ST HALF PENALTY
+          "HLF2PEN" , # 2ND HALF PENALTY
+          "lu_class") ] %>%
   mutate(., 
          ACRES = as.numeric(ACRES), 
          NETDELQ = as.numeric(NETDELQ), 
-         DUEDATE = dmy(DUEDATE)) %>%
-  .[.$ACRES > 0,]
+         DUEDATE = dmy(DUEDATE), 
+         FRCLSR = dmy(FRCLSR), 
+         HLF1PEN = as.numeric(HLF1PEN), 
+         HLF2PEN = as.numeric(HLF2PEN)) #%>%
+  #.[.$ACRES > 0,]
+)
+
+gc()
+
+
+
+delq_props %>%
+  .[.$NETDELQ > 0,] %>%
+  mutate(., 
+         yr_due = year(DUEDATE)) %>%
+  group_by(PARCELID) %>%
+  summarise(n = n(), 
+            #n_yrs.d = n_distinct(yr_due),
+            n_yrs = n_distinct(CERTDLQYR),
+            n_owner = n_distinct(OWNERNAME1), 
+            n_acres = n_distinct(ACRES),
+            t_amt.delq = sum(NETDELQ),
+            ntimes_delq = sum(NETDELQ > 0)) %>%
+  .[order(.$n, decreasing = T),] %>%
+  mutate(., n_delq.per.owner = ntimes_delq / n_owner) %>%
+  .[order(.$t_amt.delq,decreasing = T),]
+
+delq_props %>%
+  .[.$NETDELQ > 0,] %>%
+  mutate(., 
+         yr_due = year(DUEDATE)) %>%
+  group_by(OWNERNAME1) %>%
+  summarise(n = n(), 
+            #n_yrs = n_distinct(yr_due),
+            n_yrs = n_distinct(CERTDLQYR),
+            n_owner = n_distinct(OWNERNAME1), 
+            n_parid = n_distinct(PARCELID),
+            n_acres = n_distinct(ACRES),
+            t_amt.delq = sum(NETDELQ),
+            delq.usd = NA,
+            ntimes_delq = sum(NETDELQ > 0)) %>%
+  mutate(., delq.usd  = scales::dollar(t_amt.delq)) %>%
+  .[order(.$t_amt.delq, decreasing = T),] #%>%
+  # mutate(., 
+  #        n_delq.per.parid = ntimes_delq / n_parid) %>%
+  # .[order(.$n_delq.per.parid,decreasing = T),]
+
+
 
 rm(df_delq, delq.files)
 
