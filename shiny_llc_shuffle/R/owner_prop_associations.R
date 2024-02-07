@@ -132,10 +132,132 @@ sales.res.2023$ACRES   <- as.numeric(sales.res.2023$ACRES)
 sales.res.2023$sale_valid <- grepl("^DESIGNATED|^VALID |^LAND CONTRACT|^LIQUIDATION|^PARTIAL|^RELATED|^Mobile |^SALE INVOLVING", 
                                    x = sales.res.2023$SALEVALIDITY)
 
+sales.res.2023 %>%
+  group_by(SALEVALIDITY) %>%
+  summarise(n = n()) %>%
+  .[order(.$n, decreasing = T),] %>%
+  as.data.frame()
+
+
+sum(is.na(sales.res.2023$PARID))
+
+# remove NAs----
+sales.res.2023 <- sales.res.2023[which(!is.na(sales.res.2023$SALEVALIDITY) & 
+                       !is.na(sales.res.2023$PARID)),]
+
+# Filter down to residential sales only----
+sales.res.2023 <- sales.res.2023[sales.res.2023$CLS == "R" & 
+                                   !is.na(sales.res.2023$CLS),]
 
 # filter out invalid sales here----
 sales.res.2023 <- sales.res.2023[sales.res.2023$sale_valid,]
 
+# conveyance number separates out transactions by each year.  
+sales.res.2023 %>%
+  .[sample(1:nrow(.), size = 25000, replace = F),] %>%
+  group_by(CONVNUM, 
+           yr = year(SALEDTE)) %>%
+  summarise(n = n(), 
+            n_oldown = n_distinct(OLDOWN), 
+            n_parid = n_distinct(PARID), 
+            n_date   = n_distinct(SALEDTE)) %>%
+  .[order(.$n_date, decreasing = T),] %>% plot()
+  
+
+x <- sales.res.2023[,c("PARID", "OLDOWN", "OWNERNAME1", 
+                  "SALEDTE", "ACRES", "SALETYPE", 
+                  "sale_valid")] %>%
+  group_by(PARID, ACRES, 
+           SALETYPE) %>%
+  summarise(n = n(), 
+            n_dates = n_distinct(SALEDTE)) 
+
+nrow(x)
+
+subx <- x %>%
+  .[.$ACRES > 0,] %>%
+  .[.$SALETYPE == "LAND AND BUILDING",] %>%
+  ungroup() %>%
+  slice_max(., 
+            order_by = n_dates, 
+            n = 10)
+
+subx
+
+
+
+
+sales.res.2023[sales.res.2023$PARID == subx$PARID[4],
+               c("OLDOWN", "OWNERNAME1")] %>%
+  graph_from_data_frame(., directed = T) %>% 
+  plot(., layout = layout_as_tree)
+
+
+
+# import delq_files
+delq.files <- list.files(pattern = "^Delq_")
+
+df_delq <- NULL
+for(i in delq.files) {
+  df_delq <- rbind(i, 
+                   read_csv(i), guess_max = 10000)
+}
+
+delq_props <- df_delq[!grepl("^Delq_", df_delq$PARCELID),
+        c("PARCELID", 
+          "OWNERNAME1", 
+          "ACRES", 
+          "NETDELQ", 
+          "DUEDATE")] %>%
+  mutate(., 
+         ACRES = as.numeric(ACRES), 
+         NETDELQ = as.numeric(NETDELQ), 
+         DUEDATE = dmy(DUEDATE)) %>%
+  .[.$ACRES > 0,]
+
+rm(df_delq, delq.files)
+
+
+x2 <- full_join(sales.res.2023, 
+          delq_props, 
+          by = c("PARID" = "PARCELID",
+                 "OWNERNAME1", "ACRES")) %>%
+  .[,c("PARID", "OLDOWN", "OWNERNAME1", 
+       "ACRES", "SALEDTE",
+       "NETDELQ", "DUEDATE" )] %>%
+  group_by(PARID, ACRES) %>%
+  summarise(n_saledates = n_distinct(SALEDTE), 
+            n_delqdates = n_distinct(DUEDATE, na.rm = T), 
+            t_amtdelq   = sum(NETDELQ, na.rm = T))
+
+x2 %>%
+  .[nchar(.$PARID) == 14,] %>%
+  .[.$t_amtdelq > 0,] %>%
+  .[order(.$n_saledates, decreasing = T),] %>%
+  .[,c("n_saledates", "t_amtdelq", "ACRES")] %>% 
+  ggplot(data = ., 
+         aes(x = n_saledates, 
+             y = t_amtdelq, 
+             color = ACRES)) +
+  geom_jitter() +
+  #geom_smooth() +
+  scale_y_log10(breaks = c(seq(2,10, by = 2),
+                           seq(2,10, by = 2)*10,
+                           seq(2,10, by = 2)*100,
+                           seq(2,10, by = 2)*1000,
+                           seq(2,10, by = 2)*10000,
+                           seq(2,10, by = 2)*100000, 
+                           seq(2,10, by = 2)*1000000), 
+                labels = scales::comma)+
+  scale_x_continuous(breaks = seq(0, 10, by = 1))+
+  scale_color_viridis_c(option = "C", trans = "log10", 
+                        labels = scales::comma)
+
+
+summary(x2$t_amtdelq)
+
+
+# build graph----
 temp.gr <- rbind(mutate(sales.res.2023[sales.res.2023$sale_valid,], 
                         from = PARID, to = OWNERNAME1)[,c("from", "to")],
                  mutate(sales.res.2023[sales.res.2023$sale_valid,], 
