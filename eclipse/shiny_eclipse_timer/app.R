@@ -40,6 +40,8 @@ ui <- fluidPage(
                  shiny::numericInput(inputId = "lat_in", 
                                      label = "Enter Latitude (y)", 
                                      value = 39.92953)),
+        # fluidRow(actionButton(inputId = "eclipse_go", 
+        #                        label   = "SUBMIT"), ),
         fluidRow(shiny::textOutput("total_TF"))
       ),
       wellPanel(
@@ -49,10 +51,7 @@ ui <- fluidPage(
         fluidRow("Maximum Sun Blocked (%):"),
         fluidRow(shiny::textOutput(outputId = "totality_dur"))
       )
-      
-      
     ),
-    
     
     # Map----
     mainPanel(
@@ -62,19 +61,17 @@ ui <- fluidPage(
                          label = "Enter Address", 
                          value = "107 Cliff Park Rd, Springfield, OH 45504"),
         actionButton(inputId = "cxy_go", 
-                     label   = "SEARCH"), 
-        # actionButton(inputId = "upd_go", 
-        #              label = "UPDATE TABLE")
+                     label   = "SEARCH ADDRESS"), 
         fluidRow("Lon/Lat:"), 
-        fluidRow(shiny::textOutput("coord_lon"))
+        # cen_lon button----
+        fluidRow(shiny::textOutput("coord_lon")),
+        fluidRow(shiny::textOutput("rando_letter"))
+        # /cen_lon button----
       ),
       wellPanel(fluidRow("Click on Map Below to find the corresponding Lon(x), Lat(y) coordinates:"),
                 textOutput(outputId = "plot_hover")),
       plotOutput("okiMap", 
-                 click = clickOpts(id = "plot_hover",
-                                   #delay = 800, 
-                                   #delayType = "debounce", 
-                                   clip = T))
+                 click = clickOpts(id = "plot_hover",clip = T))
       
     )
   )
@@ -87,83 +84,73 @@ server <- function(input, output) {
           sep = ", ", collapse = ", ")
   })
   
+  # lon/lat input box error handling----
+  
+  # reactive({
+  #   if(is.na(input$lon_in)){
+  #     input$lon_in <- -83.8119
+  #   }
+  #   if(is.na(input$lon_in)){
+  #     input$lon_in <- 39.92953
+  #   }
+  # })
+  
+  
+  
   output$okiMap <- renderPlot(width = 800, 
                               height = "auto", 
                               {
-                                
-                                try(ggplot() + 
-                                  geom_sf(data = okistates)+
-                                  geom_point(aes(x = input$lon_in, 
-                                                 y = input$lat_in), 
-                                             color = "red", shape = "x", size = 8, fill = "red")+
-                                  theme(plot.background = element_rect(fill = "cyan"), 
-                                        text = element_text(size = 18))+
-                                  scale_x_continuous(name = NULL)+
-                                  scale_y_continuous(name = NULL))
+                                try(
+                                  #print(
+                                    ggplot() + 
+                                      geom_sf(data = okistates)+
+                                      geom_point(aes(x = input$lon_in, 
+                                                     y = input$lat_in), 
+                                                 color = "red", shape = "x", size = 8, fill = "red")+
+                                      theme(plot.background = element_rect(fill = "cyan"), 
+                                            text = element_text(size = 18))+
+                                      scale_x_continuous(name = NULL)+
+                                      scale_y_continuous(name = NULL)
+                                  #)
+                                )
                               })
   
+  # cen_lon button----
+  # cen_rando <- eventReactive(eventExpr = input$cxy_go, {
+  #   sample(letters, 1)
+  # })
+  # output$rando_letter <- renderText({
+  #   cen_rando()
+  # })
+  
+  
+  
   cen_lon <- eventReactive(eventExpr = input$cxy_go, {
-    paste(round(censusxy::cxy_oneline(address = input$addr_in)[,c("coordinates.x", "coordinates.y")], 
-                5), 
-          sep = ", ", collapse = ", ")
+    paste(
+      round(
+        cxy_oneline(address = input$addr_in)[,c("coordinates.x", "coordinates.y")], 
+        5), 
+      sep = ", ", collapse = ", ")
   })
   output$coord_lon <- renderText({
     cen_lon()
   })
-  
-  # # get totality duration----
-  # output$totality_dur <- renderText({
-  #   # ECLIPSE MATH----
-  #   
-  #   lon_in <- input$lon_in #-81.44067000
-  #   lat_in <- input$lat_in # 41.24006000
-  #   
-  #   # set date_time of eclipse (ideally before solar eclipse begins)----
-  #   
-  #   greg_dt.local <- ymd_hm("2024-04-07 08:30AM", tz = "America/New_York")
-  #   tz.local      <- tz(greg_dt.local)
-  #   
-  #   # do the time conversions----
-  #   # convert to utc
-  #   greg_dt.utc <- with_tz(greg_dt.local, tz = "UTC")
-  #   jul_dt.utc  <- swephR::swe_julday(year  = year(greg_dt.utc), 
-  #                                     month = lubridate::month(greg_dt.utc, label = F), 
-  #                                     day   = mday(greg_dt.utc), 
-  #                                     hourd = hour(greg_dt.utc) + 
-  #                                       (minute(greg_dt.utc)/60) + 
-  #                                       (second(greg_dt.utc)/60/60), 
-  #                                     gregflag = 1)
-  #   
-  #   ewl_out     <- swephR::swe_sol_eclipse_when_loc(jd_start  = jul_dt.utc, 
-  #                                                   ephe_flag = 4, 
-  #                                                   geopos    = c(x = lon_in, 
-  #                                                                 y = lat_in, 
-  #                                                                 z = 10), 
-  #                                                   backward = F)
-  #   
-  #   ewl_out$tret <- ewl_out$tret[c(2,4)]
-  #   
-  #   out.times <- data.frame(time_val.jul     = ewl_out$tret, 
-  #                           local_time       = NA)
-  #   
-  #   for(i in 1:nrow(out.times)){
-  #     out.times$local_time[i] <- swephR::swe_jdet_to_utc(jd_et = ewl_out$tret[i], 
-  #                             gregflag = 1) %>%
-  #       paste(., 
-  #             sep = "-", 
-  #             collapse = "-") %>%
-  #       ymd_hms()
-  #   }
-  #   
-  #   ewl_out$attr <- ewl_out$attr[1+c(2)]
-  #   
-  #   as.character(max(out.times$local_time) - min(out.times$local_time))
-  #   
-  # })
+  # /cen_lon button----
+ 
   
   # get eclipse times----
+  
+  # submit_coords <- eventReactive(eventExpr = input$eclipse_go, {
+  #   #"do the stuff here"
+  # })
+  # 
+  # output$return_eclipsego <- renderTable({
+  #   submit_coords()
+  # })
+  
   output$eclipse_info <- renderTable({
     # ECLIPSE MATH----
+    Sys.sleep(2)
     
     lon_in <- input$lon_in #-81.44067000
     lat_in <- input$lat_in # 41.24006000
@@ -186,16 +173,17 @@ server <- function(input, output) {
     
     ewl_out     <- swephR::swe_sol_eclipse_when_loc(jd_start  = jul_dt.utc, 
                                                     ephe_flag = 4, 
-                                                    geopos    = c(x = lon_in, 
-                                                                  y = lat_in, 
+                                                    geopos    = c(#x = lon_in, 
+                                                                  x = ifelse(is.na(lon_in) | is.null(lon_in), 
+                                                                             -81.44067000, lon_in),
+                                                                  #y = lat_in, 
+                                                                  y = ifelse(is.na(lat_in) | is.null(lat_in), 
+                                                                             41.24006000, lat_in),
                                                                   z = 10), 
                                                     backward = F)
     
     ewl_out$tret <- ewl_out$tret[1:5]
-    
-    
     ewl_out$attr <- ewl_out$attr[1+c(2)]
-    #names(ewl_out$attr) <- c("pct_obscuration")
     
     # out_times----
     out.times <- data.frame(time_val.jul     = ewl_out$tret, 
@@ -204,9 +192,7 @@ server <- function(input, output) {
     for(i in 1:nrow(out.times)){
       out.times$local_time[i] <- swephR::swe_jdet_to_utc(jd_et = ewl_out$tret[i], 
                                                          gregflag = 1) %>%
-        paste(., 
-              sep = "-", 
-              collapse = "-") %>%
+        paste(., sep = "-", collapse = "-") %>%
         ymd_hms() %>%
         with_tz(., tz.local) %>%
         strftime(., 
@@ -263,7 +249,6 @@ server <- function(input, output) {
     lat_in <- input$lat_in # 41.24006000
     
     # set date_time of eclipse (ideally before solar eclipse begins)----
-    
     greg_dt.local <- ymd_hm("2024-04-07 08:30AM", tz = "America/New_York")
     tz.local      <- tz(greg_dt.local)
     
