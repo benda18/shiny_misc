@@ -20,13 +20,46 @@ library(scales)
 
 okistates <- readRDS("okistates.rds")
 
+# circle_xy = function(n, r, close_loop = FALSE) {
+#   theta = seq(0, 2 * pi, length.out = n + 1)
+#   if(!close_loop) theta = theta[-(n + 1)]
+#   cbind(x = r * cos(theta), y = r * sin(theta))
+# }
+# 
+# shape_sun   <- as.data.frame(circle_xy(n = 25, r = 10, close_loop=T))
+# shape_moon  <- as.data.frame(circle_xy(n = 25, r = 10.5, close_loop=T))
+# 
+# 
+# 
+# eclipse.plot <- ggplot() + 
+#   geom_polygon(data = shape_sun, fill = "darkorange", color = NA, linewidth = 2,
+#                aes(x = x, y = y)) +
+#   geom_polygon(data = shape_moon, alpha = 0.6, fill = "black", color = "black", 
+#                aes(x = (x-2), y = (y-3))) +
+#   
+#   geom_polygon(data = shape_sun, fill = "darkorange", color = NA, linewidth = 2,
+#                aes(x = x+25, y = y+0)) +
+#   geom_polygon(data = shape_moon, alpha = 0.6, fill = "black", color = "black", 
+#                aes(x = x+25, 
+#                    y = y)) +
+#   geom_text(data = data.frame(x = mean(shape_sun$x), 
+#                               y = mean(shape_sun$y)), size = 6,
+#             aes(x = x-1.5, y = y+0), label = "Partial\nEclipse")+
+#   geom_text(data = data.frame(x = mean(shape_sun$x), 
+#                               y = mean(shape_sun$y)), size = 6,
+#             aes(x = x-1.5+25, y = y+0), label = "Total\nEclipse")+
+#   coord_quickmap()+
+#   #theme_minimal()+
+#   theme_void()+
+#   theme(legend.position = "none")
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
   # Application title
   titlePanel("2024 Eclipse Planning Tool -
-             Find out if a specific location will see totality, how long, and at what times."),
+             Find out when and if a specific location will see totality."),
   
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
@@ -241,8 +274,8 @@ server <- function(input, output) {
       #out.times$local_time[2:4] <- NA
       out.times$local_time <- "partial eclipse only"
     }else{
-      out.times$duration_minutes <- scales::comma(c(0,
-                                                    diff(ymd_hms(out.times$local_time))),0.1)
+      # out.times$duration_minutes <- scales::comma(c(0,
+      #                                               diff(ymd_hms(out.times$local_time))),0.1)
       out.times$local_time <- out.times$local_time %>%
         gsub("^.*-\\d{2,2} ", "", .) %>%
         gsub("^0", "", .) %>%
