@@ -30,10 +30,8 @@ ui <- fluidPage(
       shiny::textInput(inputId = "addr_in", 
                        label = "Enter Address", 
                        value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
-                                        # "1060 W Addison St, Chicago, IL 60613", 
-                                        # "1600 Pennsylvania Avenue, Washington DC", 
-                                        # "350 Fifth Avenue New York, NY",
-                                        # "143 Beale St, Memphis TN", 
+                                        "1060 W Addison St, Chicago, IL 60613",
+                                        "1600 Pennsylvania Avenue, Washington DC",
                                         "1301 Western Ave, Cincinnati OH"),1)),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
@@ -182,25 +180,28 @@ server <- function(input, output) {
       out.times$local_time[1]  #  no change needed
       out.times$local_time[5] <- out.times$local_time[3] 
       out.times$local_time[3] <- out.times$local_time[2]
-      out.times$local_time[2] <- NA #  not seen
-      out.times$local_time[4] <- NA #  not seen 
+      out.times$local_time[2] <- "<<<partial eclipse only>>>" #  not seen
+      out.times$local_time[4] <- "<<<partial eclipse only>>>" #  not seen 
       
-      #out.times$local_time <- "partial eclipse only"
+      out.times <- out.times[c(1,3,5),]
+      out.times$eclipse_type <- c("Partial")
     }else{
       out.times$local_time <- gsub("^.*-\\d{2,2} ", "", out.times$local_time)
       out.times$local_time <- gsub("^0", "", out.times$local_time)
       out.times$local_time <- gsub("AM ", "am ", out.times$local_time)
       out.times$local_time <- gsub("PM ", "pm ", out.times$local_time)
-        
+      out.times$eclipse_type <- c("Total")
     }
     
-    out.times$pct_sun_obscured <- scales::percent(ifelse(ewl_out$attr > 1, 1, ewl_out$attr), 
+    out.times$max_sun_obscured <- scales::percent(ifelse(ewl_out$attr > 1, 1, ewl_out$attr), 
                                                   accuracy = 0.1)
     if(ewl_out$attr < 1 & 
-       grepl("^100", out.times$pct_sun_obscured[3])){
-      out.times$pct_sun_obscured <- "99.9%"
+       grepl("^100", out.times$max_sun_obscured[median(1:nrow(out.times))])){
+      out.times$max_sun_obscured <- "99.9%"
     }
-    out.times$pct_sun_obscured[c(1,2,4,5)] <- NA
+    out.times$max_sun_obscured[c(1:nrow(out.times) != median(1:nrow(out.times)))] <- NA
+    
+    
     
     out.times
     
