@@ -9,9 +9,12 @@ library(censusxy)
 #library(readr)
 #library(data.table)
 #library(shiny)
+library(rsconnect)
 
 renv::snapshot()
 renv::status()
+
+
 
 # https://github.com/chris-prener/censusxy?tab=readme-ov-file
 
@@ -23,17 +26,17 @@ rm(list=ls());cat('\f');gc()
 
 # SET VARS----
 
-cxy.addr <- censusxy::cxy_oneline(address = "1060 W Addison St, Chicago, IL") 
+# cxy.addr <- censusxy::cxy_oneline(address = "1060 W Addison St, Chicago, IL") 
+# 
+# 
+# cxy.addr$coordinates.x
+# cxy.addr$coordinates.y
+# cxy.addr$matchedAddress
 
 
-cxy.addr$coordinates.x
-cxy.addr$coordinates.y
-cxy.addr$matchedAddress
 
-
-
-lon_in <- -81.44067000
-lat_in <-  41.24006000
+lon_in <- -78.91775 #-81.44067000
+lat_in <-  36.04909 #41.24006000
 
 # ECLIPSE MATH----
 
@@ -61,6 +64,7 @@ ewl_out     <- swephR::swe_sol_eclipse_when_loc(jd_start  = jul_dt.utc,
                                                 backward = F)
 
 ewl_out$tret <- ewl_out$tret[1:5]
+
 
 
 ewl_out$attr <- ewl_out$attr[1+c(2)]
@@ -102,54 +106,63 @@ out.times
 
 
 # BASEMAP----
-ec.states <- c("IN", "OH", "KY") 
-               # "TX", "OK", "AR", "MO",  
-               # "IL", "MI", "PA", "NY", 
-               #  "VT", "NH", "ME") 
-               
-#"TN","WV", "MA", 
-               # "RI", "CT", "WI", "LA", 
-               # "MS", "KS", "IA") 
-               #"AL", "GA", "DE", "NJ", "VA", 
-               #"SC", "NC", "MD", "FL")
+ec.states <- c("IN", "OH", "KY",
+               "TX", "OK", "AR", "MO",
+               "IL", "MI", "PA", "NY",
+                "VT", "NH", "ME",
+              "TN","WV", "MA",
+"RI", "CT", "WI", "LA",
+"MS", "KS", "IA",
+"AL", "GA", "DE", "NJ", "VA",
+"SC", "NC", "MD", "FL", "MN", 
+"IA", "ND", "SD", "AZ")
 
+state.abb
 
-show_interstates <- c(75,71,70,90,80, 
-                      64, 74, 24, 
-                      69, 65)
+# show_interstates <- c(75,71,70,90,80, 
+#                       64, 74, 24, 
+#                       69, 65)
 oki.states <- tigris::states(T) %>%
-  .[.$STUSPS %in% ec.states,]
+  .[.$STUSPS %in% state.abb,] %>%
+  .[!.$STUSPS %in% c("AK", "HI"),]
 gc()
 
-pr.usa <- tigris::primary_roads(2021) %>%
-  .[grepl("^I- \\d{1,2}$", 
-          .$FULLNAME, ignore.case = F),]
+# pr.usa <- tigris::primary_roads(2021) %>%
+#   .[grepl("^I- \\d{1,2}$", 
+#           .$FULLNAME, ignore.case = F),]
 gc()
-oki.counties <- tigris::counties(state = c("OH", "IN", "KY"))
+# oki.counties <- tigris::counties(state = c("OH", "IN", "KY"))
 gc()
 
-oki.st_co <- data.frame(st = oki.counties$STATEFP, 
-                        co = oki.counties$COUNTYFP)
+# oki.st_co <- data.frame(st = oki.counties$STATEFP, 
+#                         co = oki.counties$COUNTYFP)
 
-rm(oki.counties)
+#rm(oki.counties)
 
 #oh.counties <- oki.counties$NAME[oki.counties$STATEFP == "39"] %>% sort()
 #ky.counties <- oki.counties$NAME[oki.counties$STATEFP == "21"] %>% sort()
 #in.counties <- oki.counties$NAME[oki.counties$STATEFP == "18"] %>% sort()
-rm(oki.counties)
+#rm(oki.counties)
 
 gc()
 
 
 
-
-if(!"oh.ir" %in% ls()){
-  oh.irA <- tigris::roads(state = "OH", county = oh.counties[1:10]) %>%
-    .[grepl("^I- \\d{1,3}$", .$FULLNAME, ignore.case = F),]
-  
-}
+# 
+# if(!"oh.ir" %in% ls()){
+#   oh.irA <- tigris::roads(state = "OH", county = oh.counties[1:10]) %>%
+#     .[grepl("^I- \\d{1,3}$", .$FULLNAME, ignore.case = F),]
+#   
+# }
 
 
 ggplot() + 
-  geom_sf(data = oki.states) +
-  geom_sf(data = oh.ir)
+  geom_sf(data = oki.states)#+
+  #geom_sf(data = oh.ir)
+
+
+getwd(
+  
+)
+
+#saveRDS(object = oki.states, file = "~/R/play/eclipse/shiny_eclipse_timer/okistates.rds")

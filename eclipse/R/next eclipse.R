@@ -81,10 +81,12 @@ usa.states <- usa.states[usa.states$STUSPS %in% yes.states,]
 
 #grid.jtimes[between(grid.jtimes$lon, usa.bbox["xmin"], usa.bbox["xmax"]) & between(grid.jtimes$lat, usa.bbox["ymin"], usa.bbox["ymax"]),]
 
+
+
 (plot.usa <- ggplot()+
   geom_sf(data = usa.states[usa.states$STUSPS %in% yes.states,], 
           color = "white", fill = "grey") )+
-  geom_point(data = grid.usa, 
+  geom_point(data = grid.usa2[grid.usa2$next_t_ecl != -999999,] , 
              aes(x = lon, y = lat))
 
 
