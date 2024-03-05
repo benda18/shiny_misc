@@ -12,7 +12,7 @@
 #library(renv)
 library(swephR)
 library(lubridate)
-library(dplyr)
+#library(dplyr)
 #library(tigris)
 library(shiny)
 library(censusxy)
@@ -200,9 +200,6 @@ server <- function(input, output) {
       out.times$max_sun_obscured <- "99.9%"
     }
     out.times$max_sun_obscured[c(1:nrow(out.times) != median(1:nrow(out.times)))] <- NA
-    
-    
-    
     out.times
     
   })
