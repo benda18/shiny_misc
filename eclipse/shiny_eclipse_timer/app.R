@@ -28,10 +28,10 @@ ui <- fluidPage(
       shiny::textInput(inputId = "addr_in", 
                        label = "Enter Address", 
                        value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
-                                        "1060 W Addison St, Chicago, IL 60613", 
-                                        "1600 Pennsylvania Avenue, Washington DC", 
-                                        "350 Fifth Avenue New York, NY",
-                                        "143 Beale St, Memphis TN", 
+                                        # "1060 W Addison St, Chicago, IL 60613", 
+                                        # "1600 Pennsylvania Avenue, Washington DC", 
+                                        # "350 Fifth Avenue New York, NY",
+                                        # "143 Beale St, Memphis TN", 
                                         "1301 Western Ave, Cincinnati OH"),1)),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
@@ -42,7 +42,7 @@ ui <- fluidPage(
       ),
       wellPanel(
         fluidRow("See Eclipse Info Below:"),
-        fluidRow(shiny::tableOutput(outputId = "return_eclipsego"))
+        fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
       ), 
       wellPanel(
         fluidRow(" "),
@@ -103,7 +103,7 @@ server <- function(input, output) {
   })
   
   # get eclipse times----
-  submit_coords <- eventReactive(eventExpr = input$cxy_go, {
+  get_times <- eventReactive(eventExpr = input$cxy_go, {
     temp          <- censusxy::cxy_oneline(address = input$addr_in)
     lon_in        <- temp$coordinates.x
     lat_in        <- temp$coordinates.y
@@ -182,8 +182,8 @@ server <- function(input, output) {
     out.times
   })
   
-  output$return_eclipsego <- renderTable({
-    submit_coords()
+  output$return_eclips.times <- renderTable({
+    get_times()
   })
   
 }
