@@ -11,12 +11,9 @@ library(renv)
 library(swephR)
 library(lubridate)
 library(dplyr)
-library(ggplot2)
 library(tigris)
-#library(data.table)
 library(shiny)
 library(censusxy)
-library(scales)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -26,30 +23,49 @@ ui <- fluidPage(
              Find out when and if a specific location will see totality."),
   sidebarLayout(
     sidebarPanel(
+      shiny::textInput(inputId = "addr_in", 
+                       label = "Enter Address", 
+                       value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
+                                        "1060 W Addison St, Chicago, IL 60613", 
+                                        "1600 Pennsylvania Avenue, Washington DC", 
+                                        "350 Fifth Avenue New York, NY",
+                                        "143 Beale St, Memphis TN", 
+                                        "1301 Western Ave, Cincinnati OH"),1)),
+      actionButton(inputId = "cxy_go", 
+                   label   = "SEARCH ADDRESS"), 
       wellPanel(
-        shiny::textInput(inputId = "addr_in", 
-                         label = "Enter Address", 
-                         value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
-                                          "1060 W Addison St, Chicago, IL 60613"),1)),
-        actionButton(inputId = "cxy_go", 
-                     label   = "SEARCH ADDRESS"), 
         fluidRow(
           uiOutput("tab")
         )
       )
+      
     ),
     mainPanel(
       wellPanel(
         fluidRow("See Eclipse Info Below:"),
         fluidRow(shiny::tableOutput(outputId = "return_eclipsego"))
       ), 
+      wellPanel(
+        fluidRow(" "),
+        fluidRow("ACKNOWLEDGEMENTS"),
+        wellPanel(
+          fluidRow("The geocoding utility relies on a library develped by and described in a 2021 paper in \"Transactions in GIS\" by Chris and Branson, and uses the US Census Bureau's Geocoder API (https://geocoding.geo.census.gov/geocoder/)")
+        ),
+        wellPanel(
+          fluidRow("https://github.com/chris-prener/censusxy")
+        ), 
+        wellPanel(
+          
+        )
+      )
     )
   )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  url <- a("link to interactive map from National Solar Observatory", href="https://nso.edu/for-public/eclipse-map-2024/", 
+  url <- a("link to interactive map from National Solar Observatory", 
+           href="https://nso.edu/for-public/eclipse-map-2024/", 
            target="_blank")
   output$tab <- renderUI({
     tagList("See Also:", url)
@@ -73,20 +89,22 @@ server <- function(input, output) {
                                           (second(greg_dt.utc)/60/60), 
                                         gregflag = 1)
     
+    # do eclipse math
     ewl_out     <- swephR::swe_sol_eclipse_when_loc(jd_start  = jul_dt.utc, 
                                                     ephe_flag = 4, 
                                                     geopos    = c(x = lon_in,
                                                                   y = lat_in,
                                                                   z = 10), 
                                                     backward = F)
-    
+    # extract needed values
     ewl_out$tret <- ewl_out$tret[1:5]
     ewl_out$attr <- ewl_out$attr[1+c(2)]
     
-    # out_times
+    # build output table to be displayed on shiny app
     out.times <- data.frame(time_val.jul     = ewl_out$tret, 
                             local_time       = NA)
     
+    # convert julian times to gregorian
     for(i in 1:nrow(out.times)){
       out.times$local_time[i] <- swephR::swe_jdet_to_utc(jd_et = ewl_out$tret[i], 
                                                          gregflag = 1) %>%
@@ -100,21 +118,19 @@ server <- function(input, output) {
     }
     
     out.times <- out.times[order(out.times$local_time),]
+    
+    # times labels
     out.times$eclipse_event <- c("start", 
                                  "start_totality", 
                                  "max_eclipse", 
                                  "end_totality", 
                                  "end")
     rownames(out.times) <- 1:nrow(out.times)
+    
+    # filter down to needed columns only
     out.times <- out.times[,c("eclipse_event", "local_time")]
     
-    # out_attributes
-    out.attr <- data.frame(longitude = lon_in, 
-                           latitude  = lat_in,
-                           total_ecl_at_loc = ewl_out$attr > 1)
-    rownames(out.attr) <- 1:nrow(out.attr)
-    out.attr
-    
+    # total vs partial eclipse
     if(!out.attr$total_ecl_at_loc){
       out.times$local_time <- "partial eclipse only"
     }else{
