@@ -6,6 +6,7 @@
 #
 #    https://shiny.posit.co/
 #
+# live link: https://tim-bender.shinyapps.io/shiny_eclipse_planner/
 
 library(renv)
 library(swephR)
@@ -14,12 +15,13 @@ library(dplyr)
 library(tigris)
 library(shiny)
 library(censusxy)
+library(rsconnect)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
   # Application title
-  titlePanel("2024 Eclipse Planning Tool -
+  titlePanel("April 8th, 2024 Eclipse Planning Tool -
              Find out when and if a specific location will see totality."),
   sidebarLayout(
     sidebarPanel(
@@ -46,8 +48,9 @@ ui <- fluidPage(
         fluidRow(" "),
         fluidRow("ACKNOWLEDGEMENTS"),
         wellPanel(
-          fluidRow("The geocoding utility relies on a library develped by and described in a 2021 paper in \"Transactions in GIS\" by Chris and Branson, and uses the US Census Bureau's Geocoder API")
+          fluidRow("The geocoding utility relies on a library develped by and described in a 2021 paper in \"Transactions in GIS\" by Prener and Fox, and uses the US Census Bureau's Geocoder API")
         ),
+        fluidRow("LINKS"),
         wellPanel(
           fluidRow(uiOutput("tab.res")),
           fluidRow(uiOutput("tab.api")),
