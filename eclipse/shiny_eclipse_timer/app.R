@@ -32,7 +32,12 @@ ui <- fluidPage(
                        value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
                                         "1060 W Addison St, Chicago, IL 60613",
                                         "1600 Pennsylvania Avenue, Washington DC",
-                                        "1301 Western Ave, Cincinnati OH"),1)),
+                                        "1301 Western Ave, Cincinnati OH", 
+                                        "8525 Garland Rd, Dallas, TX 75218", 
+                                        "1116 W Troy Ave, Indianapolis, IN 46225", 
+                                        # "1490 Bethel Rd, Columbus, OH 43220", 
+                                        # "4093 Trueman Blvd, Hilliard, OH 43026", 
+                                        "130 N Main St, Hudson, OH 44236"),1)),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
       wellPanel(
@@ -40,10 +45,10 @@ ui <- fluidPage(
           uiOutput("tab")
         )
       ),
-      wellPanel(
-        fluidRow("See Eclipse Info Below:"),
-        fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
-      ), 
+      # wellPanel(
+      #   fluidRow("See Eclipse Info Below:"),
+      #   fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
+      # ), 
       wellPanel(
         fluidRow(" "),
         fluidRow("ACKNOWLEDGEMENTS"),
@@ -60,7 +65,10 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      
+      wellPanel(
+        fluidRow("See Eclipse Info Below:"),
+        fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
+      )
     )
   )
 )
