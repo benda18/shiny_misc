@@ -8,14 +8,16 @@
 #
 # live link: https://tim-bender.shinyapps.io/shiny_eclipse_planner/
 
-library(renv)
+
+#library(renv)
 library(swephR)
 library(lubridate)
 library(dplyr)
-library(tigris)
+#library(tigris)
 library(shiny)
 library(censusxy)
-library(rsconnect)
+library(scales)
+#library(rsconnect)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -138,13 +140,12 @@ server <- function(input, output) {
     # convert julian times to gregorian
     for(i in 1:nrow(out.times)){
       out.times$local_time[i] <- swephR::swe_jdet_to_utc(jd_et = ewl_out$tret[i], 
-                                                         gregflag = 1) %>%
-        paste(., sep = "-", collapse = "-") %>%
-        ymd_hms() %>%
-        with_tz(., tz.local) %>%
-        strftime(., 
-                 format = "%m-%d-%y %I:%M:%S%p %Z", 
-                 tz = tz.local) %>%
+                                                         gregflag = 1) |>
+        paste(sep = "-", collapse = "-") |>
+        ymd_hms() |>
+        with_tz(tzone = tz.local) |>
+        strftime(format = "%m-%d-%y %I:%M:%S%p %Z", 
+                 tz = tz.local) |>
         as.character() 
     }
     
@@ -168,18 +169,41 @@ server <- function(input, output) {
     rownames(out.attr) <- 1:nrow(out.attr)
     out.attr
     
+    
+    
     # total vs partial eclipse
     if(!out.attr$total_ecl_at_loc){
-      out.times$local_time <- "partial eclipse only"
+      out.times$local_time[1:5] <- gsub("^.*-\\d{2,2} ", "", out.times$local_time[1:5])
+      out.times$local_time[1:5] <- gsub("^0", "", out.times$local_time[1:5])
+      out.times$local_time[1:5] <- gsub("AM ", "am ", out.times$local_time[1:5])
+      out.times$local_time[1:5] <- gsub("PM ", "pm ", out.times$local_time[1:5])
+      
+      # manual fixes because when partial eclipse the order is different
+      out.times$local_time[1]  #  no change needed
+      out.times$local_time[5] <- out.times$local_time[3] 
+      out.times$local_time[3] <- out.times$local_time[2]
+      out.times$local_time[2] <- NA #  not seen
+      out.times$local_time[4] <- NA #  not seen 
+      
+      #out.times$local_time <- "partial eclipse only"
     }else{
-      out.times$local_time <- out.times$local_time %>%
-        gsub("^.*-\\d{2,2} ", "", .) %>%
-        gsub("^0", "", .) %>%
-        gsub("AM ", "am ", .) %>%
-        gsub("PM ", "pm ", .)
+      out.times$local_time <- gsub("^.*-\\d{2,2} ", "", out.times$local_time)
+      out.times$local_time <- gsub("^0", "", out.times$local_time)
+      out.times$local_time <- gsub("AM ", "am ", out.times$local_time)
+      out.times$local_time <- gsub("PM ", "pm ", out.times$local_time)
+        
     }
     
+    out.times$pct_sun_obscured <- scales::percent(ifelse(ewl_out$attr > 1, 1, ewl_out$attr), 
+                                                  accuracy = 0.1)
+    if(ewl_out$attr < 1 & 
+       grepl("^100", out.times$pct_sun_obscured[3])){
+      out.times$pct_sun_obscured <- "99.9%"
+    }
+    out.times$pct_sun_obscured[c(1,2,4,5)] <- NA
+    
     out.times
+    
   })
   
   output$return_eclips.times <- renderTable({
