@@ -37,10 +37,7 @@ ui <- fluidPage(
         fluidRow(
           uiOutput("tab")
         )
-      )
-      
-    ),
-    mainPanel(
+      ),
       wellPanel(
         fluidRow("See Eclipse Info Below:"),
         fluidRow(shiny::tableOutput(outputId = "return_eclipsego"))
@@ -49,15 +46,18 @@ ui <- fluidPage(
         fluidRow(" "),
         fluidRow("ACKNOWLEDGEMENTS"),
         wellPanel(
-          fluidRow("The geocoding utility relies on a library develped by and described in a 2021 paper in \"Transactions in GIS\" by Chris and Branson, and uses the US Census Bureau's Geocoder API (https://geocoding.geo.census.gov/geocoder/)")
+          fluidRow("The geocoding utility relies on a library develped by and described in a 2021 paper in \"Transactions in GIS\" by Chris and Branson, and uses the US Census Bureau's Geocoder API")
         ),
         wellPanel(
-          fluidRow("https://github.com/chris-prener/censusxy")
-        ), 
-        wellPanel(
-          
+          fluidRow(uiOutput("tab.res")),
+          fluidRow(uiOutput("tab.api")),
+          fluidRow(uiOutput("tab.cxy")),
+          fluidRow( uiOutput("tab.src"))
         )
       )
+    ),
+    mainPanel(
+      
     )
   )
 )
@@ -69,6 +69,34 @@ server <- function(input, output) {
            target="_blank")
   output$tab <- renderUI({
     tagList("See Also:", url)
+  })
+  
+  url.source <- a("Source Code on GitHub", 
+                  href = "https://github.com/benda18/shiny_misc/blob/main/eclipse/shiny_eclipse_timer/app.R", 
+                  target = "_blank")
+  output$tab.src <- renderUI({
+    tagList(url.source)
+  })
+  
+  url.cxy <- a("censusxy Library for R on Github", 
+               href = "https://github.com/chris-prener/censusxy", 
+               target = "_blank")
+  output$tab.cxy <- renderUI({
+    tagList(url.cxy)
+  })
+  
+  url.api <- a("US Census Bureau's Geocoder API", 
+               href = "https://geocoding.geo.census.gov/geocoder/", 
+               target = "_blank")
+  output$tab.api <- renderUI({
+    tagList(url.api)
+  })
+  
+  url.res <- a("Creating open source composite geocoders: Pitfalls and opportunities (Prener & Fox)", 
+               href = "https://onlinelibrary.wiley.com/doi/abs/10.1111/tgis.12741", 
+               target = "_blank")
+  output$tab.res <- renderUI({
+    tagList(url.res)
   })
   
   # get eclipse times----
@@ -129,6 +157,13 @@ server <- function(input, output) {
     
     # filter down to needed columns only
     out.times <- out.times[,c("eclipse_event", "local_time")]
+    
+    # out_attributes
+    out.attr <- data.frame(longitude = lon_in, 
+                           latitude  = lat_in,
+                           total_ecl_at_loc = ewl_out$attr > 1)
+    rownames(out.attr) <- 1:nrow(out.attr)
+    out.attr
     
     # total vs partial eclipse
     if(!out.attr$total_ecl_at_loc){
