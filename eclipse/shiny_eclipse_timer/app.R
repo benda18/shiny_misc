@@ -40,11 +40,7 @@ ui <- fluidPage(
                                         "130 N Main St, Hudson, OH 44236"),1)),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
-      wellPanel(
-        fluidRow(
-          uiOutput("tab")
-        )
-      ),
+     
       # wellPanel(
       #   fluidRow("See Eclipse Info Below:"),
       #   fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
@@ -68,6 +64,11 @@ ui <- fluidPage(
       wellPanel(
         fluidRow("See Eclipse Info Below:"),
         fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
+      ),
+      wellPanel(
+        fluidRow(
+          uiOutput("tab")
+        )
       )
     )
   )
