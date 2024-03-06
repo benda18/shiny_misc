@@ -17,6 +17,7 @@ library(lubridate)
 library(shiny)
 library(censusxy)
 library(scales)
+library(ggplot2)
 #library(rsconnect)
 
 # Define UI for application that draws a histogram
@@ -40,11 +41,6 @@ ui <- fluidPage(
                                         "130 N Main St, Hudson, OH 44236"),1)),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
-     
-      # wellPanel(
-      #   fluidRow("See Eclipse Info Below:"),
-      #   fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
-      # ), 
       wellPanel(
         fluidRow(" "),
         fluidRow("ACKNOWLEDGEMENTS"),
@@ -56,7 +52,7 @@ ui <- fluidPage(
           fluidRow(uiOutput("tab.res")),
           fluidRow(uiOutput("tab.api")),
           fluidRow(uiOutput("tab.cxy")),
-          fluidRow( uiOutput("tab.src"))
+          fluidRow(uiOutput("tab.src"))
         )
       )
     ),
@@ -64,6 +60,9 @@ ui <- fluidPage(
       wellPanel(
         fluidRow("See Eclipse Info Below:"),
         fluidRow(shiny::tableOutput(outputId = "return_eclips.times"))
+      ),
+      wellPanel(
+        shiny::plotOutput(outputId = "map"),
       ),
       wellPanel(
         fluidRow(
@@ -76,6 +75,10 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  usa.states <- readRDS("usastates.rds")
+  eclpath.df.usa <- readRDS("eclpathdfusa.rds")
+  
   url <- a("link to interactive map from National Solar Observatory", 
            href="https://nso.edu/for-public/eclipse-map-2024/", 
            target="_blank")
@@ -216,6 +219,18 @@ server <- function(input, output) {
   output$return_eclips.times <- renderTable({
     get_times()
   })
+  
+  output$map <- renderPlot({
+    ggplot() + 
+      geom_sf(data = usa.states, 
+              fill = "dark grey", color = "white")+
+      geom_path(data = eclpath.df.usa, 
+                aes(x = lon, y = lat), 
+                color = "black", linewidth = 2)+
+      theme_void()+
+      coord_sf()
+  })
+  
   
 }
 
