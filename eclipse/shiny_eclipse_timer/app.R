@@ -18,6 +18,7 @@ library(shiny)
 library(censusxy)
 library(scales)
 library(ggplot2)
+library(sf)
 #library(rsconnect)
 
 # Define UI for application that draws a histogram
@@ -76,8 +77,29 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-  usa.states <- readRDS("usastates.rds")
-  eclpath.df.usa <- readRDS("eclpathdfusa.rds")
+  usa.states <- readRDS("usastates.rds") 
+  
+  
+  path.files <- list.files(pattern = "^eclpathdfusa.*\\.rds$")
+  
+  all.paths <- NULL
+  for(i in path.files){
+    
+    try(temp.date <- gsub(pattern = "^eclpathdfusa|\\.rds$", "", i) |> ymd())
+    try(temp.paths <- readRDS(i) |> transform(ed = temp.date))
+    try(all.paths <- rbind(all.paths, 
+                       temp.paths))
+    rm(temp.date, temp.paths)
+  }
+  all.paths <- all.paths |> transform (yr = year(ed))
+  
+  # epath2024 <- readRDS("eclpathdfusa20240408.rds") |> transform(ed = ymd(20240308))
+  # epath2045 <- readRDS("eclpathdfusa20450812.rds") |> transform(ed = ymd(20450812))
+  # epath2052 <- readRDS("eclpathdfusa20520330.rds") |> transform(ed = ymd(20520330))
+  # epath2071 <- readRDS("eclpathdfusa20710923.rds") |> transform(ed = ymd(20710923))
+  # epath2078 <- readRDS("eclpathdfusa20780511.rds") |> transform(ed = ymd(20780511))
+  # epath2044 <- readRDS("eclpathdfusa20440823.rds") |> transform(ed = ymd(20440823))
+  
   
   url <- a("link to interactive map from National Solar Observatory", 
            href="https://nso.edu/for-public/eclipse-map-2024/", 
@@ -115,8 +137,14 @@ server <- function(input, output) {
   })
   
   # get eclipse times----
+  
+  get_cxyinfo <- eventReactive(input$cxy_go, {
+    censusxy::cxy_oneline(address = input$addr_in)
+  })
+  
   get_times <- eventReactive(eventExpr = input$cxy_go, {
-    temp          <- censusxy::cxy_oneline(address = input$addr_in)
+    #temp          <- censusxy::cxy_oneline(address = input$addr_in)
+    temp          <- get_cxyinfo()
     lon_in        <- temp$coordinates.x
     lat_in        <- temp$coordinates.y
     greg_dt.local <- ymd_hm("2024-04-07 08:30AM", tz = "America/New_York")
@@ -221,12 +249,31 @@ server <- function(input, output) {
   })
   
   output$map <- renderPlot({
+   # print( ggplot() + 
+   #    geom_sf(data = usa.states, 
+   #            fill = "dark grey", color = "white")+
+   #    geom_path(data = eclpath.df.usa, 
+   #              aes(x = lon, y = lat), 
+   #              color = "black", linewidth = 2)+
+   #    # geom_point(aes(x = temp$coordinates.x, 
+   #    #                y = temp$coordinates.y),
+   #    #            shape = 21,
+   #    #            size = 4, color = "white", fill = "red")+
+   #    theme_void()+
+   #    coord_sf())
+    temp          <- get_cxyinfo()[c("coordinates.x", "coordinates.y")]
+    
+    
     ggplot() + 
       geom_sf(data = usa.states, 
               fill = "dark grey", color = "white")+
-      geom_path(data = eclpath.df.usa, 
-                aes(x = lon, y = lat), 
-                color = "black", linewidth = 2)+
+      geom_path(data = all.paths[all.paths$yr > 2017,], 
+                aes(x = lon, y = lat, color = factor(yr)), 
+                linewidth = 2)+
+      geom_point(aes(x = temp$coordinates.x, 
+                     y = temp$coordinates.y),
+                 shape = 21,
+                 size = 4, color = "white", fill = "red")+
       theme_void()+
       coord_sf()
   })
