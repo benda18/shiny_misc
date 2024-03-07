@@ -30,16 +30,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       shiny::textInput(inputId = "addr_in", 
-                       label = "Enter Address", 
-                       value = sample(c("107 Cliff Park Rd, Springfield, OH 45504", 
-                                        "1060 W Addison St, Chicago, IL 60613",
-                                        "1600 Pennsylvania Avenue, Washington DC",
-                                        "1301 Western Ave, Cincinnati OH", 
-                                        "8525 Garland Rd, Dallas, TX 75218", 
-                                        "1116 W Troy Ave, Indianapolis, IN 46225", 
-                                        # "1490 Bethel Rd, Columbus, OH 43220", 
-                                        # "4093 Trueman Blvd, Hilliard, OH 43026", 
-                                        "130 N Main St, Hudson, OH 44236"),1)),
+                       label = "Enter Address"),
       actionButton(inputId = "cxy_go", 
                    label   = "SEARCH ADDRESS"), 
       wellPanel(
@@ -88,18 +79,10 @@ server <- function(input, output) {
     try(temp.date <- gsub(pattern = "^eclpathdfusa|\\.rds$", "", i) |> ymd())
     try(temp.paths <- readRDS(i) |> transform(ed = temp.date))
     try(all.paths <- rbind(all.paths, 
-                       temp.paths))
+                           temp.paths))
     rm(temp.date, temp.paths)
   }
   all.paths <- all.paths |> transform (yr = year(ed))
-  
-  # epath2024 <- readRDS("eclpathdfusa20240408.rds") |> transform(ed = ymd(20240308))
-  # epath2045 <- readRDS("eclpathdfusa20450812.rds") |> transform(ed = ymd(20450812))
-  # epath2052 <- readRDS("eclpathdfusa20520330.rds") |> transform(ed = ymd(20520330))
-  # epath2071 <- readRDS("eclpathdfusa20710923.rds") |> transform(ed = ymd(20710923))
-  # epath2078 <- readRDS("eclpathdfusa20780511.rds") |> transform(ed = ymd(20780511))
-  # epath2044 <- readRDS("eclpathdfusa20440823.rds") |> transform(ed = ymd(20440823))
-  
   
   url <- a("link to interactive map from National Solar Observatory", 
            href="https://nso.edu/for-public/eclipse-map-2024/", 
@@ -207,8 +190,6 @@ server <- function(input, output) {
     rownames(out.attr) <- 1:nrow(out.attr)
     out.attr
     
-    
-    
     # total vs partial eclipse
     if(!out.attr$total_ecl_at_loc){
       out.times$local_time[1:5] <- gsub("^.*-\\d{2,2} ", "", out.times$local_time[1:5])
@@ -217,11 +198,11 @@ server <- function(input, output) {
       out.times$local_time[1:5] <- gsub("PM ", "pm ", out.times$local_time[1:5])
       
       # manual fixes because when partial eclipse the order is different
-      out.times$local_time[1]  #  no change needed
+      # out.times$local_time[1]  #  no change needed
       out.times$local_time[5] <- out.times$local_time[3] 
       out.times$local_time[3] <- out.times$local_time[2]
-      out.times$local_time[2] <- "<<<partial eclipse only>>>" #  not seen
-      out.times$local_time[4] <- "<<<partial eclipse only>>>" #  not seen 
+      # out.times$local_time[2] <- "<<<partial eclipse only>>>" #  not seen
+      # out.times$local_time[4] <- "<<<partial eclipse only>>>" #  not seen 
       
       out.times <- out.times[c(1,3,5),]
       out.times$eclipse_type <- c("Partial")
@@ -233,12 +214,16 @@ server <- function(input, output) {
       out.times$eclipse_type <- c("Total")
     }
     
+    # adjust sun obscuration > 100% 
     out.times$max_sun_obscured <- scales::percent(ifelse(ewl_out$attr > 1, 1, ewl_out$attr), 
                                                   accuracy = 0.1)
+    
+    # fix round-up errors
     if(ewl_out$attr < 1 & 
        grepl("^100", out.times$max_sun_obscured[median(1:nrow(out.times))])){
       out.times$max_sun_obscured <- "99.9%"
     }
+    
     out.times$max_sun_obscured[c(1:nrow(out.times) != median(1:nrow(out.times)))] <- NA
     out.times
     
@@ -249,33 +234,24 @@ server <- function(input, output) {
   })
   
   output$map <- renderPlot({
-   # print( ggplot() + 
-   #    geom_sf(data = usa.states, 
-   #            fill = "dark grey", color = "white")+
-   #    geom_path(data = eclpath.df.usa, 
-   #              aes(x = lon, y = lat), 
-   #              color = "black", linewidth = 2)+
-   #    # geom_point(aes(x = temp$coordinates.x, 
-   #    #                y = temp$coordinates.y),
-   #    #            shape = 21,
-   #    #            size = 4, color = "white", fill = "red")+
-   #    theme_void()+
-   #    coord_sf())
-    temp          <- get_cxyinfo()[c("coordinates.x", "coordinates.y")]
+    
+    addr.coords <- get_cxyinfo()[c("coordinates.x", "coordinates.y")]
     
     
     ggplot() + 
       geom_sf(data = usa.states, 
               fill = "dark grey", color = "white")+
-      geom_path(data = all.paths[all.paths$yr > 2017,], 
+      geom_path(data = all.paths[all.paths$yr <= 2054,], 
                 aes(x = lon, y = lat, color = factor(yr)), 
                 linewidth = 2)+
-      geom_point(aes(x = temp$coordinates.x, 
-                     y = temp$coordinates.y),
+      geom_point(aes(x = addr.coords$coordinates.x, 
+                     y = addr.coords$coordinates.y),
                  shape = 21,
                  size = 4, color = "white", fill = "red")+
       theme_void()+
-      coord_sf()
+      coord_sf()+
+      scale_color_discrete(name = "Eclipse Path")+
+      labs(title = "Total Eclipse Paths Across the US Over the Next 30 Years")
   })
   
   
