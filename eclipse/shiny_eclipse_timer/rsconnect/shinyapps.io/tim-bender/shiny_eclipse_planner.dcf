@@ -5,9 +5,8 @@ account: tim-bender
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11406630
-bundleId: 8334594
+bundleId: 8344700
 url: https://tim-bender.shinyapps.io/shiny_eclipse_planner/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: okistates.rds
